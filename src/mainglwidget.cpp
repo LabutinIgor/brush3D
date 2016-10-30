@@ -13,7 +13,7 @@ void MainGLWidget::initializeGL() {
 
     initShaderProgram(":/vshader.glsl", ":/fshader.glsl");
 
-    static const GLfloat g_vertex_buffer_data[] = {
+    GLfloat vertices[] = {
             -1.0f, -1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
             0.0f,  1.0f, 0.0f,
@@ -21,7 +21,7 @@ void MainGLWidget::initializeGL() {
 
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), &g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), &vertices, GL_STATIC_DRAW);
 
     projectionMatrix.setToIdentity();
     projectionMatrix.perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
