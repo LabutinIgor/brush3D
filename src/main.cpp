@@ -3,8 +3,7 @@
 #include <iostream>
 #include <QSurfaceFormat>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QSurfaceFormat glFormat;
     glFormat.setVersion(3, 3);
     glFormat.setProfile(QSurfaceFormat::CoreProfile);

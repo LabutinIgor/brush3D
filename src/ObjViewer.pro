@@ -14,16 +14,24 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    mainglwidget.cpp
+    mainglwidget.cpp \
+    objloader.cpp
 
 HEADERS += mainwindow.h \
-    mainglwidget.h
+    mainglwidget.h \
+    vertex.h
 
 FORMS   += mainwindow.ui
+
+INCLUDEPATH += tinyobjloader/
 
 RESOURCES += \
     shaders.qrc
 
 OTHER_FILES += \
     vshader.glsl \
-    fshader.glsl
+    fshader.glsl \
+    cube.obj
+
+DISTFILES += \
+    cube.obj
