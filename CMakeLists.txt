@@ -29,5 +29,5 @@ add_executable(ObjViewer
         external/tinyobjloader/tiny_obj_loader.h
         )
 
-target_link_libraries(ObjViewer ${OPENGL_LIBRARY} glfw GLEW)
-
+target_link_libraries(ObjViewer ${OPENGL_LIBRARY} glfw GLEW
+        ${PROJECT_SOURCE_DIR}/external/Simple-OpenGL-Image-Library/lib/libSOIL.a)

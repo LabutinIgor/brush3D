@@ -1,4 +1,4 @@
-//#include "SOIL.h"
+#include "SOIL.h"
 #include "MainView.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -6,7 +6,8 @@
 #include "tiny_obj_loader.h"
 
 
-MainView::MainView(const char *objFileName) : objFileName(objFileName) {}
+MainView::MainView(const char *objFileName, const char *textureFileName) :
+        objFileName(objFileName), textureFileName(textureFileName) {}
 
 void MainView::show() {
     initGlfwWindow();
@@ -46,6 +47,7 @@ void MainView::show() {
     glDeleteBuffers(1, &vertexBuffer);
     glDeleteBuffers(1, &uvBuffer);
     glDeleteProgram(programID);
+    glDeleteTextures(1, &texture);
     glDeleteVertexArrays(1, &verticesID);
     glfwTerminate();
 }
@@ -120,12 +122,23 @@ void MainView::loadObj(const char *fileName) {
 }
 
 void MainView::loadTexture(const char *fileName) {
-//    int width, height;
-//    unsigned char* image =
-//            SOIL_load_image(fileName, &width, &height, 0, SOIL_LOAD_RGB);
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-//                 GL_UNSIGNED_BYTE, image);
-//    SOIL_free_image_data(image);
+    int width, height;
+    unsigned char *image =
+            SOIL_load_image(fileName, &width, &height, 0, SOIL_LOAD_RGB);
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, image);
+
+    SOIL_free_image_data(image);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    textureID = glGetUniformLocation(programID, "textureSampler");
 }
 
 void MainView::initMVPMatrices() {
@@ -170,7 +183,7 @@ void MainView::scrollCallback(GLFWwindow *window, double xoffset, double yoffset
     scaleCoefficient += yoffset * 0.1;
 }
 
-void MainView::updateModelMatrix(double currentMousePositionX, double currentMousePositionY) {
+void MainView::updateRotation(double currentMousePositionX, double currentMousePositionY) {
     double dx = previousMousePositionX - currentMousePositionX;
     double dy = previousMousePositionY - currentMousePositionY;
 
@@ -188,13 +201,17 @@ void MainView::draw() {
     if (mousePressed) {
         double currentMousePositionX, currentMousePositionY;
         glfwGetCursorPos(window, &currentMousePositionX, &currentMousePositionY);
-        updateModelMatrix(currentMousePositionX, currentMousePositionY);
+        updateRotation(currentMousePositionX, currentMousePositionY);
     }
 
     scaleMatrix = glm::scale(glm::mat4(1.f), glm::tvec3<float>(scaleCoefficient, scaleCoefficient, scaleCoefficient));
     glm::mat4 matrixMVP = projectionMatrix * viewMatrix * rotationMatrix * scaleMatrix;
 
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &matrixMVP[0][0]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(textureID, 0);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

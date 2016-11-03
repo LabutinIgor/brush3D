@@ -18,7 +18,7 @@
 
 class MainView {
 public:
-    MainView(const char *objFileName);
+    MainView(const char *objFileName, const char *textureFileName);
 
     void show();
 
@@ -41,14 +41,16 @@ private:
 
     void draw();
 
-    void updateModelMatrix(double currentMousePositionX, double currentMousePositionY);
+    void updateRotation(double currentMousePositionX, double currentMousePositionY);
 
     const char *objFileName;
+    const char *textureFileName;
     GLFWwindow *window;
     GLuint programID;
     GLint matrixID;
     GLuint verticesID;
-    GLuint uvCoordinatesID;
+    GLuint texture;
+    GLint textureID;
     GLuint vertexBuffer;
     GLuint uvBuffer;
     std::vector<glm::vec3> vertices;
