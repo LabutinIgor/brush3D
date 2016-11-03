@@ -1,12 +1,9 @@
-#version 330
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec2 vertexUV;
-out vec2 UV;
-
-uniform mat4 matrix;
-
-void main()
+attribute highp vec4 vertex;
+attribute mediump vec4 texCoord;
+varying mediump vec4 texc;
+uniform mediump mat4 matrix;
+void main(void)
 {
-  gl_Position = matrix * vec4(position, 1.0);
-  UV = vertexUV;
+    gl_Position = matrix * vertex;
+    texc = texCoord;
 }

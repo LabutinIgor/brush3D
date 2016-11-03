@@ -1,13 +1,7 @@
-#version 330
-
-uniform sampler2DRect textureSampler;
-
-in vec2 UV;
-
-out vec4 fColor;
-
+uniform sampler2D texture;
+varying mediump vec4 texc;
 void main(void)
 {
-    fColor = vec4(texture(textureSampler, UV.st).rgb, 1.0);
-    //fColor = vec4(UV.st, 0.0, 1.0);
+    gl_FragColor = texture2D(texture, texc.st);
+    //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

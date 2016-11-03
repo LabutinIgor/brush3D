@@ -36,7 +36,7 @@ void MainGLWidget::initializeGL() {
     m_vertex.setUsagePattern(QOpenGLBuffer::StaticDraw);
     m_vertex.allocate(&vertices[0], sizeof(Vertex) * vertices.size());
 
-    loadTexture("/Users/igorl/Documents/au/project/qt_repo/objViewer/src/uvtemplate.bmp");
+    loadTexture("/Users/igorl/Documents/au/project/ObjViewer/resources/img_test.png");
     texture->bind();
 
     m_object.create();
@@ -64,8 +64,10 @@ void MainGLWidget::paintGL() {
         updateTransformMatrix(mapFromGlobal(QCursor::pos()));
     }
     m_program->setUniformValue(u_matrix, m_projectionMatrix * m_viewMatrix * m_modelMatrix);
+    texture->bind();
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     m_object.release();
+    texture->release();
     m_program->release();
 }
 
@@ -102,6 +104,8 @@ void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmen
     m_program = new QOpenGLShaderProgram();
     m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
     m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);
+    m_program->bindAttributeLocation("vertex", 0);
+    m_program->bindAttributeLocation("texCoord", 1);
     m_program->link();
     m_program->bind();
 }
@@ -147,6 +151,8 @@ void MainGLWidget::loadObj(const char *fileName) {
 void MainGLWidget::loadTexture(const char *fileName) {
     QImage img(fileName);
     texture = new QOpenGLTexture(img.mirrored());
+    std::cerr << texture->width() << " " << texture->height() << "\n";
+
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
 }

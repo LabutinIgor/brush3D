@@ -42,6 +42,7 @@ private:
     QOpenGLTexture *texture;
 
     int u_matrix;
+    int u_texture;
     QMatrix4x4 m_modelMatrix;
     QMatrix4x4 m_viewMatrix;
     QMatrix4x4 m_projectionMatrix;
