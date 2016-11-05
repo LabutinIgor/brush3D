@@ -38,8 +38,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad_obj"/>
-    <addaction name="actionLoad_texture"/>
+    <addaction name="actionLoadObj"/>
+    <addaction name="actionLoadTexture"/>
    </widget>
    <addaction name="menuObjViewer"/>
   </widget>
@@ -52,12 +52,12 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionLoad_obj">
+  <action name="actionLoadObj">
    <property name="text">
     <string>Load obj</string>
    </property>
   </action>
-  <action name="actionLoad_texture">
+  <action name="actionLoadTexture">
    <property name="text">
     <string>Load texture</string>
    </property>

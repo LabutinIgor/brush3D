@@ -1,54 +1,24 @@
 #include "mainglwidget.h"
-#include <QDebug>
-#include <QString>
-#include <iostream>
-#include <math.h>
 
-#include "tinyobjloader/tiny_obj_loader.h"
+#define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
+#include "tiny_obj_loader.h"
 
 MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
-    m_modelMatrix.setToIdentity();
+    m_rotationMatrix.setToIdentity();
+    m_scaleMatrix.setToIdentity();
     m_viewMatrix.setToIdentity();
-    m_viewMatrix.lookAt(
-                QVector3D(0, 0, 10),
-                QVector3D(0, 0, 0),
-                QVector3D(0, 1, 0)
-    );
 }
 
 void MainGLWidget::initializeGL() {
     initializeOpenGLFunctions();
     connect(context(), SIGNAL(aboutToBeDestroyed()), this, SLOT(teardownGL()), Qt::DirectConnection);
     connect(this, SIGNAL(frameSwapped()), this, SLOT(update()));
-    printVersionInformation();
 
     glEnable(GL_CULL_FACE);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    loadShaders(":/shaders/vshader.glsl", ":/shaders/fshader.glsl");
-
+    loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
     u_matrix = m_program->uniformLocation("matrix");
-
-    loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/src/cube.obj");
-
-    m_vertex.create();
-    m_vertex.bind();
-    m_vertex.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    m_vertex.allocate(&vertices[0], sizeof(Vertex) * vertices.size());
-
-    loadTexture("/Users/igorl/Documents/au/project/ObjViewer/resources/img_test.png");
-    texture->bind();
-
-    m_object.create();
-    m_object.bind();
-    m_program->enableAttributeArray(0);
-    m_program->enableAttributeArray(1);
-    m_program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
-    m_program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
-
-    m_object.release();
-    m_vertex.release();
-    m_program->release();
 }
 
 void MainGLWidget::resizeGL(int width, int height) {
@@ -58,17 +28,25 @@ void MainGLWidget::resizeGL(int width, int height) {
 
 void MainGLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
-    m_program->bind();
-    m_object.bind();
-    if (mousePressed) {
-        updateTransformMatrix(mapFromGlobal(QCursor::pos()));
+    if (m_object != 0) {
+        m_program->bind();
+        m_object->bind();
+        if (mousePressed) {
+            updateTransformMatrix(mapFromGlobal(QCursor::pos()));
+        }
+        m_scaleMatrix.setToIdentity();
+        m_scaleMatrix.scale(exp(scaleCoefficient));
+        m_program->setUniformValue(u_matrix, m_projectionMatrix * m_viewMatrix * m_rotationMatrix * m_scaleMatrix);
+        if (texture != 0) {
+            texture->bind();
+        }
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        m_object->release();
+        if (texture != 0) {
+            texture->release();
+        }
+        m_program->release();
     }
-    m_program->setUniformValue(u_matrix, m_projectionMatrix * m_viewMatrix * m_modelMatrix);
-    texture->bind();
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    m_object.release();
-    texture->release();
-    m_program->release();
 }
 
 void MainGLWidget::mouseMoveEvent (QMouseEvent * event) {
@@ -85,19 +63,43 @@ void MainGLWidget::mouseReleaseEvent(QMouseEvent* event) {
     mousePressed = false;
 }
 
+void MainGLWidget::wheelEvent(QWheelEvent* event) {
+    scaleCoefficient += event->delta() * 0.001;
+}
+
 void MainGLWidget::updateTransformMatrix(QPoint mousePosition) {
     double dx = previousMousePosition.x() - mousePosition.x();
     double dy = previousMousePosition.y() - mousePosition.y();
 
-    m_modelMatrix.rotate(dx * 0.1f, 0, 1, 0);
-    m_modelMatrix.rotate(dy * 0.1f, 1, 0, 0);
+    QMatrix4x4 rot;
+    rot.setToIdentity();
+    rot.rotate(dx * 0.1f, 0, -1, 0);
+    rot.rotate(dy * 0.1f, -1, 0, 0);
+    m_rotationMatrix = rot * m_rotationMatrix;
     previousMousePosition = mousePosition;
 }
 
 void MainGLWidget::teardownGL() {
-    m_object.destroy();
-    m_vertex.destroy();
+    m_object->destroy();
+    m_vertex->destroy();
     delete m_program;
+}
+
+void MainGLWidget::loadObjHandler() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+                                                    tr("Obj Files (*.obj)"));
+    if (fileName != "") {
+        loadObj(fileName.toStdString().c_str());
+        initializeObj();
+    }
+}
+
+void MainGLWidget::loadTextureHandler() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+                                                    tr("Textures (*.bmp *.png *.jpg)"));
+    if (fileName != "") {
+        loadTexture(fileName.toStdString().c_str());
+    }
 }
 
 void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmentShaderName) {
@@ -145,39 +147,51 @@ void MainGLWidget::loadObj(const char *fileName) {
             shapes[s].mesh.material_ids[f];
         }
     }
+}
 
+void MainGLWidget::initializeObj() {
+    if (m_vertex != 0) {
+        m_vertex->destroy();
+        m_object->destroy();
+    }
+
+    m_vertex = new QOpenGLBuffer();
+    m_vertex->create();
+    m_vertex->bind();
+    m_vertex->setUsagePattern(QOpenGLBuffer::StaticDraw);
+    m_vertex->allocate(&vertices[0], sizeof(Vertex) * vertices.size());
+
+    m_object = new QOpenGLVertexArrayObject();
+    m_object->create();
+    m_object->bind();
+    m_program->enableAttributeArray(0);
+    m_program->enableAttributeArray(1);
+    m_program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
+    m_program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
+
+    setViewMatrixForObj();
+    scaleCoefficient = 0;
+}
+
+void MainGLWidget::setViewMatrixForObj() {
+    double maxZ = 0;
+    for (auto v : vertices) {
+        QVector3D position = v.position();
+        maxZ = fmax(maxZ, position.z());
+    }
+    m_viewMatrix.lookAt(
+                QVector3D(0, 0, 20 * maxZ),
+                QVector3D(0, 0, 0),
+                QVector3D(0, 1, 0)
+    );
 }
 
 void MainGLWidget::loadTexture(const char *fileName) {
+    if (texture != 0) {
+        texture->destroy();
+    }
     QImage img(fileName);
     texture = new QOpenGLTexture(img.mirrored());
-    std::cerr << texture->width() << " " << texture->height() << "\n";
-
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
-}
-
-/*******************************************************************************
- * Private Helpers
- ******************************************************************************/
-
-void MainGLWidget::printVersionInformation() {
-    QString glType;
-    QString glVersion;
-    QString glProfile;
-
-    // Get Version Information
-    glType = (context()->isOpenGLES()) ? "OpenGL ES" : "OpenGL";
-    glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
-
-    // Get Profile Information
-#define CASE(c) case QSurfaceFormat::c: glProfile = #c; break
-    switch (format().profile()) {
-        CASE(NoProfile);
-        CASE(CoreProfile);
-        CASE(CompatibilityProfile);
-    }
-#undef CASE
-    // qPrintable() will print our QString w/o quotes around it.
-    qDebug() << qPrintable(glType) << qPrintable(glVersion) << "(" << qPrintable(glProfile) << ")";
 }
