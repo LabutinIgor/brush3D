@@ -2,6 +2,7 @@
 #define VERTEX_H
 
 #include <QVector3D>
+#include <QVector2D>
 
 class Vertex {
 public:

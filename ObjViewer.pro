@@ -14,11 +14,15 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
-    src/mainglwidget.cpp
+    src/mainglwidget.cpp \
+    src/brush.cpp \
+    src/geometry.cpp
 
 HEADERS += src/mainwindow.h \
     src/mainglwidget.h \
-    src/vertex.h
+    src/vertex.h \
+    src/brush.h \
+    src/geometry.h
 
 FORMS   += src/mainwindow.ui
 

@@ -4,9 +4,9 @@
 #include "tiny_obj_loader.h"
 
 MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
-    m_rotationMatrix.setToIdentity();
-    m_scaleMatrix.setToIdentity();
-    m_viewMatrix.setToIdentity();
+    rotationMatrix.setToIdentity();
+    scaleMatrix.setToIdentity();
+    viewMatrix.setToIdentity();
 }
 
 void MainGLWidget::initializeGL() {
@@ -18,49 +18,77 @@ void MainGLWidget::initializeGL() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
-    u_matrix = m_program->uniformLocation("matrix");
+    matrixID = program->uniformLocation("matrix");
+
+    loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/cube.obj");
+    initializeObj();
+    loadTexture("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/simple_texture.bmp");
+
+    initializeBrush();
+
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void MainGLWidget::resizeGL(int width, int height) {
-    m_projectionMatrix.setToIdentity();
-    m_projectionMatrix.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+    projectionMatrix.setToIdentity();
+    projectionMatrix.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+    //std::cerr << projectionMatrix.column(i << "\n";
 }
 
 void MainGLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
-    if (m_object != 0) {
-        m_program->bind();
-        m_object->bind();
-        if (mousePressed) {
+    if (arrayObject != 0) {
+        program->bind();
+        arrayObject->bind();
+        if (mousePressed && !isBrashActive) {
             updateTransformMatrix(mapFromGlobal(QCursor::pos()));
         }
-        m_scaleMatrix.setToIdentity();
-        m_scaleMatrix.scale(exp(scaleCoefficient));
-        m_program->setUniformValue(u_matrix, m_projectionMatrix * m_viewMatrix * m_rotationMatrix * m_scaleMatrix);
+        scaleMatrix.setToIdentity();
+        scaleMatrix.scale(exp(scaleCoefficient));
+        program->setUniformValue(matrixID, projectionMatrix * viewMatrix * rotationMatrix * scaleMatrix);
         if (texture != 0) {
             texture->bind();
         }
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        m_object->release();
+        arrayObject->release();
         if (texture != 0) {
             texture->release();
         }
-        m_program->release();
+        program->release();
     }
 }
 
-void MainGLWidget::mouseMoveEvent (QMouseEvent * event) {
+void MainGLWidget::mouseMoveEvent (QMouseEvent *event) {
     previousMousePosition = event->pos();
+    if (isBrashActive) {
+        brush->paint(QVector2D(event->pos().x() * 2.0 / width() - 1,
+                               (height() - event->pos().y()) * 2.0 / height() - 1),
+                     viewMatrix * rotationMatrix * scaleMatrix, projectionMatrix);
+        textureImage = brush->getTextureImage();
+        setTexture();
+    }
 }
 
-void MainGLWidget::mousePressEvent(QMouseEvent* event) {
+void MainGLWidget::mousePressEvent(QMouseEvent *event) {
     previousMousePosition = event->pos();
     mousePressed = true;
 }
 
-void MainGLWidget::mouseReleaseEvent(QMouseEvent* event) {
+void MainGLWidget::mouseReleaseEvent(QMouseEvent *event) {
     previousMousePosition = event->pos();
     mousePressed = false;
+}
+
+void MainGLWidget::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Control) {
+        isBrashActive = true;
+    }
+}
+
+void MainGLWidget::keyReleaseEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Control) {
+        isBrashActive = false;
+    }
 }
 
 void MainGLWidget::wheelEvent(QWheelEvent* event) {
@@ -75,14 +103,14 @@ void MainGLWidget::updateTransformMatrix(QPoint mousePosition) {
     rot.setToIdentity();
     rot.rotate(dx * 0.1f, 0, -1, 0);
     rot.rotate(dy * 0.1f, -1, 0, 0);
-    m_rotationMatrix = rot * m_rotationMatrix;
+    rotationMatrix = rot * rotationMatrix;
     previousMousePosition = mousePosition;
 }
 
 void MainGLWidget::teardownGL() {
-    m_object->destroy();
-    m_vertex->destroy();
-    delete m_program;
+    arrayObject->destroy();
+    vertexBuffer->destroy();
+    delete program;
 }
 
 void MainGLWidget::loadObjHandler() {
@@ -91,6 +119,7 @@ void MainGLWidget::loadObjHandler() {
     if (fileName != "") {
         loadObj(fileName.toStdString().c_str());
         initializeObj();
+        initializeBrush();
     }
 }
 
@@ -99,17 +128,18 @@ void MainGLWidget::loadTextureHandler() {
                                                     tr("Textures (*.bmp *.png *.jpg)"));
     if (fileName != "") {
         loadTexture(fileName.toStdString().c_str());
+        initializeBrush();
     }
 }
 
 void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmentShaderName) {
-    m_program = new QOpenGLShaderProgram();
-    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
-    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);
-    m_program->bindAttributeLocation("vertex", 0);
-    m_program->bindAttributeLocation("texCoord", 1);
-    m_program->link();
-    m_program->bind();
+    program = new QOpenGLShaderProgram();
+    program->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
+    program->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);
+    program->bindAttributeLocation("vertex", 0);
+    program->bindAttributeLocation("texCoord", 1);
+    program->link();
+    program->bind();
 }
 
 void MainGLWidget::loadObj(const char *fileName) {
@@ -150,37 +180,44 @@ void MainGLWidget::loadObj(const char *fileName) {
 }
 
 void MainGLWidget::initializeObj() {
-    if (m_vertex != 0) {
-        m_vertex->destroy();
-        m_object->destroy();
+    if (vertexBuffer != 0) {
+        vertexBuffer->destroy();
+        arrayObject->destroy();
     }
 
-    m_vertex = new QOpenGLBuffer();
-    m_vertex->create();
-    m_vertex->bind();
-    m_vertex->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    m_vertex->allocate(&vertices[0], sizeof(Vertex) * vertices.size());
+    vertexBuffer = new QOpenGLBuffer();
+    vertexBuffer->create();
+    vertexBuffer->bind();
+    vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
+    vertexBuffer->allocate(&vertices[0], sizeof(Vertex) * vertices.size());
 
-    m_object = new QOpenGLVertexArrayObject();
-    m_object->create();
-    m_object->bind();
-    m_program->enableAttributeArray(0);
-    m_program->enableAttributeArray(1);
-    m_program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
-    m_program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
+    arrayObject = new QOpenGLVertexArrayObject();
+    arrayObject->create();
+    arrayObject->bind();
+    program->enableAttributeArray(0);
+    program->enableAttributeArray(1);
+    program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
+    program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
 
     setViewMatrixForObj();
     scaleCoefficient = 0;
 }
 
+void MainGLWidget::initializeBrush() {
+    brush = new Brush(vertices, textureImage);
+    brush->paintExample();
+    textureImage = brush->getTextureImage();
+    setTexture();
+}
+
 void MainGLWidget::setViewMatrixForObj() {
-    double maxZ = 0;
+    double maxZ = 1;
     for (auto v : vertices) {
         QVector3D position = v.position();
         maxZ = fmax(maxZ, position.z());
     }
-    m_viewMatrix.lookAt(
-                QVector3D(0, 0, 20 * maxZ),
+    viewMatrix.lookAt(
+                QVector3D(0, 0, 10 * maxZ),
                 QVector3D(0, 0, 0),
                 QVector3D(0, 1, 0)
     );
@@ -190,8 +227,13 @@ void MainGLWidget::loadTexture(const char *fileName) {
     if (texture != 0) {
         texture->destroy();
     }
-    QImage img(fileName);
-    texture = new QOpenGLTexture(img.mirrored());
+    QImage image(fileName);
+    textureImage = new QImage(image.mirrored());
+    setTexture();
+}
+
+void MainGLWidget::setTexture() {
+    texture = new QOpenGLTexture(*textureImage);
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
 }
