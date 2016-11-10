@@ -36,8 +36,8 @@ void MainGLWidget::resizeGL(int width, int height) {
 }
 
 void MainGLWidget::paintGL() {
-    glClear(GL_COLOR_BUFFER_BIT);
     if (arrayObject != 0) {
+        glClear(GL_COLOR_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
         if (mousePressed && !isBrashActive) {
@@ -47,8 +47,15 @@ void MainGLWidget::paintGL() {
         scaleMatrix.scale(exp(scaleCoefficient));
         program->setUniformValue(matrixID, projectionMatrix * viewMatrix * rotationMatrix * scaleMatrix);
         if (texture != 0) {
+            if (brushUpdated) {
+                textureImage = brush->getTextureImage();
+                setTexture();
+                brushUpdated = false;
+            }
             texture->bind();
         }
+
+
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         arrayObject->release();
         if (texture != 0) {
@@ -64,8 +71,7 @@ void MainGLWidget::mouseMoveEvent (QMouseEvent *event) {
         brush->paint(QVector2D(event->pos().x() * 2.0 / width() - 1,
                                (height() - event->pos().y()) * 2.0 / height() - 1),
                      viewMatrix * rotationMatrix * scaleMatrix, projectionMatrix);
-        textureImage = brush->getTextureImage();
-        setTexture();
+        brushUpdated = true;
     }
 }
 
@@ -205,9 +211,7 @@ void MainGLWidget::initializeObj() {
 
 void MainGLWidget::initializeBrush() {
     brush = new Brush(vertices, textureImage);
-    brush->paintExample();
-    textureImage = brush->getTextureImage();
-    setTexture();
+    brush->setRadius(10.0);
 }
 
 void MainGLWidget::setViewMatrixForObj() {

@@ -64,6 +64,7 @@ private:
     QPoint previousMousePosition;
     bool mousePressed = false;
     bool isBrashActive = false;
+    bool brushUpdated = false;
     double scaleCoefficient = 0;
 
     void loadShaders(const char *vertexShaderName, const char *fragmentShaderName);
