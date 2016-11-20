@@ -60,7 +60,7 @@ QVector2D Geometry::getPointInUVCoordinates(QVector3D p1, QVector3D p2, QVector3
     return uv1 + uv2 * c1 + uv3 * c2;
 }
 
-QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p) {
+QVector3D *Geometry::intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray) {
     QVector3D u, v, n;      // triangle vectors
     QVector3D w0, w;        // ray vectors
     float r, a, b;          // params to calc ray-plane intersect
@@ -68,25 +68,62 @@ QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector
     u = p2 - p1;
     v = p3 - p1;
     n = QVector3D::crossProduct(u, v);
-    if (n.lengthSquared() < 1e-5) {
+    if (n.lengthSquared() < 1e-3) {
         //std::cerr << "degenerate triangle\n";
         return nullptr;
     }
 
     w0 = -p1;
     a = -QVector3D::dotProduct(n, w0);
-    b = QVector3D::dotProduct(n, p);
+    b = QVector3D::dotProduct(n, ray);
     if (fabs(b) < 1e-5) {
         return nullptr;
     }
 
     r = a / b;
     if (r < 0.0) {
-        //std::cerr << "ray goes away from triangle\n";
+        //std::cerr << "ray goes away from plane\n";
         return nullptr;
     }
 
-    QVector3D intersectionPoint = r * p;
+    return new QVector3D(r * ray);
+}
+
+bool Geometry::isPointInTriangle(QVector2D p, QVector2D v1, QVector2D v2, QVector2D v3) {
+    bool b1 = QVector3D::crossProduct((p - v2), (v1 - v2)).z() < 0.0f;
+    bool b2 = QVector3D::crossProduct((p - v3), (v2 - v3)).z() < 0.0f;
+    bool b3 = QVector3D::crossProduct((p - v1), (v3 - v1)).z() < 0.0f;
+
+    return ((b1 == b2) && (b2 == b3));
+}
+
+QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray) {
+    QVector3D u, v, n;      // triangle vectors
+    QVector3D w0, w;        // ray vectors
+    float r, a, b;          // params to calc ray-plane intersect
+
+    u = p2 - p1;
+    v = p3 - p1;
+    n = QVector3D::crossProduct(u, v);
+    if (n.lengthSquared() < 1e-3) {
+        //std::cerr << "degenerate triangle\n";
+        return nullptr;
+    }
+
+    w0 = -p1;
+    a = -QVector3D::dotProduct(n, w0);
+    b = QVector3D::dotProduct(n, ray);
+    if (fabs(b) < 1e-5) {
+        return nullptr;
+    }
+
+    r = a / b;
+    if (r < 0.0) {
+        //std::cerr << "ray goes away from plane\n";
+        return nullptr;
+    }
+
+    QVector3D intersectionPoint = r * ray;
 
     float uu, uv, vv, wu, wv, d;
     uu = QVector3D::dotProduct(u, u);

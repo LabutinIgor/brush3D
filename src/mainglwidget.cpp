@@ -32,7 +32,6 @@ void MainGLWidget::initializeGL() {
 void MainGLWidget::resizeGL(int width, int height) {
     projectionMatrix.setToIdentity();
     projectionMatrix.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
-    //std::cerr << projectionMatrix.column(i << "\n";
 }
 
 void MainGLWidget::paintGL() {
@@ -54,7 +53,6 @@ void MainGLWidget::paintGL() {
             }
             texture->bind();
         }
-
 
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         arrayObject->release();
@@ -211,7 +209,7 @@ void MainGLWidget::initializeObj() {
 
 void MainGLWidget::initializeBrush() {
     brush = new Brush(vertices, textureImage);
-    brush->setRadius(10.0);
+    brush->setRadius(15.0);
 }
 
 void MainGLWidget::setViewMatrixForObj() {
