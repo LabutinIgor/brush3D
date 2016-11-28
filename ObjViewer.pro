@@ -11,18 +11,28 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ObjViewer
 TEMPLATE = app
 
+#LIBS += external/tinyobjloader/tiny_obj_loader.h
+
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/mainglwidget.cpp \
     src/brush.cpp \
-    src/geometry.cpp
+    src/geometry.cpp \
+    src/controller.cpp \
+    src/abstractbrush.cpp \
+    src/slowraysbrush.cpp \
+    src/pixelspaintingbrush.cpp
 
 HEADERS += src/mainwindow.h \
     src/mainglwidget.h \
     src/vertex.h \
     src/brush.h \
-    src/geometry.h
+    src/geometry.h \
+    src/controller.h \
+    src/abstractbrush.h \
+    src/slowraysbrush.h \
+    src/pixelspaintingbrush.h
 
 FORMS   += src/mainwindow.ui
 

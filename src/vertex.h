@@ -1,6 +1,8 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
+//#include "tiny_obj_loader.h"
+
 #include <QVector3D>
 #include <QVector2D>
 
@@ -9,6 +11,7 @@ public:
     Q_DECL_CONSTEXPR Vertex();
     Q_DECL_CONSTEXPR explicit Vertex(const QVector3D &position);
     Q_DECL_CONSTEXPR Vertex(const QVector3D &position, const QVector2D &uv);
+    //Vertex(const tinyobj::attrib_t &attrib, const tinyobj::index_t &idx);
 
     Q_DECL_CONSTEXPR const QVector3D& position() const;
 
@@ -46,6 +49,20 @@ m_position(position) {}
 Q_DECL_CONSTEXPR inline Vertex::Vertex(const QVector3D &position, const QVector2D &uv) :
 m_position (position), m_uv(uv) {}
 
+/*
+Vertex::Vertex(const tinyobj::attrib_t &attrib, const tinyobj::index_t &idx) {
+    float vx = attrib.vertices[3 * idx.vertex_index + 0];
+    float vy = attrib.vertices[3 * idx.vertex_index + 1];
+    float vz = attrib.vertices[3 * idx.vertex_index + 2];
+    //float nx = attrib.normals[3 * idx.normal_index + 0];
+    //float ny = attrib.normals[3 * idx.normal_index + 1];
+    //float nz = attrib.normals[3 * idx.normal_index + 2];
+    float tx = attrib.texcoords[2 * idx.texcoord_index + 0];
+    float ty = attrib.texcoords[2 * idx.texcoord_index + 1];
+    m_position = QVector3D(vx, vy, vz);
+    m_uv = QVector2D(tx, ty);
+}
+*/
 
 Q_DECL_CONSTEXPR inline const QVector3D& Vertex::position() const { return m_position; }
 

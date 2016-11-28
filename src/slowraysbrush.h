@@ -1,0 +1,22 @@
+#ifndef SLOWRAYSBRUSH_H
+#define SLOWRAYSBRUSH_H
+
+#include <QOpenGLTexture>
+#include <vector>
+
+#include "geometry.h"
+#include "vertex.h"
+#include "abstractbrush.h"
+
+
+class SlowRaysBrush : public AbstractBrush {
+public:
+    SlowRaysBrush(std::vector<Vertex> vertices, QImage* textureImage);
+    virtual void paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+
+private:
+    void paintRound(QVector2D centerOfRound, float radius);
+    void paintSmallRound(QVector2D point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection);
+};
+
+#endif // SLOWRAYSBRUSH_H

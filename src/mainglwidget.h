@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "vertex.h"
-#include "brush.h"
+#include "controller.h"
 
 class MainGLWidget : public QOpenGLWidget,
         protected QOpenGLFunctions
@@ -48,32 +48,19 @@ protected slots:
     void teardownGL();
 
 private:
+    Controller *controller;
     QOpenGLBuffer *vertexBuffer = 0;
     QOpenGLVertexArrayObject *arrayObject = 0;
     QOpenGLShaderProgram *program = 0;
     std::vector<Vertex> vertices;
     QOpenGLTexture *texture = 0;
-    QImage *textureImage;
-    Brush *brush;
+    QImage *textureImage = 0;
 
     int matrixID;
-    QMatrix4x4 rotationMatrix;
-    QMatrix4x4 scaleMatrix;
-    QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    QPoint previousMousePosition;
-    bool mousePressed = false;
-    bool isBrashActive = false;
-    bool brushUpdated = false;
-    double scaleCoefficient = 0;
 
     void loadShaders(const char *vertexShaderName, const char *fragmentShaderName);
-    void loadObj(const char *fileName);
-    void loadTexture(const char *fileName);
-    void updateTransformMatrix(QPoint mousePosition);
     void initializeObj();
-    void initializeBrush();
-    void setViewMatrixForObj();
     void setTexture();
 };
 

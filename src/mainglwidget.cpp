@@ -1,12 +1,7 @@
 #include "mainglwidget.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
-#include "tiny_obj_loader.h"
-
 MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
-    rotationMatrix.setToIdentity();
-    scaleMatrix.setToIdentity();
-    viewMatrix.setToIdentity();
+    controller = new Controller();
 }
 
 void MainGLWidget::initializeGL() {
@@ -20,18 +15,19 @@ void MainGLWidget::initializeGL() {
     loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
     matrixID = program->uniformLocation("matrix");
 
-    loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/cube.obj");
+    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/cube.obj");
+    vertices = controller->getVertices();
     initializeObj();
-    loadTexture("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/simple_texture.bmp");
-
-    initializeBrush();
+    controller->loadTextureImage("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/simple_texture.bmp");
+    controller->initializeBrush();
+    textureImage = controller->getTextureImageFromBrush();
+    setTexture();
 
     setFocusPolicy(Qt::StrongFocus);
 }
 
 void MainGLWidget::resizeGL(int width, int height) {
-    projectionMatrix.setToIdentity();
-    projectionMatrix.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+    controller->updateSize(width, height);
 }
 
 void MainGLWidget::paintGL() {
@@ -39,17 +35,11 @@ void MainGLWidget::paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
-        if (mousePressed && !isBrashActive) {
-            updateTransformMatrix(mapFromGlobal(QCursor::pos()));
-        }
-        scaleMatrix.setToIdentity();
-        scaleMatrix.scale(exp(scaleCoefficient));
-        program->setUniformValue(matrixID, projectionMatrix * viewMatrix * rotationMatrix * scaleMatrix);
+        program->setUniformValue(matrixID, controller->getProjectionMatrix() * controller->getModelViewMatrix());
         if (texture != 0) {
-            if (brushUpdated) {
-                textureImage = brush->getTextureImage();
+            if (controller->getIsBrushUpdated()) {
+                textureImage = controller->getTextureImageFromBrush();
                 setTexture();
-                brushUpdated = false;
             }
             texture->bind();
         }
@@ -64,51 +54,27 @@ void MainGLWidget::paintGL() {
 }
 
 void MainGLWidget::mouseMoveEvent (QMouseEvent *event) {
-    previousMousePosition = event->pos();
-    if (isBrashActive) {
-        brush->paint(QVector2D(event->pos().x() * 2.0 / width() - 1,
-                               (height() - event->pos().y()) * 2.0 / height() - 1),
-                     viewMatrix * rotationMatrix * scaleMatrix, projectionMatrix);
-        brushUpdated = true;
-    }
+    controller->mouseMoved(event->pos());
 }
 
 void MainGLWidget::mousePressEvent(QMouseEvent *event) {
-    previousMousePosition = event->pos();
-    mousePressed = true;
+    controller->mousePressed(event->pos());
 }
 
 void MainGLWidget::mouseReleaseEvent(QMouseEvent *event) {
-    previousMousePosition = event->pos();
-    mousePressed = false;
+    controller->mouseReleased(event->pos());
 }
 
 void MainGLWidget::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Control) {
-        isBrashActive = true;
-    }
+    controller->keyPressed(event->key());
 }
 
 void MainGLWidget::keyReleaseEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Control) {
-        isBrashActive = false;
-    }
+    controller->keyReleased(event->key());
 }
 
 void MainGLWidget::wheelEvent(QWheelEvent* event) {
-    scaleCoefficient += event->delta() * 0.001;
-}
-
-void MainGLWidget::updateTransformMatrix(QPoint mousePosition) {
-    double dx = previousMousePosition.x() - mousePosition.x();
-    double dy = previousMousePosition.y() - mousePosition.y();
-
-    QMatrix4x4 rot;
-    rot.setToIdentity();
-    rot.rotate(dx * 0.1f, 0, -1, 0);
-    rot.rotate(dy * 0.1f, -1, 0, 0);
-    rotationMatrix = rot * rotationMatrix;
-    previousMousePosition = mousePosition;
+    controller->wheelScrolled(event->delta());
 }
 
 void MainGLWidget::teardownGL() {
@@ -121,9 +87,10 @@ void MainGLWidget::loadObjHandler() {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                                                     tr("Obj Files (*.obj)"));
     if (fileName != "") {
-        loadObj(fileName.toStdString().c_str());
+        controller->loadObj(fileName.toStdString().c_str());
+        vertices = controller->getVertices();
         initializeObj();
-        initializeBrush();
+        controller->initializeBrush();
     }
 }
 
@@ -131,8 +98,10 @@ void MainGLWidget::loadTextureHandler() {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                                                     tr("Textures (*.bmp *.png *.jpg)"));
     if (fileName != "") {
-        loadTexture(fileName.toStdString().c_str());
-        initializeBrush();
+        controller->loadTextureImage(fileName.toStdString().c_str());
+        controller->initializeBrush();
+        textureImage = controller->getTextureImageFromBrush();
+        setTexture();
     }
 }
 
@@ -144,43 +113,6 @@ void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmen
     program->bindAttributeLocation("texCoord", 1);
     program->link();
     program->bind();
-}
-
-void MainGLWidget::loadObj(const char *fileName) {
-    vertices.clear();
-    tinyobj::attrib_t attrib;
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
-
-    std::string err;
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName);
-    if (!err.empty()) {
-        std::cerr << err << std::endl;
-    }
-    if (!ret) {
-        exit(1);
-    }
-
-    for (size_t s = 0; s < shapes.size(); s++) {
-        size_t index_offset = 0;
-        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-            int fv = shapes[s].mesh.num_face_vertices[f];
-            for (size_t v = 0; v < (size_t) fv; v++) {
-                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-                float vx = attrib.vertices[3 * idx.vertex_index + 0];
-                float vy = attrib.vertices[3 * idx.vertex_index + 1];
-                float vz = attrib.vertices[3 * idx.vertex_index + 2];
-                //float nx = attrib.normals[3 * idx.normal_index + 0];
-                //float ny = attrib.normals[3 * idx.normal_index + 1];
-                //float nz = attrib.normals[3 * idx.normal_index + 2];
-                float tx = attrib.texcoords[2 * idx.texcoord_index + 0];
-                float ty = attrib.texcoords[2 * idx.texcoord_index + 1];
-                vertices.push_back(Vertex(QVector3D(vx, vy, vz), QVector2D(tx, ty)));
-            }
-            index_offset += fv;
-            shapes[s].mesh.material_ids[f];
-        }
-    }
 }
 
 void MainGLWidget::initializeObj() {
@@ -202,39 +134,12 @@ void MainGLWidget::initializeObj() {
     program->enableAttributeArray(1);
     program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
     program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
-
-    setViewMatrixForObj();
-    scaleCoefficient = 0;
-}
-
-void MainGLWidget::initializeBrush() {
-    brush = new Brush(vertices, textureImage);
-    brush->setRadius(15.0);
-}
-
-void MainGLWidget::setViewMatrixForObj() {
-    double maxZ = 1;
-    for (auto v : vertices) {
-        QVector3D position = v.position();
-        maxZ = fmax(maxZ, position.z());
-    }
-    viewMatrix.lookAt(
-                QVector3D(0, 0, 10 * maxZ),
-                QVector3D(0, 0, 0),
-                QVector3D(0, 1, 0)
-    );
-}
-
-void MainGLWidget::loadTexture(const char *fileName) {
-    if (texture != 0) {
-        texture->destroy();
-    }
-    QImage image(fileName);
-    textureImage = new QImage(image.mirrored());
-    setTexture();
 }
 
 void MainGLWidget::setTexture() {
+    if (texture != 0) {
+        texture->destroy();
+    }
     texture = new QOpenGLTexture(*textureImage);
     texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);

@@ -1,46 +1,19 @@
-#include "brush.h"
+#include "pixelspaintingbrush.h"
 
-Brush::Brush(std::vector<Vertex> vertices, QImage* textureImage) : AbstractBrush(vertices, textureImage) {
+PixelsPaintingBrush::PixelsPaintingBrush(std::vector<Vertex> vertices, QImage* textureImage) : AbstractBrush(vertices, textureImage) {
 }
 
-void Brush::paintTriangle(QVector2D point1, QVector2D point2, QVector2D point3) {
-    int minX = round(fmin(point1.x(), fmin(point2.x(), point3.x())) * textureImage->width());
-    int maxX = round(fmax(point1.x(), fmax(point2.x(), point3.x())) * textureImage->width());
-
-    for (int x = minX; x <= maxX; x++) {
-        int minY = round(Geometry::getMinY(point1, point2, point3, x / (1.0 * textureImage->width()))
-                         * textureImage->height());
-        int maxY = round(Geometry::getMaxY(point1, point2, point3, x / (1.0 * textureImage->width()))
-                         * textureImage->height());
-
-        for (int y = minY; y <= maxY; y++) {
-            textureImage->setPixelColor(QPoint(x, y), QColor(255, 0, 0));
+void PixelsPaintingBrush::paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection, QPoint screenSize) {
+    for (int dx = -radius; dx <= radius; dx++) {
+        for (int dy = -radius; dy <= radius; dy++) {
+            if (dx * dx + dy * dy <= radius * radius) {
+                paintPixel(QPoint(point.x() + dx, point.y() + dy), matrixModelView, matrixProjection, screenSize);
+            }
         }
     }
 }
 
-void Brush::paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection, QPoint screenSize) {
-    QVector2D centerPoint(2.0 * point.x() / screenSize.x() - 1, 2.0 * (screenSize.y() - point.y()) / screenSize.y() - 1);
-    QVector3D centerRay = fromScreenCoordinates(centerPoint, matrixProjection);
-
-    const int POINTS_CNT = 6;
-    for (int i = 0; i < POINTS_CNT; i++) {
-        QVector3D ray1 = fromScreenCoordinates(QVector2D(centerPoint.x() + radius * cos(2 * M_PI * i / POINTS_CNT) / textureImage->width(),
-                                                         centerPoint.y() + radius * sin(2 * M_PI * i / POINTS_CNT) / textureImage->height()),
-                                                 matrixProjection);
-        QVector3D ray2 = fromScreenCoordinates(QVector2D(centerPoint.x() + radius * cos(2 * M_PI * (i + 1) / POINTS_CNT) / textureImage->width(),
-                                                         centerPoint.y() + radius * sin(2 * M_PI * (i + 1) / POINTS_CNT) / textureImage->height()),
-                                                 matrixProjection);
-
-        std::vector<size_t> ids;
-        for (size_t i = 0; i < vertices.size() / 3; i++) {
-            ids.push_back(i);
-        }
-        paintIntersectionWithPyramid(ids, centerRay, ray1, ray2, matrixModelView);
-    }
-}
-
-void Brush::paintIntersectionWithPyramid(std::vector<size_t> intersectedTrianglesIds,
+void PixelsPaintingBrush::paintIntersectionWithPyramid(std::vector<size_t> intersectedTrianglesIds,
                                          QVector3D ray1, QVector3D ray2, QVector3D ray3, QMatrix4x4 matrixModelView) {
     for (int i : intersectedTrianglesIds) {
         QVector3D vector1 = QVector3D(matrixModelView * QVector4D(vertices[3 * i].position(), 1.0));
@@ -77,7 +50,7 @@ void Brush::paintIntersectionWithPyramid(std::vector<size_t> intersectedTriangle
     }
 }
 
-void Brush::paintTrianglesIntersection(QVector2D point1, QVector2D point2, QVector2D point3,
+void PixelsPaintingBrush::paintTrianglesIntersection(QVector2D point1, QVector2D point2, QVector2D point3,
                                        QVector2D point4, QVector2D point5, QVector2D point6) {
     int minX = round(fmin(point1.x(), fmin(point2.x(), point3.x())) * textureImage->width());
     int maxX = round(fmax(point1.x(), fmax(point2.x(), point3.x())) * textureImage->width());
@@ -96,4 +69,35 @@ void Brush::paintTrianglesIntersection(QVector2D point1, QVector2D point2, QVect
             }
         }
     }
+}
+
+void PixelsPaintingBrush::paintPixel(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
+    std::vector<size_t> intersectedTrianglesIds = getIntersectedTrianglesIds(point, matrixModelView, projection, screenSize);
+    if (intersectedTrianglesIds.empty()) {
+        return;
+    }
+    QVector2D centerPoint(2.0 * point.x() / screenSize.x() - 1, 2.0 * (screenSize.y() - point.y()) / screenSize.y() - 1);
+    QVector2D pixelSize(1.5 / screenSize.x(), 1.5 / screenSize.y());
+
+    QVector3D ray1 = fromScreenCoordinates(centerPoint - pixelSize,
+                                           projection);
+    QVector3D ray2 = fromScreenCoordinates(QVector2D(centerPoint.x() + pixelSize.x(),
+                                                     centerPoint.y() - pixelSize.x()),
+                                           projection);
+    QVector3D ray3 = fromScreenCoordinates(QVector2D(centerPoint.x() - pixelSize.x(),
+                                                     centerPoint.y() + pixelSize.y()),
+                                           projection);
+    QVector3D ray4 = fromScreenCoordinates(centerPoint + pixelSize,
+                                           projection);
+
+    paintIntersectionWithPyramid(intersectedTrianglesIds, ray1, ray2, ray3, matrixModelView);
+    paintIntersectionWithPyramid(intersectedTrianglesIds, ray2, ray3, ray4, matrixModelView);
+}
+
+std::vector<size_t> PixelsPaintingBrush::getIntersectedTrianglesIds(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
+    std::vector<size_t> ids;
+    for (size_t i = 0; i < vertices.size() / 3; i++) {
+        ids.push_back(i);
+    }
+    return ids;
 }
