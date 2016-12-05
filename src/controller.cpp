@@ -20,6 +20,7 @@ void Controller::loadObj(const char *fileName) {
     if (!err.empty()) {
         std::cerr << err << std::endl;
     }
+
     if (!ret) {
         exit(1);
     }
@@ -127,6 +128,9 @@ void Controller::mouseReleased(QPoint position) {
 void Controller::keyPressed(int key) {
     if (key == Qt::Key_Control) {
         isBrashActive = true;
+        if (isMousePressed) {
+            beginBrushStroke(mousePosition);
+        }
     } else {
         if (key == Qt::Key_Z) {
             brushHistory.undo(brush->getTextureImage());
@@ -142,6 +146,11 @@ void Controller::keyPressed(int key) {
 
 void Controller::keyReleased(int key) {
     if (key == Qt::Key_Control) {
+        if (isMousePressed) {
+            previousMousePosition = mousePosition;
+            endBrushStroke(mousePosition);
+            isBrushUpdated = true;
+        }
         isBrashActive = false;
     }
 }
