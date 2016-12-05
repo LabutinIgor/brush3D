@@ -19,6 +19,8 @@ public:
                                              QVector2D uv1, QVector2D uv2, QVector2D uv3);
     static QVector3D *intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray);
     static bool isPointInTriangle(QVector2D point, QVector2D v1, QVector2D v2, QVector2D v3);
+    static std::vector<QVector2D> getSegmentsIntersectionPoints(QVector2D *segment1, QVector2D *segment2);
+    static std::vector<QVector2D*> intersectTriangles(QVector2D *triangle1, QVector2D *triangle2);
 };
 
 #endif // GEOMETRY_H

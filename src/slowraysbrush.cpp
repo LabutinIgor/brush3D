@@ -3,7 +3,8 @@
 SlowRaysBrush::SlowRaysBrush(std::vector<Vertex> vertices, QImage* textureImage) : AbstractBrush(vertices, textureImage) {
 }
 
-void SlowRaysBrush::paintRound(QVector2D centerOfRound, float radius) {
+void SlowRaysBrush::paintRound(QVector2D centerOfRound, float radius,
+                               std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff) {
     float radiusSquare = radius * radius;
     centerOfRound.setX(centerOfRound.x() * textureImage->width());
     centerOfRound.setY(centerOfRound.y() * textureImage->height());
@@ -18,23 +19,43 @@ void SlowRaysBrush::paintRound(QVector2D centerOfRound, float radius) {
         int maxY = fmin(textureImage->height() - 1, round(centerOfRound.y() + dy));
 
         for (int y = minY; y <= maxY; y++) {
+            diff.push_back({QPoint(x, y), {textureImage->pixelColor(x, y), QColor(255, 0, 0)}});
             textureImage->setPixelColor(QPoint(x, y), QColor(255, 0, 0));
         }
     }
 }
 
-void SlowRaysBrush::paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection, QPoint screenSize) {
+std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
+        SlowRaysBrush::paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection, QPoint screenSize) {
+    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> diff;
     QVector2D centerPoint(2.0 * point.x() / screenSize.x() - 1, 2.0 * (screenSize.y() - point.y()) / screenSize.y() - 1);
     for (int dx = -30; dx <= 30; dx++) {
         for (int dy = -30; dy <= 30; dy++) {
             if (dx * dx + dy * dy <= 30) {
-                paintSmallRound(QVector2D(centerPoint.x() + dx / 300.0, centerPoint.y() + dy / 300.0), matrixModelView, matrixProjection);
+                paintSmallRound(QVector2D(centerPoint.x() + dx / 300.0, centerPoint.y() + dy / 300.0), matrixModelView, matrixProjection, diff);
             }
         }
     }
+    return diff;
 }
 
-void SlowRaysBrush::paintSmallRound(QVector2D point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection) {
+std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
+        SlowRaysBrush::paint(QPoint previousPoint, QPoint lastPoint,
+              QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
+    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> diff;
+
+    int cntRounds = sqrt(QPoint::dotProduct(previousPoint - lastPoint, previousPoint - lastPoint));
+    for (int i = 0; i < cntRounds; i++) {
+        QPoint currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
+        auto currentPointDiff = paint(currentPoint, matrixModelView, projection, screenSize);
+        diff.insert(std::end(diff), std::begin(currentPointDiff), std::end(currentPointDiff));
+    }
+
+    return diff;
+}
+
+void SlowRaysBrush::paintSmallRound(QVector2D point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection,
+                                    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff) {
     int intersectedTriangleId = -1;
     float minDistanceToIntersection = 0;
     QVector2D intersectionPoint;
@@ -62,6 +83,6 @@ void SlowRaysBrush::paintSmallRound(QVector2D point, QMatrix4x4 matrixModelView,
     }
 
     if (intersectedTriangleId != -1) {
-        paintRound(intersectionPoint, radius / 5);
+        paintRound(intersectionPoint, radius / 5, diff);
     }
 }

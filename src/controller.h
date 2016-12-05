@@ -6,6 +6,8 @@
 #include "abstractbrush.h"
 #include "pixelspaintingbrush.h"
 #include "vertex.h"
+#include "brushstroke.h"
+#include "brushhistory.h"
 
 class Controller {
 public:
@@ -14,7 +16,9 @@ public:
     void setViewMatrixForObj();
     void loadTextureImage(const char *fileName);
     void initializeBrush();
-    void brushClicked(QPoint point);
+    void beginBrushStroke(QPoint point);
+    void continueBrushStroke(QPoint point);
+    void endBrushStroke(QPoint point);
     void updateSize(int width, int height);
     void updateRotationMatrix();
     void updateTransformMatrix(QPoint mousePosition);
@@ -46,6 +50,9 @@ private:
     bool isBrushUpdated = false;
     double scaleCoefficient = 0;
     QPoint screenSize;
+    BrushStroke currentStroke;
+    QPoint lastPointOfStroke;
+    BrushHistory brushHistory;
 };
 
 #endif // CONTROLLER_H

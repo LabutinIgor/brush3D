@@ -22,7 +22,9 @@ SOURCES += src/main.cpp \
     src/controller.cpp \
     src/abstractbrush.cpp \
     src/slowraysbrush.cpp \
-    src/pixelspaintingbrush.cpp
+    src/pixelspaintingbrush.cpp \
+    src/brushstroke.cpp \
+    src/brushhistory.cpp
 
 HEADERS += src/mainwindow.h \
     src/mainglwidget.h \
@@ -32,7 +34,9 @@ HEADERS += src/mainwindow.h \
     src/controller.h \
     src/abstractbrush.h \
     src/slowraysbrush.h \
-    src/pixelspaintingbrush.h
+    src/pixelspaintingbrush.h \
+    src/brushstroke.h \
+    src/brushhistory.h
 
 FORMS   += src/mainwindow.ui
 

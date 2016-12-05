@@ -146,3 +146,93 @@ QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector
 
     return new QVector3D(intersectionPoint);
 }
+
+std::vector<QVector2D> Geometry::getSegmentsIntersectionPoints(QVector2D *segment1, QVector2D *segment2) {
+    std::vector<QVector2D> points;
+    float a1 = segment1[1].y() - segment1[0].y();
+    float b1 = segment1[0].x() - segment1[1].x();
+    float c1 = - a1 * segment1[0].x() - b1 * segment1[0].y();
+
+    float a2 = segment2[1].y() - segment2[0].y();
+    float b2 = segment2[0].x() - segment2[1].x();
+    float c2 = - a2 * segment2[0].x() - b2 * segment2[0].y();
+
+    float d = a1 * b2 - a2 * b1;
+    if (fabs(d) < 1e-4) {
+        if (fabs(a2 * segment1[0].x() + b2 * segment1[0].y() - c2) < 1e-4) {
+            float x_min = fmax(fmin(segment1[0].x(), segment1[1].x()), fmin(segment2[0].x(), segment2[1].x()));
+            float y_min = fmax(fmin(segment1[0].y(), segment1[1].y()), fmin(segment2[0].y(), segment2[1].y()));
+            float x_max = fmin(fmax(segment1[0].x(), segment1[1].x()), fmax(segment2[0].x(), segment2[1].x()));
+            float y_max = fmin(fmax(segment1[0].y(), segment1[1].y()), fmax(segment2[0].y(), segment2[1].y()));
+
+            if (x_min < x_max && y_min < y_max) {
+                points.push_back(QVector2D(x_min, y_min));
+                points.push_back(QVector2D(x_max, y_max));
+            }
+        }
+        return points;
+    }
+
+    float x = (-c1 * b2 + b1 * c2) / d;
+    float y = (- a1 * c2 + c1 * a2) / d;
+
+    if (x < fmin(segment1[0].x(), segment1[1].x()) || x < fmin(segment2[0].x(), segment2[1].x()) ||
+        x > fmax(segment1[0].x(), segment1[1].x()) || x > fmax(segment2[0].x(), segment2[1].x()) ||
+        y < fmin(segment1[0].y(), segment1[1].y()) || y < fmin(segment2[0].y(), segment2[1].y()) ||
+        y > fmax(segment1[0].y(), segment1[1].y()) || y > fmax(segment2[0].y(), segment2[1].y())) {
+        return points;
+    }
+
+    points.push_back(QVector2D(x, y));
+    return points;
+}
+
+std::vector<QVector2D*> Geometry::intersectTriangles(QVector2D *triangle1, QVector2D *triangle2) {
+    std::vector<QVector2D> intersectionPoints;
+    for (int i = 0; i < 3; i++) {
+        if (isPointInTriangle(triangle1[i], triangle2[0], triangle2[1], triangle2[2])) {
+            intersectionPoints.push_back(triangle1[i]);
+        }
+        if (isPointInTriangle(triangle2[i], triangle1[0], triangle1[1], triangle1[2])) {
+            intersectionPoints.push_back(triangle2[i]);
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            QVector2D segment1[2] = {triangle1[i], triangle1[(i + 1) % 3]};
+            QVector2D segment2[2] = {triangle2[j], triangle2[(j + 1) % 3]};
+            std::vector<QVector2D> segmentsIntersectionPoints = Geometry::getSegmentsIntersectionPoints(segment1, segment2);
+            intersectionPoints.insert(std::end(intersectionPoints),
+                                      std::begin(segmentsIntersectionPoints), std::end(segmentsIntersectionPoints));
+        }
+    }
+
+    std::vector<QVector2D*> trianglesInIntersection;
+
+    if (intersectionPoints.size() < 3) {
+        return trianglesInIntersection;
+    }
+
+    QVector2D leftPoint = intersectionPoints[0];
+    for (QVector2D point : intersectionPoints) {
+        if (point.x() < leftPoint.x() || (fabs(point.x() - leftPoint.x()) < 1e-4 && point.y() < leftPoint.y())) {
+            leftPoint = point;
+        }
+    }
+
+    std::sort(intersectionPoints.begin(), intersectionPoints.end(), [leftPoint](QVector2D a, QVector2D b) {
+        QVector2D v1 = a - leftPoint;
+        QVector2D v2 = b - leftPoint;
+        float cp = QVector3D::crossProduct(v1, v2).z();
+        if (fabs(cp) < 1e-5) {
+            return QVector2D::dotProduct(v1, v1) < QVector2D::dotProduct(v2, v2);
+        }
+        return cp > 0;
+    });
+
+    for (int i = 1; i < intersectionPoints.size() - 1; i++) {
+        QVector2D *points = new QVector2D[3] {leftPoint, intersectionPoints[i], intersectionPoints[i + 1]};
+        trianglesInIntersection.push_back(points);
+    }
+    return trianglesInIntersection;
+}

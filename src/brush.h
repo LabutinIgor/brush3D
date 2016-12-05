@@ -12,14 +12,17 @@
 class Brush : public AbstractBrush {
 public:
     Brush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual void paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
+        paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
+            paint(QPoint previousPoint, QPoint currentPoint,
+                  QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
 
 private:
-    void paintTriangle(QVector2D point1, QVector2D point2, QVector2D point3);
+    void paintTriangle(QVector2D *points, std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
     void paintIntersectionWithPyramid(std::vector<size_t> intersectedTrianglesIds,
-                                      QVector3D ray1, QVector3D ray2, QVector3D ray3, QMatrix4x4 matrixModelView);
-    void paintTrianglesIntersection(QVector2D point1, QVector2D point2, QVector2D point3,
-                                           QVector2D point4, QVector2D point5, QVector2D point6);
+                                      QVector3D ray1, QVector3D ray2, QVector3D ray3, QMatrix4x4 matrixModelView,
+                                      std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
 };
 
 #endif // BRUSH_H

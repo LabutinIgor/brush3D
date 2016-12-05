@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QString>
 #include <QFileDialog>
+#include <QOpenGLFramebufferObject>
 
 #include <iostream>
 #include <math.h>

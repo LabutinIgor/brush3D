@@ -97,28 +97,46 @@ void Controller::initializeBrush() {
     brush->setRadius(10.0);
 }
 
-void Controller::mouseMoved(QPoint position) {
-    mousePosition = position;
-    if (isBrashActive) {
-        brushClicked(position);
-        isBrushUpdated = true;
-    }
-}
-
 void Controller::mousePressed(QPoint position) {
     previousMousePosition = position;
     mousePosition = position;
     isMousePressed = true;
+    if (isBrashActive) {
+        beginBrushStroke(position);
+        isBrushUpdated = true;
+    }
+}
+
+void Controller::mouseMoved(QPoint position) {
+    mousePosition = position;
+    if (isBrashActive) {
+        continueBrushStroke(position);
+        isBrushUpdated = true;
+    }
 }
 
 void Controller::mouseReleased(QPoint position) {
     mousePosition = position;
+    if (isBrashActive) {
+        endBrushStroke(position);
+        isBrushUpdated = true;
+    }
     isMousePressed = false;
 }
 
 void Controller::keyPressed(int key) {
     if (key == Qt::Key_Control) {
         isBrashActive = true;
+    } else {
+        if (key == Qt::Key_Z) {
+            brushHistory.undo(brush->getTextureImage());
+            isBrushUpdated = true;
+        } else {
+            if (key == Qt::Key_Y) {
+                brushHistory.redo(brush->getTextureImage());
+                isBrushUpdated = true;
+            }
+        }
     }
 }
 
@@ -136,9 +154,22 @@ bool Controller::getIsBrushUpdated() {
     return isBrushUpdated;
 }
 
-void Controller::brushClicked(QPoint point) {
-    brush->paint(point, getModelViewMatrix(), projectionMatrix, screenSize);
-    //brush->paintByPixels(point, getModelViewMatrix(), projectionMatrix, screenSize);
+void Controller::beginBrushStroke(QPoint point) {
+    auto firstStrokePart = brush->paint(point, getModelViewMatrix(), projectionMatrix, screenSize);
+    currentStroke = BrushStroke(firstStrokePart);
+    lastPointOfStroke = point;
+}
+
+void Controller::continueBrushStroke(QPoint point) {
+    auto strokePart = brush->paint(lastPointOfStroke, point, getModelViewMatrix(), projectionMatrix, screenSize);
+    currentStroke.add(strokePart);
+    lastPointOfStroke = point;
+}
+
+void Controller::endBrushStroke(QPoint point) {
+    auto strokePart = brush->paint(lastPointOfStroke, point, getModelViewMatrix(), projectionMatrix, screenSize);
+    currentStroke.add(strokePart);
+    brushHistory.addStroke(currentStroke);
 }
 
 void Controller::updateSize(int width, int height) {
