@@ -24,6 +24,7 @@ void Controller::loadObj(const char *fileName) {
     if (!ret) {
         exit(1);
     }
+    int triangleId = 0;
 
     for (size_t s = 0; s < shapes.size(); s++) {
         size_t index_offset = 0;
@@ -34,22 +35,27 @@ void Controller::loadObj(const char *fileName) {
                                                   attrib.vertices[3 * idx.vertex_index + 1],
                                                   attrib.vertices[3 * idx.vertex_index + 2]),
                                         QVector2D(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                  attrib.texcoords[2 * idx.texcoord_index + 1]));
+                                                  attrib.texcoords[2 * idx.texcoord_index + 1]),
+                                        QVector3D(0, 0, 0));
             for (size_t v = 1; v < (size_t) fv - 1; v++) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
+                firstVertex.setId(QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
                 vertices.push_back(firstVertex);
                 vertices.push_back(Vertex(QVector3D(attrib.vertices[3 * idxCurrent.vertex_index + 0],
-                                          attrib.vertices[3 * idxCurrent.vertex_index + 1],
-                                          attrib.vertices[3 * idxCurrent.vertex_index + 2]),
-                                QVector2D(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
-                                          attrib.texcoords[2 * idxCurrent.texcoord_index + 1])));
+                                                    attrib.vertices[3 * idxCurrent.vertex_index + 1],
+                                                    attrib.vertices[3 * idxCurrent.vertex_index + 2]),
+                                          QVector2D(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
+                                                    attrib.texcoords[2 * idxCurrent.texcoord_index + 1]),
+                                          QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
 
                 vertices.push_back(Vertex(QVector3D(attrib.vertices[3 * idxNext.vertex_index + 0],
-                                          attrib.vertices[3 * idxNext.vertex_index + 1],
-                                          attrib.vertices[3 * idxNext.vertex_index + 2]),
-                                QVector2D(attrib.texcoords[2 * idxNext.texcoord_index + 0],
-                                          attrib.texcoords[2 * idxNext.texcoord_index + 1])));
+                                                    attrib.vertices[3 * idxNext.vertex_index + 1],
+                                                    attrib.vertices[3 * idxNext.vertex_index + 2]),
+                                          QVector2D(attrib.texcoords[2 * idxNext.texcoord_index + 0],
+                                                    attrib.texcoords[2 * idxNext.texcoord_index + 1]),
+                                          QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
+                triangleId++;
             }
             index_offset += fv;
             shapes[s].mesh.material_ids[f];
@@ -94,7 +100,7 @@ void Controller::loadTextureImage(const char *fileName) {
 }
 
 void Controller::initializeBrush() {
-    brush = new Brush(vertices, textureImage);
+    brush = new PixelsPaintingBrush(vertices, textureImage);
     brush->setRadius(10.0);
 }
 
@@ -161,6 +167,13 @@ void Controller::wheelScrolled(int delta) {
 
 bool Controller::getIsBrushUpdated() {
     return isBrushUpdated;
+}
+
+void Controller::setIdsBuffer(QImage *idsBuffer) {
+    if (this->idsBuffer != 0) {
+        delete this->idsBuffer;
+    }
+    brush->setIdsBuffer(idsBuffer);
 }
 
 void Controller::beginBrushStroke(QPoint point) {

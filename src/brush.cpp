@@ -36,6 +36,11 @@ std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
                                                  matrixProjection);
 
         std::vector<size_t> ids;
+        /*
+        if (QColor(idsBuffer->pixel(point)).blue() < vertices.size() / 3) {
+            ids.push_back(QColor(idsBuffer->pixel(point)).red());
+        }
+        */
         for (size_t i = 0; i < vertices.size() / 3; i++) {
             QVector3D vector1 = QVector3D(matrixModelView * QVector4D(vertices[3 * i].position(), 1.0));
             QVector3D vector2 = QVector3D(matrixModelView * QVector4D(vertices[3 * i + 1].position(), 1.0));
@@ -44,6 +49,7 @@ std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
                 ids.push_back(i);
             }
         }
+
         paintIntersectionWithPyramid(ids, centerRay, ray1, ray2, matrixModelView, diff);
     }
     return diff;

@@ -50,10 +50,13 @@ OTHER_FILES += \
     resources/simple_texture.bmp \
     resources/shaders/vshader.glsl \
     resources/shaders/fshader.glsl \
+    resources/shaders/vshaderForIds.glsl \
+    resources/shaders/fshaderForIds.glsl \
 
 RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    .gitignore
+    .gitignore \
+    fshaderForIds.glsl
 

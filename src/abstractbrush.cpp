@@ -19,3 +19,7 @@ QVector3D AbstractBrush::fromScreenCoordinates(QVector2D point, QMatrix4x4 matri
                      point.y() / matrixProjection.column(1).y(),
                      -1.0);
 }
+
+void AbstractBrush::setIdsBuffer(QImage *idsBuffer) {
+    this->idsBuffer = idsBuffer;
+}

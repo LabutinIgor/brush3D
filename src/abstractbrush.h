@@ -17,12 +17,14 @@ public:
             paint(QPoint previousPoint, QPoint currentPoint,
                   QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) = 0;
     void setRadius(double radius);
+    void setIdsBuffer(QImage *idsBuffer);
     QImage *getTextureImage();
 
 protected:
     double radius = 10;
     std::vector<Vertex> vertices;
     QImage *textureImage;
+    QImage *idsBuffer = 0;
 
     QVector3D fromScreenCoordinates(QVector2D point, QMatrix4x4 matrixProjection);
 };

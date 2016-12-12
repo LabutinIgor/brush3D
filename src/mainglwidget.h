@@ -53,14 +53,18 @@ private:
     QOpenGLBuffer *vertexBuffer = 0;
     QOpenGLVertexArrayObject *arrayObject = 0;
     QOpenGLShaderProgram *program = 0;
+    QOpenGLFramebufferObject *frameBuffer = 0;
+    QOpenGLShaderProgram *programForIds = 0;
     std::vector<Vertex> vertices;
     QOpenGLTexture *texture = 0;
     QImage *textureImage = 0;
 
     int matrixID;
+    int programForIdsMatrixID;
     QMatrix4x4 projectionMatrix;
 
     void loadShaders(const char *vertexShaderName, const char *fragmentShaderName);
+    void loadShadersForIds(const char *vertexShaderName, const char *fragmentShaderName);
     void initializeObj();
     void setTexture();
 };

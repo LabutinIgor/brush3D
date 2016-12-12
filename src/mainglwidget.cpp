@@ -1,4 +1,5 @@
 #include "mainglwidget.h"
+#include <iomanip>
 
 MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
     controller = new Controller();
@@ -13,7 +14,9 @@ void MainGLWidget::initializeGL() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
+    loadShadersForIds(":/resources/shaders/vshaderForIds.glsl", ":/resources/shaders/fshaderForIds.glsl");
     matrixID = program->uniformLocation("matrix");
+    programForIdsMatrixID = programForIds->uniformLocation("matrix");
 
     controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/cube.obj");
     vertices = controller->getVertices();
@@ -27,11 +30,26 @@ void MainGLWidget::initializeGL() {
 }
 
 void MainGLWidget::resizeGL(int width, int height) {
+    frameBuffer = new QOpenGLFramebufferObject(width, height);
     controller->updateSize(width, height);
 }
 
 void MainGLWidget::paintGL() {
     if (arrayObject != 0) {
+        frameBuffer->bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        programForIds->bind();
+        arrayObject->bind();
+        programForIds->setUniformValue(programForIdsMatrixID, controller->getProjectionMatrix() * controller->getModelViewMatrix());
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        arrayObject->release();
+        programForIds->release();
+
+        QImage *idsBuffer = new QImage(frameBuffer->toImage());
+        controller->setIdsBuffer(idsBuffer);
+
+        frameBuffer->release();
+
         glClear(GL_COLOR_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
@@ -112,7 +130,15 @@ void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmen
     program->bindAttributeLocation("vertex", 0);
     program->bindAttributeLocation("texCoord", 1);
     program->link();
-    program->bind();
+}
+
+void MainGLWidget::loadShadersForIds(const char *vertexShaderName, const char *fragmentShaderName) {
+    programForIds = new QOpenGLShaderProgram();
+    programForIds->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
+    programForIds->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);
+    programForIds->bindAttributeLocation("vertex", 0);
+    programForIds->bindAttributeLocation("id", 2);
+    programForIds->link();
 }
 
 void MainGLWidget::initializeObj() {
@@ -134,6 +160,11 @@ void MainGLWidget::initializeObj() {
     program->enableAttributeArray(1);
     program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
     program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
+
+    programForIds->enableAttributeArray(0);
+    programForIds->enableAttributeArray(2);
+    programForIds->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
+    programForIds->setAttributeBuffer(2, GL_FLOAT, Vertex::idOffset(), Vertex::idTupleSize, Vertex::stride());
 }
 
 void MainGLWidget::setTexture() {

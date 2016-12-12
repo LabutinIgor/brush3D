@@ -136,6 +136,14 @@ void PixelsPaintingBrush::paintPixel(QPoint point, QMatrix4x4 matrixModelView, Q
 
 std::vector<size_t> PixelsPaintingBrush::getIntersectedTrianglesIds(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
     std::vector<size_t> ids;
+
+    if (point.x() >= 0 && point.y() >= 0 && point.x() < screenSize.x() && point.y() < screenSize.y()
+            && QColor(idsBuffer->pixel(point)).blue() < vertices.size() / 3) {
+        QColor color = QColor(idsBuffer->pixel(point));
+        ids.push_back(color.red() + 256 * color.green() + 256 * 256 * color.blue());
+    }
+
+/*
     for (size_t i = 0; i < vertices.size() / 3; i++) {
         QVector3D vector1 = QVector3D(matrixModelView * QVector4D(vertices[3 * i].position(), 1.0));
         QVector3D vector2 = QVector3D(matrixModelView * QVector4D(vertices[3 * i + 1].position(), 1.0));
@@ -144,5 +152,6 @@ std::vector<size_t> PixelsPaintingBrush::getIntersectedTrianglesIds(QPoint point
             ids.push_back(i);
         }
     }
+*/
     return ids;
 }
