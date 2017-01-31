@@ -12,13 +12,13 @@
 class SlowRaysBrush : public AbstractBrush {
 public:
     SlowRaysBrush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-        paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+        paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
 
 private:
-    void paintRound(QVector2D centerOfRound, float radius, std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
-    void paintSmallRound(QVector2D point, QMatrix4x4 matrixModelView, QMatrix4x4 matrixProjection,
-                         std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
+    void paintRound(glm::vec2 centerOfRound, float radius, std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
+    void paintSmallRound(glm::vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 matrixProjection,
+                         std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
 };
 
 #endif // SLOWRAYSBRUSH_H

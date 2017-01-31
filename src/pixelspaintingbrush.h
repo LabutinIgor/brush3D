@@ -11,19 +11,19 @@
 class PixelsPaintingBrush : public AbstractBrush {
 public:
     PixelsPaintingBrush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-        paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+        paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
 
 private:
-    void paintPixel(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize,
-                    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
-    std::vector<size_t> getIntersectedTrianglesIds(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
-    void paintTriangle(QVector2D point1, QVector2D point2, QVector2D point3,
-                       std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
+    void paintPixel(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize,
+                    std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
+    std::vector<size_t> getIntersectedTrianglesIds(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
+    void paintTriangle(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3,
+                       std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
     void paintIntersectionWithPyramid(std::vector<size_t> intersectedTrianglesIds,
-                                      QVector3D ray1, QVector3D ray2, QVector3D ray3, QMatrix4x4 matrixModelView,
-                                      std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
-    void paintTriangle(QVector2D *points, std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);
+                                      glm::vec3 ray1, glm::vec3 ray2, glm::vec3 ray3, glm::mat4x4 matrixModelView,
+                                      std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
+    void paintTriangle(glm::vec2 *points, std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
 };
 
 #endif // PIXELSPAINTINGBRUSH_H

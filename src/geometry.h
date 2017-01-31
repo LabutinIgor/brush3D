@@ -1,28 +1,28 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <QVector2D>
 #include <QMatrix4x4>
 #include <iostream>
 #include <math.h>
+#include <glm.hpp>
 
 class Geometry
 {
 public:
-    static double getMinY(QVector2D point1, QVector2D point2, QVector2D point3, double x);
-    static double getMaxY(QVector2D point1, QVector2D point2, QVector2D point3, double x);
-    static double getMinIntersectionPoint(QVector2D point1, QVector2D point2, double x);
-    static double getMaxIntersectionPoint(QVector2D point1, QVector2D point2, double x);
-    static double getIntersectionPoint(QVector2D point1, QVector2D point2, double x);
-    static QVector3D *intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray);
-    static QVector2D getPointInUVCoordinates(QVector3D p1, QVector3D p2, QVector3D p,
-                                             QVector2D uv1, QVector2D uv2, QVector2D uv3);
-    static QVector3D getPointFromUVCoordinates(QVector2D* pointsUV, QVector3D* points, QVector2D pointUV);
-    static QPoint toScreenCoordinates(QVector3D point, QMatrix4x4 projection, QPoint screenSize);
-    static QVector3D *intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray);
-    static bool isPointInTriangle(QVector2D point, QVector2D v1, QVector2D v2, QVector2D v3);
-    static std::vector<QVector2D> getSegmentsIntersectionPoints(QVector2D *segment1, QVector2D *segment2);
-    static std::vector<QVector2D*> intersectTriangles(QVector2D *triangle1, QVector2D *triangle2);
+    static double getMinY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x);
+    static double getMaxY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x);
+    static double getMinIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x);
+    static double getMaxIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x);
+    static double getIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x);
+    static glm::vec3 *intersectRayAndTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 ray);
+    static glm::vec2 getPointInUVCoordinates(glm::vec3 p1, glm::vec3 p2, glm::vec3 p,
+                                             glm::vec2 uv1, glm::vec2 uv2, glm::vec2 uv3);
+    static glm::vec3 getPointFromUVCoordinates(glm::vec2* pointsUV, glm::vec3* points, glm::vec2 pointUV);
+    static glm::i32vec2 toScreenCoordinates(glm::vec3 point, glm::mat4x4 projection, glm::i32vec2 screenSize);
+    static glm::vec3 *intersectRayAndPlane(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 ray);
+    static bool isPointInTriangle(glm::vec2 point, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3);
+    static std::vector<glm::vec2> getSegmentsIntersectionPoints(glm::vec2 *segment1, glm::vec2 *segment2);
+    static std::vector<glm::vec2*> intersectTriangles(glm::vec2 *triangle1, glm::vec2 *triangle2);
 };
 
 #endif // GEOMETRY_H

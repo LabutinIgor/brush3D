@@ -12,6 +12,7 @@ TARGET = ObjViewer
 TEMPLATE = app
 
 #LIBS += external/tinyobjloader/tiny_obj_loader.h
+#LIBS += external/glm/glm.hpp
 
 
 SOURCES += src/main.cpp \
@@ -44,7 +45,8 @@ FORMS   += src/mainwindow.ui
 
 INCLUDEPATH += \
     src/ \
-    external/tinyobjloader/
+    external/tinyobjloader/ \
+    external/glm/
 
 OTHER_FILES += \
     external/tinyobjloader/tiny_obj_loader.h \

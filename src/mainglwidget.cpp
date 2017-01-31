@@ -40,7 +40,9 @@ void MainGLWidget::paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
         programForIds->bind();
         arrayObject->bind();
-        programForIds->setUniformValue(programForIdsMatrixID, controller->getProjectionMatrix() * controller->getModelViewMatrix());
+        QMatrix4x4 transformMatrix = controller->getProjectionMatrix() * controller->getModelViewMatrix();
+        programForIds->setUniformValue(programForIdsMatrixID, transformMatrix);
+
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         arrayObject->release();
         programForIds->release();
@@ -53,7 +55,8 @@ void MainGLWidget::paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
-        program->setUniformValue(matrixID, controller->getProjectionMatrix() * controller->getModelViewMatrix());
+        //glm::mat4 transformMatrix = controller->getProjectionMatrix() * controller->getModelViewMatrix();
+        program->setUniformValue(matrixID, transformMatrix);
         if (texture != 0) {
             if (controller->getIsBrushUpdated()) {
                 textureImage = controller->getTextureImageFromBrush();

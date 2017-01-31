@@ -7,16 +7,17 @@
 
 #include "geometry.h"
 #include "vertex.h"
+#include "glm.hpp"
 
 class AbstractBrush
 {
 public:
     AbstractBrush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-        paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) = 0;
-    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-            paint(QPoint previousPoint, QPoint currentPoint,
-                  QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+        paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) = 0;
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+            paint(glm::i32vec2 previousPoint, glm::i32vec2 currentPoint,
+                  glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
     void setRadius(double radius);
     void setColor(QColor color);
     void setIdsBuffer(QImage *idsBuffer);
@@ -29,7 +30,7 @@ protected:
     QImage *textureImage;
     QImage *idsBuffer = 0;
 
-    QVector3D fromScreenCoordinates(QVector2D point, QMatrix4x4 matrixProjection);
+    glm::vec3 fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection);
 };
 
 #endif // ABSTRACTBRUSH_H

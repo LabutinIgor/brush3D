@@ -56,6 +56,8 @@ private:
     BrushStroke currentStroke;
     QPoint lastPointOfStroke;
     BrushHistory brushHistory;
+
+    glm::mat4x4 fromQMatrix(QMatrix4x4 qmat);
 };
 
 #endif // CONTROLLER_H

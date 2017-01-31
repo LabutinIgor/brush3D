@@ -31,30 +31,30 @@ void Controller::loadObj(const char *fileName) {
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
             int fv = shapes[s].mesh.num_face_vertices[f];
             tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
-            Vertex firstVertex = Vertex(QVector3D(attrib.vertices[3 * idx.vertex_index + 0],
+            Vertex firstVertex = Vertex(glm::vec3(attrib.vertices[3 * idx.vertex_index + 0],
                                                   attrib.vertices[3 * idx.vertex_index + 1],
                                                   attrib.vertices[3 * idx.vertex_index + 2]),
-                                        QVector2D(attrib.texcoords[2 * idx.texcoord_index + 0],
+                                        glm::vec2(attrib.texcoords[2 * idx.texcoord_index + 0],
                                                   attrib.texcoords[2 * idx.texcoord_index + 1]),
-                                        QVector3D(0, 0, 0));
+                                        glm::vec3(0, 0, 0));
             for (size_t v = 1; v < (size_t) fv - 1; v++) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
-                firstVertex.setId(QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
+                firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
                 vertices.push_back(firstVertex);
-                vertices.push_back(Vertex(QVector3D(attrib.vertices[3 * idxCurrent.vertex_index + 0],
+                vertices.push_back(Vertex(glm::vec3(attrib.vertices[3 * idxCurrent.vertex_index + 0],
                                                     attrib.vertices[3 * idxCurrent.vertex_index + 1],
                                                     attrib.vertices[3 * idxCurrent.vertex_index + 2]),
-                                          QVector2D(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
+                                          glm::vec2(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
                                                     attrib.texcoords[2 * idxCurrent.texcoord_index + 1]),
-                                          QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
+                                          glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
 
-                vertices.push_back(Vertex(QVector3D(attrib.vertices[3 * idxNext.vertex_index + 0],
+                vertices.push_back(Vertex(glm::vec3(attrib.vertices[3 * idxNext.vertex_index + 0],
                                                     attrib.vertices[3 * idxNext.vertex_index + 1],
                                                     attrib.vertices[3 * idxNext.vertex_index + 2]),
-                                          QVector2D(attrib.texcoords[2 * idxNext.texcoord_index + 0],
+                                          glm::vec2(attrib.texcoords[2 * idxNext.texcoord_index + 0],
                                                     attrib.texcoords[2 * idxNext.texcoord_index + 1]),
-                                          QVector3D(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
+                                          glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
                 triangleId++;
             }
             index_offset += fv;
@@ -69,8 +69,8 @@ void Controller::loadObj(const char *fileName) {
 void Controller::setViewMatrixForObj() {
     double maxZ = 1;
     for (auto v : vertices) {
-        QVector3D position = v.position();
-        maxZ = fmax(maxZ, position.z());
+        glm::vec3 position = v.position();
+        maxZ = fmax(maxZ, position.z);
     }
     viewMatrix.lookAt(
                 QVector3D(0, 0, 10 * maxZ),
@@ -177,21 +177,40 @@ void Controller::setIdsBuffer(QImage *idsBuffer) {
 }
 
 void Controller::beginBrushStroke(QPoint point) {
-    auto firstStrokePart = brush->paint(point, getModelViewMatrix(), projectionMatrix, screenSize);
+    auto firstStrokePart = brush->paint(glm::i32vec2(point.x(), point.y()),
+                                        fromQMatrix(getModelViewMatrix()),
+                                        fromQMatrix(projectionMatrix),
+                                        glm::i32vec2(screenSize.x(), screenSize.y()));
     currentStroke = BrushStroke(firstStrokePart);
     lastPointOfStroke = point;
 }
 
 void Controller::continueBrushStroke(QPoint point) {
-    auto strokePart = brush->paint(lastPointOfStroke, point, getModelViewMatrix(), projectionMatrix, screenSize);
+    auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
+                                   glm::i32vec2(point.x(), point.y()),
+                                   fromQMatrix(getModelViewMatrix()),
+                                   fromQMatrix(projectionMatrix),
+                                   glm::i32vec2(screenSize.x(), screenSize.y()));
     currentStroke.add(strokePart);
     lastPointOfStroke = point;
 }
 
 void Controller::endBrushStroke(QPoint point) {
-    auto strokePart = brush->paint(lastPointOfStroke, point, getModelViewMatrix(), projectionMatrix, screenSize);
+    auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
+                                   glm::i32vec2(point.x(), point.y()),
+                                   fromQMatrix(getModelViewMatrix()),
+                                   fromQMatrix(projectionMatrix),
+                                   glm::i32vec2(screenSize.x(), screenSize.y()));
     currentStroke.add(strokePart);
     brushHistory.addStroke(currentStroke);
+}
+
+glm::mat4x4 Controller::fromQMatrix(QMatrix4x4 qmat) {
+    float const* data = qmat.constData();
+    return glm::mat4x4(data[0],data[1], data[2], data[3],
+                       data[4],data[5], data[6], data[7],
+                       data[8],data[9], data[10], data[11],
+                       data[12],data[13], data[14], data[15]);
 }
 
 void Controller::updateSize(int width, int height) {

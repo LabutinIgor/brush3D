@@ -18,9 +18,9 @@ QImage *AbstractBrush::getTextureImage() {
     return textureImage;
 }
 
-QVector3D AbstractBrush::fromScreenCoordinates(QVector2D point, QMatrix4x4 matrixProjection) {
-    return QVector3D(point.x() / matrixProjection.column(0).x(),
-                     point.y() / matrixProjection.column(1).y(),
+glm::vec3 AbstractBrush::fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection) {
+    return glm::vec3(point.x / matrixProjection[0][0],
+                     point.y / matrixProjection[1][1],
                      -1.0);
 }
 
@@ -28,14 +28,15 @@ void AbstractBrush::setIdsBuffer(QImage *idsBuffer) {
     this->idsBuffer = idsBuffer;
 }
 
-std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-        AbstractBrush::paint(QPoint previousPoint, QPoint lastPoint,
-              QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
-    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> diff;
+std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+        AbstractBrush::paint(glm::i32vec2 previousPoint, glm::i32vec2 lastPoint,
+              glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) {
+    std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> diff;
 
-    int cntRounds = sqrt(QPoint::dotProduct(previousPoint - lastPoint, previousPoint - lastPoint));
+    glm::vec2 d(previousPoint - lastPoint);
+    int cntRounds = glm::length(d);
     for (int i = 0; i < cntRounds; i++) {
-        QPoint currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
+        glm::i32vec2 currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
         auto currentPointDiff = paint(currentPoint, matrixModelView, projection, screenSize);
         diff.insert(std::end(diff), std::begin(currentPointDiff), std::end(currentPointDiff));
     }

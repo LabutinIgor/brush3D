@@ -1,28 +1,28 @@
 #include "geometry.h"
 
 
-double Geometry::getMinY(QVector2D point1, QVector2D point2, QVector2D point3, double x) {
+double Geometry::getMinY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x) {
     return fmin(getMinIntersectionPoint(point1, point2, x),
                 fmin(getMinIntersectionPoint(point2, point3, x),
                      getMinIntersectionPoint(point1, point3, x)));
 }
 
-double Geometry::getMaxY(QVector2D point1, QVector2D point2, QVector2D point3, double x) {
+double Geometry::getMaxY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x) {
     return fmax(getMaxIntersectionPoint(point1, point2, x),
                 fmax(getMaxIntersectionPoint(point2, point3, x),
                      getMaxIntersectionPoint(point1, point3, x)));
 }
 
-double Geometry::getMinIntersectionPoint(QVector2D point1, QVector2D point2, double x) {
-    if (fabs(point1.x() - point2.x()) < 1e-5) {
-        if (fabs(point1.x() - x) > 1e-5) {
+double Geometry::getMinIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x) {
+    if (fabs(point1.x - point2.x) < 1e-5) {
+        if (fabs(point1.x - x) > 1e-5) {
             return 1;
         } else {
-            return fmin(point1.y(), point2.y());
+            return fmin(point1.y, point2.y);
         }
     } else {
         double y = getIntersectionPoint(point1, point2, x);
-        if (y < fmin(point1.y(), point2.y()) || y > fmax(point1.y(), point2.y())) {
+        if (y < fmin(point1.y, point2.y) || y > fmax(point1.y, point2.y)) {
             return 1;
         } else {
             return y;
@@ -30,16 +30,16 @@ double Geometry::getMinIntersectionPoint(QVector2D point1, QVector2D point2, dou
     }
 }
 
-double Geometry::getMaxIntersectionPoint(QVector2D point1, QVector2D point2, double x) {
-    if (fabs(point1.x() - point2.x()) < 1e-5) {
-        if (fabs(point1.x() - x) > 1e-5) {
+double Geometry::getMaxIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x) {
+    if (fabs(point1.x - point2.x) < 1e-5) {
+        if (fabs(point1.x - x) > 1e-5) {
             return 0;
         } else {
-            return fmax(point1.y(), point2.y());
+            return fmax(point1.y, point2.y);
         }
     } else {
         double y = getIntersectionPoint(point1, point2, x);
-        if (y < fmin(point1.y(), point2.y()) || y > fmax(point1.y(), point2.y())) {
+        if (y < fmin(point1.y, point2.y) || y > fmax(point1.y, point2.y)) {
             return 0;
         } else {
             return y;
@@ -47,66 +47,66 @@ double Geometry::getMaxIntersectionPoint(QVector2D point1, QVector2D point2, dou
     }
 }
 
-double Geometry::getIntersectionPoint(QVector2D point1, QVector2D point2, double x) {
-    double intersectionY = point1.y() + (x - point1.x()) * (point2.y() - point1.y()) / (point2.x() - point1.x());
+double Geometry::getIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x) {
+    double intersectionY = point1.y + (x - point1.x) * (point2.y - point1.y) / (point2.x - point1.x);
     return fmax(0.0, fmin(1.0, intersectionY));
 }
 
-QVector2D Geometry::getPointInUVCoordinates(QVector3D p1, QVector3D p2, QVector3D p,
-                                            QVector2D uv1, QVector2D uv2, QVector2D uv3) {
-    float d = p1.x() * p2.y() - p1.y() * p2.x();
-    float c1 = (p.x() * p2.y() - p.y() * p2.x()) / d;
-    float c2 = (p1.x() * p.y() - p1.y() * p.x()) / d;
+glm::vec2 Geometry::getPointInUVCoordinates(glm::vec3 p1, glm::vec3 p2, glm::vec3 p,
+                                            glm::vec2 uv1, glm::vec2 uv2, glm::vec2 uv3) {
+    float d = p1.x * p2.y - p1.y * p2.x;
+    float c1 = (p.x * p2.y - p.y * p2.x) / d;
+    float c2 = (p1.x * p.y - p1.y * p.x) / d;
     return uv1 + uv2 * c1 + uv3 * c2;
 }
 
-QVector3D Geometry::getPointFromUVCoordinates(QVector2D* pointsUV, QVector3D* points, QVector2D pointUV) {
+glm::vec3 Geometry::getPointFromUVCoordinates(glm::vec2* pointsUV, glm::vec3* points, glm::vec2 pointUV) {
 //    std::cerr << "points:\n";
 //    for (int i = 0; i < 3; i++) {
-//        std::cerr << points[i].x() << " " << points[i].y() << " " << points[i].z() << "\n";
+//        std::cerr << points[i].x << " " << points[i].y << " " << points[i].z << "\n";
 //    }
-    QVector2D uvVector1 = pointsUV[1] - pointsUV[0];
-    QVector2D uvVector2 = pointsUV[2] - pointsUV[0];
-    QVector3D vector1 = points[1] - points[0];
-    QVector3D vector2 = points[2] - points[0];
+    glm::vec2 uvVector1 = pointsUV[1] - pointsUV[0];
+    glm::vec2 uvVector2 = pointsUV[2] - pointsUV[0];
+    glm::vec3 vector1 = points[1] - points[0];
+    glm::vec3 vector2 = points[2] - points[0];
     pointUV -= pointsUV[0];
 
-    float d = uvVector1.x() * uvVector2.y() - uvVector1.y() * uvVector2.x();
-    float c1 = (pointUV.x() * uvVector2.y() - pointUV.y() * uvVector2.x()) / d;
-    float c2 = (uvVector1.x() * pointUV.y() - uvVector1.y() * pointUV.x()) / d;
+    float d = uvVector1.x * uvVector2.y - uvVector1.y * uvVector2.x;
+    float c1 = (pointUV.x * uvVector2.y - pointUV.y * uvVector2.x) / d;
+    float c2 = (uvVector1.x * pointUV.y - uvVector1.y * pointUV.x) / d;
 
     return points[0] + c1 * vector1 + c2 * vector2;
 }
 
-QPoint Geometry::toScreenCoordinates(QVector3D point, QMatrix4x4 projection, QPoint screenSize) {
-    QVector4D homogeneousCoordinates(projection * QVector4D(point, 1.0));
-    QVector3D projectedPoint(homogeneousCoordinates.x() / homogeneousCoordinates.w(),
-                             homogeneousCoordinates.y() / homogeneousCoordinates.w(),
-                             homogeneousCoordinates.z() / homogeneousCoordinates.w());
-//    std::cerr << "point: " << point.x() << " " << point.y() << " " << point.z() << "\n";
-//    std::cerr << "homogeneous: " << homogeneousCoordinates.x() << " " << homogeneousCoordinates.y() << " "
-//              << homogeneousCoordinates.z() << " " << homogeneousCoordinates.w() << "\n";
-//    std::cerr << "projected: " << projectedPoint.x() << " " << projectedPoint.y() << " " << projectedPoint.z() << "\n";
-    return QPoint(screenSize.x() * (projectedPoint.x() + 1) / 2,
-                  screenSize.y() * (1 - projectedPoint.y()) / 2);
+glm::i32vec2 Geometry::toScreenCoordinates(glm::vec3 point, glm::mat4x4 projection, glm::i32vec2 screenSize) {
+    glm::vec4 homogeneousCoordinates(projection * glm::vec4(point, 1.0));
+    glm::vec3 projectedPoint(homogeneousCoordinates.x / homogeneousCoordinates.w,
+                             homogeneousCoordinates.y / homogeneousCoordinates.w,
+                             homogeneousCoordinates.z / homogeneousCoordinates.w);
+//    std::cerr << "point: " << point.x << " " << point.y << " " << point.z << "\n";
+//    std::cerr << "homogeneous: " << homogeneousCoordinates.x << " " << homogeneousCoordinates.y << " "
+//              << homogeneousCoordinates.z << " " << homogeneousCoordinates.w << "\n";
+//    std::cerr << "projected: " << projectedPoint.x << " " << projectedPoint.y << " " << projectedPoint.z << "\n";
+    return glm::i32vec2(screenSize.x * (projectedPoint.x + 1) / 2,
+                  screenSize.y * (1 - projectedPoint.y) / 2);
 }
 
-QVector3D *Geometry::intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray) {
-    QVector3D u, v, n;      // triangle vectors
-    QVector3D w0, w;        // ray vectors
+glm::vec3 *Geometry::intersectRayAndPlane(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 ray) {
+    glm::vec3 u, v, n;      // triangle vectors
+    glm::vec3 w0, w;        // ray vectors
     float r, a, b;          // params to calc ray-plane intersect
 
     u = p2 - p1;
     v = p3 - p1;
-    n = QVector3D::crossProduct(u, v);
-    if (n.lengthSquared() < 1e-3) {
+    n = glm::cross(u, v);
+    if (glm::length(n) < 1e-3) {
         //std::cerr << "degenerate triangle\n";
         return nullptr;
     }
 
     w0 = -p1;
-    a = -QVector3D::dotProduct(n, w0);
-    b = QVector3D::dotProduct(n, ray);
+    a = -glm::dot(n, w0);
+    b = glm::dot(n, ray);
     if (fabs(b) < 1e-5) {
         return nullptr;
     }
@@ -117,33 +117,33 @@ QVector3D *Geometry::intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D 
         return nullptr;
     }
 
-    return new QVector3D(r * ray);
+    return new glm::vec3(r * ray);
 }
 
-bool Geometry::isPointInTriangle(QVector2D p, QVector2D v1, QVector2D v2, QVector2D v3) {
-    bool b1 = QVector3D::crossProduct((p - v2), (v1 - v2)).z() < 0.0f;
-    bool b2 = QVector3D::crossProduct((p - v3), (v2 - v3)).z() < 0.0f;
-    bool b3 = QVector3D::crossProduct((p - v1), (v3 - v1)).z() < 0.0f;
+bool Geometry::isPointInTriangle(glm::vec2 p, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3) {
+    bool b1 = glm::cross(glm::vec3(p - v2, 0), glm::vec3(v1 - v2, 0)).z < 0.0f;
+    bool b2 = glm::cross(glm::vec3(p - v3, 0), glm::vec3(v2 - v3, 0)).z < 0.0f;
+    bool b3 = glm::cross(glm::vec3(p - v1, 0), glm::vec3(v3 - v1, 0)).z < 0.0f;
 
     return ((b1 == b2) && (b2 == b3));
 }
 
-QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray) {
-    QVector3D u, v, n;      // triangle vectors
-    QVector3D w0, w;        // ray vectors
+glm::vec3 *Geometry::intersectRayAndTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 ray) {
+    glm::vec3 u, v, n;      // triangle vectors
+    glm::vec3 w0, w;        // ray vectors
     float r, a, b;          // params to calc ray-plane intersect
 
     u = p2 - p1;
     v = p3 - p1;
-    n = QVector3D::crossProduct(u, v);
-    if (n.lengthSquared() < 1e-3) {
+    n = glm::cross(u, v);
+    if (glm::length(n) < 1e-3) {
         //std::cerr << "degenerate triangle\n";
         return nullptr;
     }
 
     w0 = -p1;
-    a = -QVector3D::dotProduct(n, w0);
-    b = QVector3D::dotProduct(n, ray);
+    a = -glm::dot(n, w0);
+    b = glm::dot(n, ray);
     if (fabs(b) < 1e-5) {
         return nullptr;
     }
@@ -154,15 +154,15 @@ QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector
         return nullptr;
     }
 
-    QVector3D intersectionPoint = r * ray;
+    glm::vec3 intersectionPoint = r * ray;
 
     float uu, uv, vv, wu, wv, d;
-    uu = QVector3D::dotProduct(u, u);
-    uv = QVector3D::dotProduct(u, v);
-    vv = QVector3D::dotProduct(v, v);
+    uu = glm::dot(u, u);
+    uv = glm::dot(u, v);
+    vv = glm::dot(v, v);
     w = intersectionPoint - p1;
-    wu = QVector3D::dotProduct(w, u);
-    wv = QVector3D::dotProduct(w, v);
+    wu = glm::dot(w, u);
+    wv = glm::dot(w, v);
     d = uv * uv - uu * vv;
 
     float s, t;
@@ -175,30 +175,30 @@ QVector3D *Geometry::intersectRayAndTriangle(QVector3D p1, QVector3D p2, QVector
         return nullptr;
     }
 
-    return new QVector3D(intersectionPoint);
+    return new glm::vec3(intersectionPoint);
 }
 
-std::vector<QVector2D> Geometry::getSegmentsIntersectionPoints(QVector2D *segment1, QVector2D *segment2) {
-    std::vector<QVector2D> points;
-    float a1 = segment1[1].y() - segment1[0].y();
-    float b1 = segment1[0].x() - segment1[1].x();
-    float c1 = - a1 * segment1[0].x() - b1 * segment1[0].y();
+std::vector<glm::vec2> Geometry::getSegmentsIntersectionPoints(glm::vec2 *segment1, glm::vec2 *segment2) {
+    std::vector<glm::vec2> points;
+    float a1 = segment1[1].y - segment1[0].y;
+    float b1 = segment1[0].x - segment1[1].x;
+    float c1 = - a1 * segment1[0].x - b1 * segment1[0].y;
 
-    float a2 = segment2[1].y() - segment2[0].y();
-    float b2 = segment2[0].x() - segment2[1].x();
-    float c2 = - a2 * segment2[0].x() - b2 * segment2[0].y();
+    float a2 = segment2[1].y - segment2[0].y;
+    float b2 = segment2[0].x - segment2[1].x;
+    float c2 = - a2 * segment2[0].x - b2 * segment2[0].y;
 
     float d = a1 * b2 - a2 * b1;
     if (fabs(d) < 1e-4) {
-        if (fabs(a2 * segment1[0].x() + b2 * segment1[0].y() - c2) < 1e-4) {
-            float x_min = fmax(fmin(segment1[0].x(), segment1[1].x()), fmin(segment2[0].x(), segment2[1].x()));
-            float y_min = fmax(fmin(segment1[0].y(), segment1[1].y()), fmin(segment2[0].y(), segment2[1].y()));
-            float x_max = fmin(fmax(segment1[0].x(), segment1[1].x()), fmax(segment2[0].x(), segment2[1].x()));
-            float y_max = fmin(fmax(segment1[0].y(), segment1[1].y()), fmax(segment2[0].y(), segment2[1].y()));
+        if (fabs(a2 * segment1[0].x + b2 * segment1[0].y - c2) < 1e-4) {
+            float x_min = fmax(fmin(segment1[0].x, segment1[1].x), fmin(segment2[0].x, segment2[1].x));
+            float y_min = fmax(fmin(segment1[0].y, segment1[1].y), fmin(segment2[0].y, segment2[1].y));
+            float x_max = fmin(fmax(segment1[0].x, segment1[1].x), fmax(segment2[0].x, segment2[1].x));
+            float y_max = fmin(fmax(segment1[0].y, segment1[1].y), fmax(segment2[0].y, segment2[1].y));
 
             if (x_min < x_max && y_min < y_max) {
-                points.push_back(QVector2D(x_min, y_min));
-                points.push_back(QVector2D(x_max, y_max));
+                points.push_back(glm::vec2(x_min, y_min));
+                points.push_back(glm::vec2(x_max, y_max));
             }
         }
         return points;
@@ -207,19 +207,19 @@ std::vector<QVector2D> Geometry::getSegmentsIntersectionPoints(QVector2D *segmen
     float x = (-c1 * b2 + b1 * c2) / d;
     float y = (- a1 * c2 + c1 * a2) / d;
 
-    if (x < fmin(segment1[0].x(), segment1[1].x()) || x < fmin(segment2[0].x(), segment2[1].x()) ||
-        x > fmax(segment1[0].x(), segment1[1].x()) || x > fmax(segment2[0].x(), segment2[1].x()) ||
-        y < fmin(segment1[0].y(), segment1[1].y()) || y < fmin(segment2[0].y(), segment2[1].y()) ||
-        y > fmax(segment1[0].y(), segment1[1].y()) || y > fmax(segment2[0].y(), segment2[1].y())) {
+    if (x < fmin(segment1[0].x, segment1[1].x) || x < fmin(segment2[0].x, segment2[1].x) ||
+        x > fmax(segment1[0].x, segment1[1].x) || x > fmax(segment2[0].x, segment2[1].x) ||
+        y < fmin(segment1[0].y, segment1[1].y) || y < fmin(segment2[0].y, segment2[1].y) ||
+        y > fmax(segment1[0].y, segment1[1].y) || y > fmax(segment2[0].y, segment2[1].y)) {
         return points;
     }
 
-    points.push_back(QVector2D(x, y));
+    points.push_back(glm::vec2(x, y));
     return points;
 }
 
-std::vector<QVector2D*> Geometry::intersectTriangles(QVector2D *triangle1, QVector2D *triangle2) {
-    std::vector<QVector2D> intersectionPoints;
+std::vector<glm::vec2*> Geometry::intersectTriangles(glm::vec2 *triangle1, glm::vec2 *triangle2) {
+    std::vector<glm::vec2> intersectionPoints;
     for (int i = 0; i < 3; i++) {
         if (isPointInTriangle(triangle1[i], triangle2[0], triangle2[1], triangle2[2])) {
             intersectionPoints.push_back(triangle1[i]);
@@ -230,39 +230,39 @@ std::vector<QVector2D*> Geometry::intersectTriangles(QVector2D *triangle1, QVect
     }
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            QVector2D segment1[2] = {triangle1[i], triangle1[(i + 1) % 3]};
-            QVector2D segment2[2] = {triangle2[j], triangle2[(j + 1) % 3]};
-            std::vector<QVector2D> segmentsIntersectionPoints = Geometry::getSegmentsIntersectionPoints(segment1, segment2);
+            glm::vec2 segment1[2] = {triangle1[i], triangle1[(i + 1) % 3]};
+            glm::vec2 segment2[2] = {triangle2[j], triangle2[(j + 1) % 3]};
+            std::vector<glm::vec2> segmentsIntersectionPoints = Geometry::getSegmentsIntersectionPoints(segment1, segment2);
             intersectionPoints.insert(std::end(intersectionPoints),
                                       std::begin(segmentsIntersectionPoints), std::end(segmentsIntersectionPoints));
         }
     }
 
-    std::vector<QVector2D*> trianglesInIntersection;
+    std::vector<glm::vec2*> trianglesInIntersection;
 
     if (intersectionPoints.size() < 3) {
         return trianglesInIntersection;
     }
 
-    QVector2D leftPoint = intersectionPoints[0];
-    for (QVector2D point : intersectionPoints) {
-        if (point.x() < leftPoint.x() || (fabs(point.x() - leftPoint.x()) < 1e-4 && point.y() < leftPoint.y())) {
+    glm::vec2 leftPoint = intersectionPoints[0];
+    for (glm::vec2 point : intersectionPoints) {
+        if (point.x < leftPoint.x || (fabs(point.x - leftPoint.x) < 1e-4 && point.y < leftPoint.y)) {
             leftPoint = point;
         }
     }
 
-    std::sort(intersectionPoints.begin(), intersectionPoints.end(), [leftPoint](QVector2D a, QVector2D b) {
-        QVector2D v1 = a - leftPoint;
-        QVector2D v2 = b - leftPoint;
-        float cp = QVector3D::crossProduct(v1, v2).z();
+    std::sort(intersectionPoints.begin(), intersectionPoints.end(), [leftPoint](glm::vec2 a, glm::vec2 b) {
+        glm::vec2 v1 = a - leftPoint;
+        glm::vec2 v2 = b - leftPoint;
+        float cp = glm::cross(glm::vec3(v1, 0), glm::vec3(v2, 0)).z;
         if (fabs(cp) < 1e-5) {
-            return QVector2D::dotProduct(v1, v1) < QVector2D::dotProduct(v2, v2);
+            return glm::dot(v1, v1) < glm::dot(v2, v2);
         }
         return cp > 0;
     });
 
     for (int i = 1; i < intersectionPoints.size() - 1; i++) {
-        QVector2D *points = new QVector2D[3] {leftPoint, intersectionPoints[i], intersectionPoints[i + 1]};
+        glm::vec2 *points = new glm::vec2[3] {leftPoint, intersectionPoints[i], intersectionPoints[i + 1]};
         trianglesInIntersection.push_back(points);
     }
     return trianglesInIntersection;
