@@ -14,9 +14,6 @@ public:
     Brush(std::vector<Vertex> vertices, QImage* textureImage);
     virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
         paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
-    virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-            paint(QPoint previousPoint, QPoint currentPoint,
-                  QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
 
 private:
     void paintTriangle(QVector2D *points, std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> &diff);

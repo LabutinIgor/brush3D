@@ -100,7 +100,7 @@ void Controller::loadTextureImage(const char *fileName) {
 }
 
 void Controller::initializeBrush() {
-    brush = new PixelsPaintingBrush(vertices, textureImage);
+    brush = new PixelsFastBrush(vertices, textureImage);
     brush->setRadius(10.0);
 }
 

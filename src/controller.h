@@ -5,6 +5,7 @@
 #include "slowraysbrush.h"
 #include "abstractbrush.h"
 #include "pixelspaintingbrush.h"
+#include "pixelsfastbrush.h"
 #include "vertex.h"
 #include "brushstroke.h"
 #include "brushhistory.h"

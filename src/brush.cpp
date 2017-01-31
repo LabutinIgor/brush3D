@@ -14,8 +14,8 @@ void Brush::paintTriangle(QVector2D *points, std::vector<std::pair<QPoint, std::
                          * textureImage->height());
 
         for (int y = fmax(0, minY); y <= fmin(textureImage->height(), maxY); y++) {
-            diff.push_back({QPoint(x, y), {textureImage->pixelColor(x, y), QColor(255, 0, 0)}});
-            textureImage->setPixelColor(QPoint(x, y), QColor(255, 0, 0));
+            diff.push_back({QPoint(x, y), {textureImage->pixelColor(x, y), color}});
+            textureImage->setPixelColor(QPoint(x, y), color);
         }
     }
 }
@@ -36,11 +36,7 @@ std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
                                                  matrixProjection);
 
         std::vector<size_t> ids;
-        /*
-        if (QColor(idsBuffer->pixel(point)).blue() < vertices.size() / 3) {
-            ids.push_back(QColor(idsBuffer->pixel(point)).red());
-        }
-        */
+
         for (size_t i = 0; i < vertices.size() / 3; i++) {
             QVector3D vector1 = QVector3D(matrixModelView * QVector4D(vertices[3 * i].position(), 1.0));
             QVector3D vector2 = QVector3D(matrixModelView * QVector4D(vertices[3 * i + 1].position(), 1.0));
@@ -52,21 +48,6 @@ std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
 
         paintIntersectionWithPyramid(ids, centerRay, ray1, ray2, matrixModelView, diff);
     }
-    return diff;
-}
-
-std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
-        Brush::paint(QPoint previousPoint, QPoint lastPoint,
-              QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) {
-    std::vector<std::pair<QPoint, std::pair<QColor, QColor>>> diff;
-
-    int cntRounds = sqrt(QPoint::dotProduct(previousPoint - lastPoint, previousPoint - lastPoint));
-    for (int i = 0; i < cntRounds; i++) {
-        QPoint currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
-        auto currentPointDiff = paint(currentPoint, matrixModelView, projection, screenSize);
-        diff.insert(std::end(diff), std::begin(currentPointDiff), std::end(currentPointDiff));
-    }
-
     return diff;
 }
 

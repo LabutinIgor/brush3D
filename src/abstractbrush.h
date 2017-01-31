@@ -2,6 +2,7 @@
 #define ABSTRACTBRUSH_H
 
 #include <QOpenGLTexture>
+#include <QColor>
 #include <vector>
 
 #include "geometry.h"
@@ -15,13 +16,15 @@ public:
         paint(QPoint point, QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) = 0;
     virtual std::vector<std::pair<QPoint, std::pair<QColor, QColor>>>
             paint(QPoint previousPoint, QPoint currentPoint,
-                  QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize) = 0;
+                  QMatrix4x4 matrixModelView, QMatrix4x4 projection, QPoint screenSize);
     void setRadius(double radius);
+    void setColor(QColor color);
     void setIdsBuffer(QImage *idsBuffer);
     QImage *getTextureImage();
 
 protected:
     double radius = 10;
+    QColor color = QColor(255, 0, 0);
     std::vector<Vertex> vertices;
     QImage *textureImage;
     QImage *idsBuffer = 0;

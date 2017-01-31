@@ -60,6 +60,37 @@ QVector2D Geometry::getPointInUVCoordinates(QVector3D p1, QVector3D p2, QVector3
     return uv1 + uv2 * c1 + uv3 * c2;
 }
 
+QVector3D Geometry::getPointFromUVCoordinates(QVector2D* pointsUV, QVector3D* points, QVector2D pointUV) {
+//    std::cerr << "points:\n";
+//    for (int i = 0; i < 3; i++) {
+//        std::cerr << points[i].x() << " " << points[i].y() << " " << points[i].z() << "\n";
+//    }
+    QVector2D uvVector1 = pointsUV[1] - pointsUV[0];
+    QVector2D uvVector2 = pointsUV[2] - pointsUV[0];
+    QVector3D vector1 = points[1] - points[0];
+    QVector3D vector2 = points[2] - points[0];
+    pointUV -= pointsUV[0];
+
+    float d = uvVector1.x() * uvVector2.y() - uvVector1.y() * uvVector2.x();
+    float c1 = (pointUV.x() * uvVector2.y() - pointUV.y() * uvVector2.x()) / d;
+    float c2 = (uvVector1.x() * pointUV.y() - uvVector1.y() * pointUV.x()) / d;
+
+    return points[0] + c1 * vector1 + c2 * vector2;
+}
+
+QPoint Geometry::toScreenCoordinates(QVector3D point, QMatrix4x4 projection, QPoint screenSize) {
+    QVector4D homogeneousCoordinates(projection * QVector4D(point, 1.0));
+    QVector3D projectedPoint(homogeneousCoordinates.x() / homogeneousCoordinates.w(),
+                             homogeneousCoordinates.y() / homogeneousCoordinates.w(),
+                             homogeneousCoordinates.z() / homogeneousCoordinates.w());
+//    std::cerr << "point: " << point.x() << " " << point.y() << " " << point.z() << "\n";
+//    std::cerr << "homogeneous: " << homogeneousCoordinates.x() << " " << homogeneousCoordinates.y() << " "
+//              << homogeneousCoordinates.z() << " " << homogeneousCoordinates.w() << "\n";
+//    std::cerr << "projected: " << projectedPoint.x() << " " << projectedPoint.y() << " " << projectedPoint.z() << "\n";
+    return QPoint(screenSize.x() * (projectedPoint.x() + 1) / 2,
+                  screenSize.y() * (1 - projectedPoint.y()) / 2);
+}
+
 QVector3D *Geometry::intersectRayAndPlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D ray) {
     QVector3D u, v, n;      // triangle vectors
     QVector3D w0, w;        // ray vectors
