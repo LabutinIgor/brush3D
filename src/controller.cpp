@@ -111,6 +111,9 @@ void Controller::initializeBrush() {
     }
     TextureStorage* textureStorage = new TextureStorage(w, h, colorData);
 
+    if (brush != 0) {
+        delete brush;
+    }
     brush = new PixelsFastBrush(vertices, textureStorage);
     brush->setRadius(10.0);
 }

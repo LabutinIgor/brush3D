@@ -16,41 +16,46 @@ TEMPLATE = app
 
 
 SOURCES += src/main.cpp \
-    src/mainwindow.cpp \
-    src/mainglwidget.cpp \
-    src/brush.cpp \
-    src/geometry.cpp \
+    src/ui/mainwindow.cpp \
+    src/ui/mainglwidget.cpp \
+    src/brush/brush.cpp \
+    src/brush/model/geometry.cpp \
     src/controller.cpp \
-    src/abstractbrush.cpp \
-    src/slowraysbrush.cpp \
-    src/pixelspaintingbrush.cpp \
-    src/brushstroke.cpp \
-    src/brushhistory.cpp \
-    src/pixelsfastbrush.cpp \
-    src/color.cpp \
-    src/idsstorage.cpp \
-    src/texturestorage.cpp
+    src/brush/abstractbrush.cpp \
+    src/brush/slowraysbrush.cpp \
+    src/brush/pixelspaintingbrush.cpp \
+    src/brush/brushstroke.cpp \
+    src/brush/brushhistory.cpp \
+    src/brush/pixelsfastbrush.cpp \
+    src/brush/model/color.cpp \
+    src/brush/model/idsstorage.cpp \
+    src/brush/model/texturestorage.cpp \
+    src/brush/model/objectmodel.cpp
 
-HEADERS += src/mainwindow.h \
-    src/mainglwidget.h \
+HEADERS += src/ui/mainwindow.h \
+    src/ui/mainglwidget.h \
     src/vertex.h \
-    src/brush.h \
-    src/geometry.h \
+    src/brush/brush.h \
+    src/brush/model/geometry.h \
     src/controller.h \
-    src/abstractbrush.h \
-    src/slowraysbrush.h \
-    src/pixelspaintingbrush.h \
-    src/brushstroke.h \
-    src/brushhistory.h \
-    src/pixelsfastbrush.h \
-    src/color.h \
-    src/idsstorage.h \
-    src/texturestorage.h
+    src/brush/abstractbrush.h \
+    src/brush/slowraysbrush.h \
+    src/brush/pixelspaintingbrush.h \
+    src/brush/brushstroke.h \
+    src/brush/brushhistory.h \
+    src/brush/pixelsfastbrush.h \
+    src/brush/model/color.h \
+    src/brush/model/idsstorage.h \
+    src/brush/model/texturestorage.h \
+    src/brush/model/objectmodel.h
 
-FORMS   += src/mainwindow.ui
+FORMS   += src/ui/mainwindow.ui
 
 INCLUDEPATH += \
     src/ \
+    src/ui/ \
+    src/brush/ \
+    src/brush/model/ \
     external/tinyobjloader/ \
     external/glm/
 
