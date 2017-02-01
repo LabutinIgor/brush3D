@@ -100,7 +100,18 @@ void Controller::loadTextureImage(const char *fileName) {
 }
 
 void Controller::initializeBrush() {
-    brush = new PixelsFastBrush(vertices, textureImage);
+    int w = textureImage->width();
+    int h = textureImage->height();
+    Color* colorData = new Color[w * h];
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            QColor color = textureImage->pixelColor(x, y);
+            colorData[h * x + y] = Color(color.red(), color.green(), color.blue());
+        }
+    }
+    TextureStorage* textureStorage = new TextureStorage(w, h, colorData);
+
+    brush = new PixelsFastBrush(vertices, textureStorage);
     brush->setRadius(10.0);
 }
 
@@ -139,11 +150,11 @@ void Controller::keyPressed(int key) {
         }
     } else {
         if (key == Qt::Key_Z) {
-            brushHistory.undo(brush->getTextureImage());
+            brushHistory.undo(brush->getTextureStorage());
             isBrushUpdated = true;
         } else {
             if (key == Qt::Key_Y) {
-                brushHistory.redo(brush->getTextureImage());
+                brushHistory.redo(brush->getTextureStorage());
                 isBrushUpdated = true;
             }
         }
@@ -169,11 +180,19 @@ bool Controller::getIsBrushUpdated() {
     return isBrushUpdated;
 }
 
-void Controller::setIdsBuffer(QImage *idsBuffer) {
-    if (this->idsBuffer != 0) {
-        delete this->idsBuffer;
+void Controller::setIdsStorage(QImage *idsBuffer) {
+    int w = idsBuffer->width();
+    int h = idsBuffer->height();
+    IdType* idsData = new IdType[w * h];
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            QColor color = idsBuffer->pixelColor(x, y);
+            idsData[h * x + y] = color.red() + color.green() * 256 + color.blue() * 256 * 256;
+        }
     }
-    brush->setIdsBuffer(idsBuffer);
+    IdsStorage* idsStorage = new IdsStorage(w, h, idsData);
+
+    brush->setIdsStorage(idsStorage);
 }
 
 void Controller::beginBrushStroke(QPoint point) {
@@ -237,7 +256,17 @@ std::vector<Vertex> Controller::getVertices() {
     return vertices;
 }
 
-QImage *Controller::getTextureImageFromBrush() {
+QImage *Controller::getTextureFromBrush() {
     isBrushUpdated = false;
-    return brush->getTextureImage();
+
+    TextureStorage* textureStorage = brush->getTextureStorage();
+
+    for (uint32_t x = 0; x < textureStorage->getWidth(); x++) {
+        for (uint32_t y = 0; y < textureStorage->getHeight(); y++) {
+            Color color = textureStorage->getColor(x, y);
+            textureImage->setPixelColor(x, y, QColor(color.getR(), color.getG(), color.getB()));
+        }
+    }
+
+    return textureImage;
 }

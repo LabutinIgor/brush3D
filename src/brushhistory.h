@@ -3,16 +3,16 @@
 
 #include <vector>
 #include <iostream>
-#include <QImage>
 
 #include "brushstroke.h"
+#include "texturestorage.h"
 
 class BrushHistory {
 public:
     BrushHistory();
     void addStroke(BrushStroke stroke);
-    void undo(QImage *currentTexture);
-    void redo(QImage *currentTexture);
+    void undo(TextureStorage *currentTexture);
+    void redo(TextureStorage *currentTexture);
 
 private:
     std::vector<BrushStroke> strokes;

@@ -1,33 +1,33 @@
 #include "slowraysbrush.h"
 
-SlowRaysBrush::SlowRaysBrush(std::vector<Vertex> vertices, QImage* textureImage) : AbstractBrush(vertices, textureImage) {
+SlowRaysBrush::SlowRaysBrush(std::vector<Vertex> vertices, TextureStorage* textureStorage) : AbstractBrush(vertices, textureStorage) {
 }
 
 void SlowRaysBrush::paintRound(glm::vec2 centerOfRound, float radius,
-                               std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff) {
+                               std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff) {
     float radiusSquare = radius * radius;
-    centerOfRound.x *= textureImage->width();
-    centerOfRound *= textureImage->height();
+    centerOfRound.x *= textureStorage->getWidth();
+    centerOfRound.y *= textureStorage->getHeight();
 
     int minX = fmax(0.0, round(centerOfRound.x - radius + 0.5));
-    int maxX = fmin(textureImage->width() - 1, round(centerOfRound.x + radius - 0.5));
+    int maxX = fmin(textureStorage->getWidth() - 1, round(centerOfRound.x + radius - 0.5));
 
     for (int x = minX; x <= maxX; x++) {
         float dx = x - centerOfRound.x;
         float dy = sqrt(radiusSquare - dx * dx);
         int minY = fmax(0.0, round(centerOfRound.y - dy));
-        int maxY = fmin(textureImage->height() - 1, round(centerOfRound.y + dy));
+        int maxY = fmin(textureStorage->getHeight() - 1, round(centerOfRound.y + dy));
 
         for (int y = minY; y <= maxY; y++) {
-            diff.push_back({glm::i32vec2(x, y), {textureImage->pixelColor(x, y), QColor(255, 0, 0)}});
-            textureImage->setPixelColor(QPoint(x, y), color);
+            diff.push_back({glm::i32vec2(x, y), {textureStorage->getColor(x, y), color}});
+            textureStorage->setColor(x, y, color);
         }
     }
 }
 
-std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
         SlowRaysBrush::paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 matrixProjection, glm::i32vec2 screenSize) {
-    std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> diff;
+    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> diff;
     glm::vec2 centerPoint(2.0 * point.x / screenSize.x - 1, 2.0 * (screenSize.y - point.y) / screenSize.y - 1);
     for (int dx = -30; dx <= 30; dx++) {
         for (int dy = -30; dy <= 30; dy++) {
@@ -40,7 +40,7 @@ std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
 }
 
 void SlowRaysBrush::paintSmallRound(glm::vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 matrixProjection,
-                                    std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff) {
+                                    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff) {
     int intersectedTriangleId = -1;
     float minDistanceToIntersection = 0;
     glm::vec2 intersectionPoint;

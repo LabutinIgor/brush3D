@@ -1,21 +1,21 @@
 #include "abstractbrush.h"
 
-AbstractBrush::AbstractBrush(std::vector<Vertex> vertices, QImage* textureImage)
+AbstractBrush::AbstractBrush(std::vector<Vertex> vertices, TextureStorage* textureStorage)
 {
     this->vertices = vertices;
-    this->textureImage = textureImage;
+    this->textureStorage = textureStorage;
 }
 
 void AbstractBrush::setRadius(double radius) {
     this->radius = radius;
 }
 
-void AbstractBrush::setColor(QColor color) {
+void AbstractBrush::setColor(Color color) {
     this->color = color;
 }
 
-QImage *AbstractBrush::getTextureImage() {
-    return textureImage;
+TextureStorage *AbstractBrush::getTextureStorage() {
+    return textureStorage;
 }
 
 glm::vec3 AbstractBrush::fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection) {
@@ -24,14 +24,14 @@ glm::vec3 AbstractBrush::fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matr
                      -1.0);
 }
 
-void AbstractBrush::setIdsBuffer(QImage *idsBuffer) {
-    this->idsBuffer = idsBuffer;
+void AbstractBrush::setIdsStorage(IdsStorage *idsStorage) {
+    this->idsStorage = idsStorage;
 }
 
-std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
         AbstractBrush::paint(glm::i32vec2 previousPoint, glm::i32vec2 lastPoint,
               glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) {
-    std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> diff;
+    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> diff;
 
     glm::vec2 d(previousPoint - lastPoint);
     int cntRounds = glm::length(d);

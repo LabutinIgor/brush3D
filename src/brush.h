@@ -11,15 +11,15 @@
 
 class Brush : public AbstractBrush {
 public:
-    Brush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+    Brush(std::vector<Vertex> vertices, TextureStorage* textureStorage);
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
         paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
 
 private:
-    void paintTriangle(glm::vec2 *points, std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
+    void paintTriangle(glm::vec2 *points, std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff);
     void paintIntersectionWithPyramid(std::vector<size_t> intersectedTrianglesIds,
                                       glm::vec3 ray1, glm::vec3 ray2, glm::vec3 ray3, glm::mat4x4 matrixModelView,
-                                      std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
+                                      std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff);
 };
 
 #endif // BRUSH_H

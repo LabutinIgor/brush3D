@@ -26,7 +26,10 @@ SOURCES += src/main.cpp \
     src/pixelspaintingbrush.cpp \
     src/brushstroke.cpp \
     src/brushhistory.cpp \
-    src/pixelsfastbrush.cpp
+    src/pixelsfastbrush.cpp \
+    src/color.cpp \
+    src/idsstorage.cpp \
+    src/texturestorage.cpp
 
 HEADERS += src/mainwindow.h \
     src/mainglwidget.h \
@@ -39,7 +42,10 @@ HEADERS += src/mainwindow.h \
     src/pixelspaintingbrush.h \
     src/brushstroke.h \
     src/brushhistory.h \
-    src/pixelsfastbrush.h
+    src/pixelsfastbrush.h \
+    src/color.h \
+    src/idsstorage.h \
+    src/texturestorage.h
 
 FORMS   += src/mainwindow.ui
 

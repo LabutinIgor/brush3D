@@ -13,15 +13,14 @@
 
 class PixelsFastBrush : public AbstractBrush {
 public:
-    PixelsFastBrush(std::vector<Vertex> vertices, QImage* textureImage);
-    virtual std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>>
+    PixelsFastBrush(std::vector<Vertex> vertices, TextureStorage* TextureStorage);
+    virtual std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
         paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
 
 private:
     std::unordered_set<size_t> getIntersectedTrianglesIds(glm::i32vec2 brushCenter, glm::i32vec2 screenSize);
     void paintTriangle(size_t id, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize, glm::i32vec2 brushCenter,
-                       std::vector<std::pair<glm::i32vec2, std::pair<QColor, QColor>>> &diff);
-    size_t getIdByPixel(glm::i32vec2 point);
+                       std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff);
 
 };
 

@@ -23,7 +23,7 @@ void MainGLWidget::initializeGL() {
     initializeObj();
     controller->loadTextureImage("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/simple_texture.bmp");
     controller->initializeBrush();
-    textureImage = controller->getTextureImageFromBrush();
+    textureImage = controller->getTextureFromBrush();
     setTexture();
 
     setFocusPolicy(Qt::StrongFocus);
@@ -47,8 +47,8 @@ void MainGLWidget::paintGL() {
         arrayObject->release();
         programForIds->release();
 
-        QImage *idsBuffer = new QImage(frameBuffer->toImage());
-        controller->setIdsBuffer(idsBuffer);
+        QImage *idsStorage = new QImage(frameBuffer->toImage());
+        controller->setIdsStorage(idsStorage);
 
         frameBuffer->release();
 
@@ -59,7 +59,7 @@ void MainGLWidget::paintGL() {
         program->setUniformValue(matrixID, transformMatrix);
         if (texture != 0) {
             if (controller->getIsBrushUpdated()) {
-                textureImage = controller->getTextureImageFromBrush();
+                textureImage = controller->getTextureFromBrush();
                 setTexture();
             }
             texture->bind();
@@ -121,7 +121,7 @@ void MainGLWidget::loadTextureHandler() {
     if (fileName != "") {
         controller->loadTextureImage(fileName.toStdString().c_str());
         controller->initializeBrush();
-        textureImage = controller->getTextureImageFromBrush();
+        textureImage = controller->getTextureFromBrush();
         setTexture();
     }
 }

@@ -11,7 +11,7 @@ void BrushHistory::addStroke(BrushStroke stroke) {
     currentStroke++;
 }
 
-void BrushHistory::undo(QImage *currentTexture) {
+void BrushHistory::undo(TextureStorage *currentTexture) {
     if (currentStroke == 0) {
         return;
     }
@@ -19,18 +19,18 @@ void BrushHistory::undo(QImage *currentTexture) {
 
     auto diff = strokes[currentStroke].getDiff();
     for (int i = diff.size() - 1; i >= 0; i--) {
-        currentTexture->setPixelColor(diff[i].first.x, diff[i].first.y, diff[i].second.first);
+        currentTexture->setColor(diff[i].first.x, diff[i].first.y, diff[i].second.first);
     }
 }
 
-void BrushHistory::redo(QImage *currentTexture) {
+void BrushHistory::redo(TextureStorage *currentTexture) {
     if (currentStroke == strokes.size()) {
         return;
     }
 
     auto diff = strokes[currentStroke].getDiff();
     for (int i = diff.size() - 1; i >= 0; i--) {
-        currentTexture->setPixelColor(diff[i].first.x, diff[i].first.y, diff[i].second.second);
+        currentTexture->setColor(diff[i].first.x, diff[i].first.y, diff[i].second.second);
     }
 
     currentStroke++;

@@ -17,7 +17,7 @@ public:
     void setViewMatrixForObj();
     void loadTextureImage(const char *fileName);
     void initializeBrush();
-    void setIdsBuffer(QImage *idsBuffer);
+    void setIdsStorage(QImage *idsBuffer);
     void beginBrushStroke(QPoint point);
     void continueBrushStroke(QPoint point);
     void endBrushStroke(QPoint point);
@@ -34,7 +34,7 @@ public:
     bool getIsBrushUpdated();
     QMatrix4x4 getModelViewMatrix();
     QMatrix4x4 getProjectionMatrix();
-    QImage *getTextureImageFromBrush();
+    QImage *getTextureFromBrush();
     std::vector<Vertex> getVertices();
 
 private:
@@ -45,7 +45,6 @@ private:
     QMatrix4x4 scaleMatrix;
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    QImage *idsBuffer = 0;
     QPoint previousMousePosition;
     QPoint mousePosition;
     bool isMousePressed = false;
