@@ -6,6 +6,7 @@
 class TextureStorage {
 public:
     TextureStorage(uint32_t width, uint32_t height, Color* texture);
+    ~TextureStorage();
     uint32_t getWidth();
     uint32_t getHeight();
     Color getColor(uint32_t row, uint32_t col);

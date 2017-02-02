@@ -7,13 +7,12 @@
 #include <unordered_set>
 
 #include "geometry.h"
-#include "vertex.h"
 #include "abstractbrush.h"
 
 
 class PixelsFastBrush : public AbstractBrush {
 public:
-    PixelsFastBrush(std::vector<Vertex> vertices, TextureStorage* TextureStorage);
+    PixelsFastBrush(ObjectModel* objectModel, TextureStorage* TextureStorage);
     virtual std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
         paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
 

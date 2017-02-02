@@ -1,9 +1,11 @@
 #include "abstractbrush.h"
 
-AbstractBrush::AbstractBrush(std::vector<Vertex> vertices, TextureStorage* textureStorage)
-{
-    this->vertices = vertices;
-    this->textureStorage = textureStorage;
+AbstractBrush::AbstractBrush(ObjectModel* objectModel, TextureStorage* textureStorage) :
+    objectModel(objectModel), textureStorage(textureStorage) {
+}
+
+AbstractBrush::~AbstractBrush() {
+    delete textureStorage;
 }
 
 void AbstractBrush::setRadius(double radius) {

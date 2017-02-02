@@ -10,7 +10,7 @@ Controller::Controller() {
 }
 
 void Controller::loadObj(const char *fileName) {
-    vertices.clear();
+    verticesForBuffer.clear();
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -31,30 +31,30 @@ void Controller::loadObj(const char *fileName) {
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
             int fv = shapes[s].mesh.num_face_vertices[f];
             tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
-            Vertex firstVertex = Vertex(glm::vec3(attrib.vertices[3 * idx.vertex_index + 0],
-                                                  attrib.vertices[3 * idx.vertex_index + 1],
-                                                  attrib.vertices[3 * idx.vertex_index + 2]),
-                                        glm::vec2(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                  attrib.texcoords[2 * idx.texcoord_index + 1]),
-                                        glm::vec3(0, 0, 0));
+            VertexForBuffer firstVertex = VertexForBuffer(glm::vec3(attrib.vertices[3 * idx.vertex_index + 0],
+                                                                    attrib.vertices[3 * idx.vertex_index + 1],
+                                                                    attrib.vertices[3 * idx.vertex_index + 2]),
+                                                          glm::vec2(attrib.texcoords[2 * idx.texcoord_index + 0],
+                                                                    attrib.texcoords[2 * idx.texcoord_index + 1]),
+                                                          glm::vec3(0, 0, 0));
             for (size_t v = 1; v < (size_t) fv - 1; v++) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
                 firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
-                vertices.push_back(firstVertex);
-                vertices.push_back(Vertex(glm::vec3(attrib.vertices[3 * idxCurrent.vertex_index + 0],
-                                                    attrib.vertices[3 * idxCurrent.vertex_index + 1],
-                                                    attrib.vertices[3 * idxCurrent.vertex_index + 2]),
-                                          glm::vec2(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
-                                                    attrib.texcoords[2 * idxCurrent.texcoord_index + 1]),
-                                          glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
+                verticesForBuffer.push_back(firstVertex);
+                verticesForBuffer.push_back(VertexForBuffer(glm::vec3(attrib.vertices[3 * idxCurrent.vertex_index + 0],
+                                                             attrib.vertices[3 * idxCurrent.vertex_index + 1],
+                                                             attrib.vertices[3 * idxCurrent.vertex_index + 2]),
+                                                   glm::vec2(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
+                                                             attrib.texcoords[2 * idxCurrent.texcoord_index + 1]),
+                                                   glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
 
-                vertices.push_back(Vertex(glm::vec3(attrib.vertices[3 * idxNext.vertex_index + 0],
-                                                    attrib.vertices[3 * idxNext.vertex_index + 1],
-                                                    attrib.vertices[3 * idxNext.vertex_index + 2]),
-                                          glm::vec2(attrib.texcoords[2 * idxNext.texcoord_index + 0],
-                                                    attrib.texcoords[2 * idxNext.texcoord_index + 1]),
-                                          glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
+                verticesForBuffer.push_back(VertexForBuffer(glm::vec3(attrib.vertices[3 * idxNext.vertex_index + 0],
+                                                             attrib.vertices[3 * idxNext.vertex_index + 1],
+                                                             attrib.vertices[3 * idxNext.vertex_index + 2]),
+                                                   glm::vec2(attrib.texcoords[2 * idxNext.texcoord_index + 0],
+                                                             attrib.texcoords[2 * idxNext.texcoord_index + 1]),
+                                                   glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
                 triangleId++;
             }
             index_offset += fv;
@@ -62,13 +62,28 @@ void Controller::loadObj(const char *fileName) {
         }
     }
 
+    if (objectModel != 0) {
+        delete objectModel;
+    }
+
+    uint32_t verticesNumber = verticesForBuffer.size();
+    glm::vec3* coordinates = new glm::vec3[verticesNumber];
+    glm::vec2* uv = new glm::vec2[verticesNumber];
+
+    for (uint32_t i = 0; i < verticesForBuffer.size(); i++) {
+        coordinates[i] = verticesForBuffer[i].position();
+        uv[i] = verticesForBuffer[i].uv();
+    }
+
+    objectModel = new ObjectModel(verticesNumber, verticesNumber / 3, coordinates, uv);
+
     setViewMatrixForObj();
     scaleCoefficient = 0;
 }
 
 void Controller::setViewMatrixForObj() {
     double maxZ = 1;
-    for (auto v : vertices) {
+    for (auto v : verticesForBuffer) {
         glm::vec3 position = v.position();
         maxZ = fmax(maxZ, position.z);
     }
@@ -114,7 +129,7 @@ void Controller::initializeBrush() {
     if (brush != 0) {
         delete brush;
     }
-    brush = new PixelsFastBrush(vertices, textureStorage);
+    brush = new PixelsFastBrush(objectModel, textureStorage);
     brush->setRadius(10.0);
 }
 
@@ -255,8 +270,8 @@ QMatrix4x4 Controller::getProjectionMatrix() {
     return projectionMatrix;
 }
 
-std::vector<Vertex> Controller::getVertices() {
-    return vertices;
+std::vector<VertexForBuffer> Controller::getVertices() {
+    return verticesForBuffer;
 }
 
 QImage *Controller::getTextureFromBrush() {

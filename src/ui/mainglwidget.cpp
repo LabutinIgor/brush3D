@@ -154,20 +154,20 @@ void MainGLWidget::initializeObj() {
     vertexBuffer->create();
     vertexBuffer->bind();
     vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    vertexBuffer->allocate(&vertices[0], sizeof(Vertex) * vertices.size());
+    vertexBuffer->allocate(&vertices[0], sizeof(VertexForBuffer) * vertices.size());
 
     arrayObject = new QOpenGLVertexArrayObject();
     arrayObject->create();
     arrayObject->bind();
     program->enableAttributeArray(0);
     program->enableAttributeArray(1);
-    program->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
-    program->setAttributeBuffer(1, GL_FLOAT, Vertex::uvOffset(), Vertex::uvTupleSize, Vertex::stride());
+    program->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(), VertexForBuffer::PositionTupleSize, VertexForBuffer::stride());
+    program->setAttributeBuffer(1, GL_FLOAT, VertexForBuffer::uvOffset(), VertexForBuffer::uvTupleSize, VertexForBuffer::stride());
 
     programForIds->enableAttributeArray(0);
     programForIds->enableAttributeArray(2);
-    programForIds->setAttributeBuffer(0, GL_FLOAT, Vertex::positionOffset(), Vertex::PositionTupleSize, Vertex::stride());
-    programForIds->setAttributeBuffer(2, GL_FLOAT, Vertex::idOffset(), Vertex::idTupleSize, Vertex::stride());
+    programForIds->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(), VertexForBuffer::PositionTupleSize, VertexForBuffer::stride());
+    programForIds->setAttributeBuffer(2, GL_FLOAT, VertexForBuffer::idOffset(), VertexForBuffer::idTupleSize, VertexForBuffer::stride());
 }
 
 void MainGLWidget::setTexture() {

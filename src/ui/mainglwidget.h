@@ -19,7 +19,7 @@
 #include <math.h>
 #include <vector>
 
-#include "vertex.h"
+#include "vertexforbuffer.h"
 #include "controller.h"
 
 class MainGLWidget : public QOpenGLWidget,
@@ -55,7 +55,7 @@ private:
     QOpenGLShaderProgram *program = 0;
     QOpenGLFramebufferObject *frameBuffer = 0;
     QOpenGLShaderProgram *programForIds = 0;
-    std::vector<Vertex> vertices;
+    std::vector<VertexForBuffer> vertices;
     QOpenGLTexture *texture = 0;
     QImage *textureImage = 0;
 

@@ -1,12 +1,10 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "brush.h"
-#include "slowraysbrush.h"
 #include "abstractbrush.h"
-#include "pixelspaintingbrush.h"
 #include "pixelsfastbrush.h"
-#include "vertex.h"
+#include "vertexforbuffer.h"
+#include "objectmodel.h"
 #include "brushstroke.h"
 #include "brushhistory.h"
 
@@ -35,11 +33,12 @@ public:
     QMatrix4x4 getModelViewMatrix();
     QMatrix4x4 getProjectionMatrix();
     QImage *getTextureFromBrush();
-    std::vector<Vertex> getVertices();
+    std::vector<VertexForBuffer> getVertices();
 
 private:
-    AbstractBrush *brush;
-    std::vector<Vertex> vertices;
+    AbstractBrush *brush = 0;
+    ObjectModel *objectModel = 0;
+    std::vector<VertexForBuffer> verticesForBuffer;
     QImage *textureImage = 0;
     QMatrix4x4 rotationMatrix;
     QMatrix4x4 scaleMatrix;

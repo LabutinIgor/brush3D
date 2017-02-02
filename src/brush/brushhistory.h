@@ -16,7 +16,7 @@ public:
 
 private:
     std::vector<BrushStroke> strokes;
-    int currentStroke = 0;
+    uint32_t currentStroke = 0;
 };
 
 #endif // BRUSHHISTORY_H
