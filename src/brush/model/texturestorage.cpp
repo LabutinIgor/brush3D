@@ -19,6 +19,14 @@ Color TextureStorage::getColor(uint32_t row, uint32_t col) {
     return values[row * height + col];
 }
 
+Color TextureStorage::getColor(glm::u32vec2 point) {
+    return values[point.x * height + point.y];
+}
+
 void TextureStorage::setColor(uint32_t row, uint32_t col, Color color) {
     values[row * height + col] = color;
+}
+
+void TextureStorage::setColor(glm::u32vec2 point, Color color) {
+    values[point.x * height + point.y] = color;
 }

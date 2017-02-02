@@ -1,6 +1,7 @@
 #ifndef OBJECTMODEL_H
 #define OBJECTMODEL_H
 
+#include <iostream>
 #include <inttypes.h>
 #include <glm.hpp>
 
@@ -14,6 +15,7 @@ public:
     Face getFace(uint32_t faceId);
     uint32_t getVerticesNumber();
     uint32_t getFacesNumber();
+    bool areAdjacentFaces(uint32_t idFace1, uint32_t idFace2);
 
 private:
     uint32_t verticesNumber;
