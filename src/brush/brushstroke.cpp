@@ -3,13 +3,13 @@
 BrushStroke::BrushStroke() {
 }
 
-BrushStroke::BrushStroke(std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff) : diff(diff) {
+BrushStroke::BrushStroke(ColorChanges &diff) : diff(diff) {
 }
 
-void BrushStroke::add(std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff) {
-    this->diff.insert(std::end(this->diff), std::begin(diff), std::end(diff));
+void BrushStroke::add(ColorChanges &diff) {
+    this->diff.addAll(diff);
 }
 
-std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> BrushStroke::getDiff() {
+ColorChanges BrushStroke::getDiff() {
     return diff;
 }

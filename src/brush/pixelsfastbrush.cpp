@@ -34,9 +34,8 @@ PixelsFastBrush::~PixelsFastBrush() {
     delete[] pixelsUvOfTriangle;
 }
 
-std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
-    PixelsFastBrush::paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) {
-    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> diff;
+ColorChanges PixelsFastBrush::paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) {
+    ColorChanges diff;
 
     auto ids = getIntersectedTrianglesIds(point, screenSize);
     for (size_t id : ids) {
@@ -47,7 +46,7 @@ std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>>
 }
 
 void PixelsFastBrush::paintTriangle(size_t id, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize, glm::i32vec2 brushCenter,
-                                    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff) {
+                                    ColorChanges &diff) {
     for (glm::u32vec2 pixel : pixelsUvOfTriangle[id]) {
         glm::vec3 point(matrixModelView * glm::vec4(coordinatesFromUv[pixel.x * textureStorage->getHeight() + pixel.y], 1.0));
         glm::i32vec2 screenPoint(Geometry::toScreenCoordinates(point, projection, screenSize));
@@ -55,7 +54,7 @@ void PixelsFastBrush::paintTriangle(size_t id, glm::mat4x4 matrixModelView, glm:
         if (screenPoint.x >= 0 && screenPoint.y >= 0 && screenPoint.x < screenSize.x && screenPoint.y < screenSize.y
                 && glm::length(glm::vec2(brushCenter - screenPoint)) < radius
                 && ((idsStorage->hasNeighbourWithId(screenPoint, id)) || (objectModel->areAdjacentFaces(id, idsStorage->getId(screenPoint))))) {
-            diff.push_back({pixel, {textureStorage->getColor(pixel), color}});
+            diff.addChange(pixel, textureStorage->getColor(pixel), color);
             textureStorage->setColor(pixel, color);
         }
     }

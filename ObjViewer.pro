@@ -28,7 +28,8 @@ SOURCES += src/main.cpp \
     src/brush/model/idsstorage.cpp \
     src/brush/model/texturestorage.cpp \
     src/brush/model/objectmodel.cpp \
-    src/brush/model/face.cpp
+    src/brush/model/face.cpp \
+    src/brush/model/colorchanges.cpp
 
 HEADERS += src/ui/mainwindow.h \
     src/ui/mainglwidget.h \
@@ -43,7 +44,8 @@ HEADERS += src/ui/mainwindow.h \
     src/brush/model/texturestorage.h \
     src/brush/model/objectmodel.h \
     src/ui/vertexforbuffer.h \
-    src/brush/model/face.h
+    src/brush/model/face.h \
+    src/brush/model/colorchanges.h
 
 FORMS   += src/ui/mainwindow.ui
 

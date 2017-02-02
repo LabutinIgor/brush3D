@@ -18,8 +18,8 @@ void BrushHistory::undo(TextureStorage *currentTexture) {
     currentStroke--;
 
     auto diff = strokes[currentStroke].getDiff();
-    for (int i = diff.size() - 1; i >= 0; i--) {
-        currentTexture->setColor(diff[i].first.x, diff[i].first.y, diff[i].second.first);
+    for (int i = diff.getSize() - 1; i >= 0; i--) {
+        currentTexture->setColor(diff.getChange(i).first.x, diff.getChange(i).first.y, diff.getChange(i).second.first);
     }
 }
 
@@ -29,8 +29,8 @@ void BrushHistory::redo(TextureStorage *currentTexture) {
     }
 
     auto diff = strokes[currentStroke].getDiff();
-    for (int i = diff.size() - 1; i >= 0; i--) {
-        currentTexture->setColor(diff[i].first.x, diff[i].first.y, diff[i].second.second);
+    for (int i = diff.getSize() - 1; i >= 0; i--) {
+        currentTexture->setColor(diff.getChange(i).first.x, diff.getChange(i).first.y, diff.getChange(i).second.second);
     }
 
     currentStroke++;

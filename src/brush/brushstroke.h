@@ -5,16 +5,17 @@
 #include <glm.hpp>
 
 #include "color.h"
+#include "colorchanges.h"
 
 class BrushStroke {
 public:
     BrushStroke();
-    BrushStroke(std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff);
-    void add(std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> &diff);
-    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> getDiff();
+    BrushStroke(ColorChanges &diff);
+    void add(ColorChanges &diff);
+    ColorChanges getDiff();
 
 private:
-    std::vector<std::pair<glm::i32vec2, std::pair<Color, Color>>> diff;
+    ColorChanges diff;
 };
 
 #endif // BRUSHSTROKE_H
