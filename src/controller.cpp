@@ -24,38 +24,24 @@ void Controller::loadObj(const char *fileName) {
     if (!ret) {
         exit(1);
     }
-    int triangleId = 0;
+    uint32_t triangleId = 0;
 
     for (size_t s = 0; s < shapes.size(); s++) {
         size_t index_offset = 0;
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
             int fv = shapes[s].mesh.num_face_vertices[f];
             tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
-            VertexForBuffer firstVertex = VertexForBuffer(glm::vec3(attrib.vertices[3 * idx.vertex_index + 0],
-                                                                    attrib.vertices[3 * idx.vertex_index + 1],
-                                                                    attrib.vertices[3 * idx.vertex_index + 2]),
-                                                          glm::vec2(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                                    attrib.texcoords[2 * idx.texcoord_index + 1]),
-                                                          glm::vec3(0, 0, 0));
+            VertexForBuffer firstVertex = VertexForBuffer(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
+                                                                            idx.vertex_index, idx.texcoord_index, 0));
             for (size_t v = 1; v < (size_t) fv - 1; v++) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
                 firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
                 verticesForBuffer.push_back(firstVertex);
-                verticesForBuffer.push_back(VertexForBuffer(glm::vec3(attrib.vertices[3 * idxCurrent.vertex_index + 0],
-                                                             attrib.vertices[3 * idxCurrent.vertex_index + 1],
-                                                             attrib.vertices[3 * idxCurrent.vertex_index + 2]),
-                                                   glm::vec2(attrib.texcoords[2 * idxCurrent.texcoord_index + 0],
-                                                             attrib.texcoords[2 * idxCurrent.texcoord_index + 1]),
-                                                   glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
-
-                verticesForBuffer.push_back(VertexForBuffer(glm::vec3(attrib.vertices[3 * idxNext.vertex_index + 0],
-                                                             attrib.vertices[3 * idxNext.vertex_index + 1],
-                                                             attrib.vertices[3 * idxNext.vertex_index + 2]),
-                                                   glm::vec2(attrib.texcoords[2 * idxNext.texcoord_index + 0],
-                                                             attrib.texcoords[2 * idxNext.texcoord_index + 1]),
-                                                   glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256)));
-                triangleId++;
+                verticesForBuffer.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
+                                                              idxCurrent.vertex_index, idxCurrent.texcoord_index, triangleId));
+                verticesForBuffer.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
+                                                              idxNext.vertex_index, idxNext.texcoord_index, triangleId++));
             }
             index_offset += fv;
             shapes[s].mesh.material_ids[f];
@@ -79,6 +65,15 @@ void Controller::loadObj(const char *fileName) {
 
     setViewMatrixForObj();
     scaleCoefficient = 0;
+}
+
+VertexForBuffer Controller::vertexFromTinyobj(std::vector<float> &vertices, std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId) {
+    return VertexForBuffer(glm::vec3(vertices[3 * vId + 0],
+                                     vertices[3 * vId + 1],
+                                     vertices[3 * vId + 2]),
+                           glm::vec2(texcoords[2 * tId + 0],
+                                     texcoords[2 * tId + 1]),
+                           glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
 }
 
 void Controller::setViewMatrixForObj() {

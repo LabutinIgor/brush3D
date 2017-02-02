@@ -20,12 +20,6 @@ TextureStorage *AbstractBrush::getTextureStorage() {
     return textureStorage;
 }
 
-glm::vec3 AbstractBrush::fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection) {
-    return glm::vec3(point.x / matrixProjection[0][0],
-                     point.y / matrixProjection[1][1],
-                     -1.0);
-}
-
 void AbstractBrush::setIdsStorage(IdsStorage *idsStorage) {
     this->idsStorage = idsStorage;
 }

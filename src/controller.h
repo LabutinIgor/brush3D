@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <vector>
+
 #include "abstractbrush.h"
 #include "pixelsfastbrush.h"
 #include "vertexforbuffer.h"
@@ -56,6 +58,7 @@ private:
     BrushHistory brushHistory;
 
     glm::mat4x4 fromQMatrix(QMatrix4x4 qmat);
+    VertexForBuffer vertexFromTinyobj(std::vector<float> &vertices, std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId);
 };
 
 #endif // CONTROLLER_H

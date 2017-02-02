@@ -1,16 +1,16 @@
 #include "geometry.h"
 
 
-double Geometry::getMinY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x) {
-    return fmin(getMinIntersectionPoint(point1, point2, x),
-                fmin(getMinIntersectionPoint(point2, point3, x),
-                     getMinIntersectionPoint(point1, point3, x)));
+double Geometry::getMinY(glm::vec2* triangle, double x) {
+    return fmin(getMinIntersectionPoint(triangle[0], triangle[1], x),
+                fmin(getMinIntersectionPoint(triangle[1], triangle[2], x),
+                     getMinIntersectionPoint(triangle[0], triangle[2], x)));
 }
 
-double Geometry::getMaxY(glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, double x) {
-    return fmax(getMaxIntersectionPoint(point1, point2, x),
-                fmax(getMaxIntersectionPoint(point2, point3, x),
-                     getMaxIntersectionPoint(point1, point3, x)));
+double Geometry::getMaxY(glm::vec2* triangle, double x) {
+    return fmax(getMaxIntersectionPoint(triangle[0], triangle[1], x),
+                fmax(getMaxIntersectionPoint(triangle[1], triangle[2], x),
+                     getMaxIntersectionPoint(triangle[0], triangle[2], x)));
 }
 
 double Geometry::getMinIntersectionPoint(glm::vec2 point1, glm::vec2 point2, double x) {
@@ -75,3 +75,8 @@ glm::i32vec2 Geometry::toScreenCoordinates(glm::vec3 point, glm::mat4x4 projecti
                   screenSize.y * (1 - projectedPoint.y) / 2);
 }
 
+glm::vec3 Geometry::fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection) {
+    return glm::vec3(point.x / matrixProjection[0][0],
+                     point.y / matrixProjection[1][1],
+                     -1.0);
+}

@@ -29,25 +29,21 @@ void PixelsFastBrush::paintTriangle(size_t id, glm::mat4x4 matrixModelView, glm:
                                                * textureStorage->getWidth()));
 
     for (int x = minX; x <= maxX; x++) {
-        int minY = fmax(0, round(Geometry::getMinY(pointsUV[0], pointsUV[1], pointsUV[2],
-                                                   x / (1.0 * textureStorage->getWidth()))
-                           * textureStorage->getHeight()));
-        int maxY = fmin(textureStorage->getHeight() - 1, round(Geometry::getMaxY(pointsUV[0], pointsUV[1], pointsUV[2],
-                                                                            x / (1.0 * textureStorage->getWidth()))
-                                                    * textureStorage->getHeight()));
+        float xUv = x / (1.0 * textureStorage->getWidth());
+        int minY = fmax(0, round(Geometry::getMinY(pointsUV, xUv) * textureStorage->getHeight()));
+        int maxY = fmin(textureStorage->getHeight() - 1, round(Geometry::getMaxY(pointsUV, xUv) * textureStorage->getHeight()));
 
         for (int y = minY; y <= maxY; y++) {
-            glm::vec3 point = Geometry::getPointFromUVCoordinates(pointsUV, points,
-                                                                  glm::vec2(x / (1.0 * textureStorage->getWidth()),
-                                                                            y / (1.0 * textureStorage->getHeight())));
+            float yUv = y / (1.0 * textureStorage->getHeight());
+            glm::vec3 point = Geometry::getPointFromUVCoordinates(pointsUV, points, glm::vec2(xUv, yUv));
             glm::i32vec2 screenPoint(Geometry::toScreenCoordinates(point, projection, screenSize));
             if (screenPoint.x >= 0 && screenPoint.y >= 0 && screenPoint.x < screenSize.x && screenPoint.y < screenSize.y
                     && glm::length(glm::vec2(brushCenter - screenPoint)) < radius
                     && (idsStorage->getId(screenPoint) == id
-                        || idsStorage->getId(glm::i32vec2(screenPoint.x + 1, screenPoint.y)) == id
-                        || idsStorage->getId(glm::i32vec2(screenPoint.x - 1, screenPoint.y)) == id
-                        || idsStorage->getId(glm::i32vec2(screenPoint.x, screenPoint.y + 1)) == id
-                        || idsStorage->getId(glm::i32vec2(screenPoint.x, screenPoint.y - 1)) == id)) {
+                        || idsStorage->getId(screenPoint.x + 1, screenPoint.y) == id
+                        || idsStorage->getId(screenPoint.x - 1, screenPoint.y) == id
+                        || idsStorage->getId(screenPoint.x, screenPoint.y + 1) == id
+                        || idsStorage->getId(screenPoint.x, screenPoint.y - 1) == id)) {
                 diff.push_back({glm::i32vec2(x, y), {textureStorage->getColor(x, y), color}});
                 textureStorage->setColor(x, y, color);
             }

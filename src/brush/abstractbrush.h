@@ -10,8 +10,7 @@
 #include "objectmodel.h"
 #include "glm.hpp"
 
-class AbstractBrush
-{
+class AbstractBrush {
 public:
     AbstractBrush(ObjectModel* objectModel, TextureStorage* textureStorage);
     virtual ~AbstractBrush();
@@ -31,8 +30,6 @@ protected:
     ObjectModel* objectModel;
     TextureStorage *textureStorage;
     IdsStorage *idsStorage = 0;
-
-    glm::vec3 fromScreenCoordinates(glm::vec2 point, glm::mat4x4 matrixProjection);
 };
 
 #endif // ABSTRACTBRUSH_H
