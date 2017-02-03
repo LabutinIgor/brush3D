@@ -59,7 +59,7 @@ void Controller::loadObj(const char *fileName) {
     scaleCoefficient = 0;
 }
 
-VertexForBuffer Controller::vertexFromTinyobj(std::vector<float> &vertices, std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId) {
+VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId) {
     return VertexForBuffer(glm::vec3(vertices[3 * vId + 0],
                                      vertices[3 * vId + 1],
                                      vertices[3 * vId + 2]),
@@ -118,7 +118,7 @@ void Controller::initializeBrush() {
     brush->setRadius(10.0);
 }
 
-void Controller::mousePressed(QPoint position) {
+void Controller::mousePressed(const QPoint& position) {
     previousMousePosition = position;
     mousePosition = position;
     isMousePressed = true;
@@ -128,7 +128,7 @@ void Controller::mousePressed(QPoint position) {
     }
 }
 
-void Controller::mouseMoved(QPoint position) {
+void Controller::mouseMoved(const QPoint& position) {
     mousePosition = position;
     if (isBrashActive) {
         continueBrushStroke(position);
@@ -136,7 +136,7 @@ void Controller::mouseMoved(QPoint position) {
     }
 }
 
-void Controller::mouseReleased(QPoint position) {
+void Controller::mouseReleased(const QPoint& position) {
     mousePosition = position;
     if (isBrashActive) {
         endBrushStroke(position);
@@ -197,36 +197,33 @@ void Controller::setIdsStorage(QImage *idsBuffer) {
     brush->setIdsStorage(idsStorage);
 }
 
-void Controller::beginBrushStroke(QPoint point) {
+void Controller::beginBrushStroke(const QPoint& point) {
     auto firstStrokePart = brush->paint(glm::i32vec2(point.x(), point.y()),
                                         fromQMatrix(getModelViewMatrix()),
-                                        fromQMatrix(projectionMatrix),
-                                        glm::i32vec2(screenSize.x(), screenSize.y()));
+                                        fromQMatrix(projectionMatrix));
     currentStroke = BrushStroke(firstStrokePart);
     lastPointOfStroke = point;
 }
 
-void Controller::continueBrushStroke(QPoint point) {
+void Controller::continueBrushStroke(const QPoint& point) {
     auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
                                    glm::i32vec2(point.x(), point.y()),
                                    fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix),
-                                   glm::i32vec2(screenSize.x(), screenSize.y()));
+                                   fromQMatrix(projectionMatrix));
     currentStroke.addAll(strokePart);
     lastPointOfStroke = point;
 }
 
-void Controller::endBrushStroke(QPoint point) {
+void Controller::endBrushStroke(const QPoint& point) {
     auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
                                    glm::i32vec2(point.x(), point.y()),
                                    fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix),
-                                   glm::i32vec2(screenSize.x(), screenSize.y()));
+                                   fromQMatrix(projectionMatrix));
     currentStroke.addAll(strokePart);
     brushHistory.addStroke(currentStroke);
 }
 
-glm::mat4x4 Controller::fromQMatrix(QMatrix4x4 qmat) {
+glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4& qmat) {
     float const* data = qmat.constData();
     return glm::mat4x4(data[0],data[1], data[2], data[3],
                        data[4],data[5], data[6], data[7],
@@ -250,11 +247,11 @@ QMatrix4x4 Controller::getModelViewMatrix() {
     return viewMatrix * rotationMatrix * scaleMatrix;
 }
 
-QMatrix4x4 Controller::getProjectionMatrix() {
+const QMatrix4x4& Controller::getProjectionMatrix() {
     return projectionMatrix;
 }
 
-std::vector<VertexForBuffer> Controller::getVertices() {
+const std::vector<VertexForBuffer>& Controller::getVertices() {
     return verticesForBuffer;
 }
 

@@ -15,7 +15,7 @@ public:
     const std::vector<ColorChange>& getDiff() const;
 
 private:
-    std::vector<ColorChange> diff;
+    std::vector<ColorChange> diff_;
 };
 
 #endif // BRUSHSTROKE_H

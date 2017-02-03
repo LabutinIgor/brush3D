@@ -15,8 +15,8 @@ public:
     const std::vector<glm::vec3>& getCoordinates() const;
 
 private:
-    std::vector<glm::vec3> coordinates;
-    std::vector<glm::vec2> uv;
+    std::vector<glm::vec3> coordinates_;
+    std::vector<glm::vec2> uv_;
 };
 
 #endif // FACE_H

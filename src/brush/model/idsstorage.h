@@ -10,18 +10,18 @@ typedef uint32_t IdType;
 class IdsStorage {
 public:
     IdsStorage();
-    IdsStorage(uint32_t width, uint32_t height);
+    IdsStorage(size_t width, size_t height);
     uint32_t getWidth() const;
     uint32_t getHeight() const;
-    IdType getId(uint32_t row, uint32_t col) const;
-    IdType getId(glm::i32vec2 point) const;
-    void setId(uint32_t row, uint32_t col, IdType id);
-    bool hasNeighbourWithId(glm::i32vec2 point, uint32_t id) const;
+    IdType getId(size_t row, size_t col) const;
+    IdType getId(const glm::u32vec2& point) const;
+    void setId(size_t row, size_t col, IdType id);
+    bool hasNeighbourWithId(const glm::i32vec2& point, size_t id) const;
 
 private:
-    uint32_t width;
-    uint32_t height;
-    std::vector<IdType> ids;
+    uint32_t width_;
+    uint32_t height_;
+    std::vector<IdType> ids_;
 };
 
 #endif // IDSSTORAGE_H

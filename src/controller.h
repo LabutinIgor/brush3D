@@ -22,24 +22,24 @@ public:
     void loadTextureImage(const char *fileName);
     void initializeBrush();
     void setIdsStorage(QImage *idsBuffer);
-    void beginBrushStroke(QPoint point);
-    void continueBrushStroke(QPoint point);
-    void endBrushStroke(QPoint point);
+    void beginBrushStroke(const QPoint& point);
+    void continueBrushStroke(const QPoint& point);
+    void endBrushStroke(const QPoint& point);
     void updateSize(int width, int height);
     void updateRotationMatrix();
-    void updateTransformMatrix(QPoint mousePosition);
+    void updateTransformMatrix(const QPoint& mousePosition);
     void updateProjectionMatrixToResize(int width, int height);
-    void mouseMoved(QPoint position);
-    void mousePressed(QPoint position);
-    void mouseReleased(QPoint position);
+    void mouseMoved(const QPoint& position);
+    void mousePressed(const QPoint& position);
+    void mouseReleased(const QPoint& position);
     void keyPressed(int key);
     void keyReleased(int key);
     void wheelScrolled(int delta);
     bool getIsBrushUpdated();
     QMatrix4x4 getModelViewMatrix();
-    QMatrix4x4 getProjectionMatrix();
+    const QMatrix4x4& getProjectionMatrix();
     QImage *getTextureFromBrush();
-    std::vector<VertexForBuffer> getVertices();
+    const std::vector<VertexForBuffer>& getVertices();
 
 private:
     AbstractBrush *brush = 0;
@@ -62,8 +62,8 @@ private:
     QPoint lastPointOfStroke;
     BrushHistory brushHistory;
 
-    glm::mat4x4 fromQMatrix(QMatrix4x4 qmat);
-    VertexForBuffer vertexFromTinyobj(std::vector<float> &vertices, std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId);
+    glm::mat4x4 fromQMatrix(const QMatrix4x4& qmat);
+    VertexForBuffer vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId);
 };
 
 #endif // CONTROLLER_H

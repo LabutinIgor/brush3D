@@ -15,20 +15,20 @@ class AbstractBrush {
 public:
     AbstractBrush(const ObjectModel& objectModel, TextureStorage textureStorage);
     virtual ~AbstractBrush();
-    virtual BrushStroke paint(glm::i32vec2 point, glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) = 0;
-    virtual BrushStroke paint(glm::i32vec2 previousPoint, glm::i32vec2 currentPoint,
-                               glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize);
+    virtual BrushStroke paint(const glm::i32vec2& point, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection) = 0;
+    virtual BrushStroke paint(const glm::i32vec2& previousPoint, const glm::i32vec2& currentPoint,
+                              const glm::mat4x4& matrixModelView, const glm::mat4x4& projection);
     void setRadius(double radius);
-    void setColor(glm::u8vec3 color);
-    void setIdsStorage(IdsStorage idsStorage);
+    void setColor(const glm::u8vec3& color);
+    void setIdsStorage(const IdsStorage& idsStorage);
     TextureStorage& getTextureStorage();
 
 protected:
-    double radius = 10;
-    glm::u8vec3 color = glm::u8vec3(255, 0, 0);
-    const ObjectModel& objectModel;
-    TextureStorage textureStorage;
-    IdsStorage idsStorage;
+    double radius_ = 10;
+    glm::u8vec3 color_ = glm::u8vec3(255, 0, 0);
+    const ObjectModel& objectModel_;
+    TextureStorage textureStorage_;
+    IdsStorage idsStorage_;
 };
 
 #endif // ABSTRACTBRUSH_H

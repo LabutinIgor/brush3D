@@ -1,5 +1,5 @@
-#ifndef VertexForBufferFORBUFFER_H
-#define VertexForBufferFORBUFFER_H
+#ifndef VERTEXFORBUFFER_H
+#define VERTEXFORBUFFER_H
 
 #include <glm.hpp>
 
@@ -56,7 +56,7 @@ void inline VertexForBuffer::setUv(const glm::vec2 &uv) { m_uv = uv; }
 
 void inline VertexForBuffer::setId(const glm::vec3 &id) { m_id = id; }
 
-// OpenGL Helpers
+
 inline int VertexForBuffer::positionOffset() { return offsetof(VertexForBuffer, m_position); }
 
 inline int VertexForBuffer::uvOffset() { return offsetof(VertexForBuffer, m_uv); }
@@ -65,4 +65,4 @@ inline int VertexForBuffer::idOffset() { return offsetof(VertexForBuffer, m_id);
 
 inline int VertexForBuffer::stride() { return sizeof(VertexForBuffer); }
 
-#endif // VertexForBufferFORBUFFER_H
+#endif // VERTEXFORBUFFER_H
