@@ -4,17 +4,18 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "colorchanges.h"
+#include "colorchange.h"
 
 class BrushStroke {
 public:
     BrushStroke();
-    BrushStroke(ColorChanges &diff);
-    void add(ColorChanges &diff);
-    ColorChanges getDiff();
+    BrushStroke(const ColorChange& colorChange);
+    void add(const ColorChange& diff);
+    void addAll(const BrushStroke& stroke);
+    const std::vector<ColorChange>& getDiff() const;
 
 private:
-    ColorChanges diff;
+    std::vector<ColorChange> diff;
 };
 
 #endif // BRUSHSTROKE_H

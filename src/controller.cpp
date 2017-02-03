@@ -48,20 +48,12 @@ void Controller::loadObj(const char *fileName) {
         }
     }
 
-    if (objectModel != 0) {
-        delete objectModel;
-    }
-
     uint32_t verticesNumber = verticesForBuffer.size();
-    glm::vec3* coordinates = new glm::vec3[verticesNumber];
-    glm::vec2* uv = new glm::vec2[verticesNumber];
+    objectModel = ObjectModel(verticesNumber, verticesNumber / 3);
 
     for (uint32_t i = 0; i < verticesForBuffer.size(); i++) {
-        coordinates[i] = verticesForBuffer[i].position();
-        uv[i] = verticesForBuffer[i].uv();
+        objectModel.setVertex(i, verticesForBuffer[i].position(), verticesForBuffer[i].uv());
     }
-
-    objectModel = new ObjectModel(verticesNumber, verticesNumber / 3, coordinates, uv);
 
     setViewMatrixForObj();
     scaleCoefficient = 0;
@@ -110,19 +102,17 @@ void Controller::loadTextureImage(const char *fileName) {
 }
 
 void Controller::initializeBrush() {
-    int w = textureImage->width();
-    int h = textureImage->height();
-    glm::u8vec3* colorData = new glm::u8vec3[w * h];
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
-            QColor color = textureImage->pixelColor(x, y);
-            colorData[h * x + y] = glm::u8vec3(color.red(), color.green(), color.blue());
-        }
-    }
-    TextureStorage* textureStorage = new TextureStorage(w, h, colorData);
-
     if (brush != 0) {
         delete brush;
+    }
+    size_t w = textureImage->width();
+    size_t h = textureImage->height();
+    textureStorage = TextureStorage(w, h);
+    for (size_t x = 0; x < w; x++) {
+        for (size_t y = 0; y < h; y++) {
+            QColor color = textureImage->pixelColor(x, y);
+            textureStorage.setColor(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
+        }
     }
     brush = new PixelsFastBrush(objectModel, textureStorage);
     brush->setRadius(10.0);
@@ -194,16 +184,15 @@ bool Controller::getIsBrushUpdated() {
 }
 
 void Controller::setIdsStorage(QImage *idsBuffer) {
-    int w = idsBuffer->width();
-    int h = idsBuffer->height();
-    IdType* idsData = new IdType[w * h];
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
+    size_t w = idsBuffer->width();
+    size_t h = idsBuffer->height();
+    IdsStorage idsStorage(w, h);
+    for (size_t x = 0; x < w; x++) {
+        for (size_t y = 0; y < h; y++) {
             QColor color = idsBuffer->pixelColor(x, y);
-            idsData[h * x + y] = color.red() + color.green() * 256 + color.blue() * 256 * 256;
+            idsStorage.setId(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
         }
     }
-    IdsStorage* idsStorage = new IdsStorage(w, h, idsData);
 
     brush->setIdsStorage(idsStorage);
 }
@@ -223,7 +212,7 @@ void Controller::continueBrushStroke(QPoint point) {
                                    fromQMatrix(getModelViewMatrix()),
                                    fromQMatrix(projectionMatrix),
                                    glm::i32vec2(screenSize.x(), screenSize.y()));
-    currentStroke.add(strokePart);
+    currentStroke.addAll(strokePart);
     lastPointOfStroke = point;
 }
 
@@ -233,7 +222,7 @@ void Controller::endBrushStroke(QPoint point) {
                                    fromQMatrix(getModelViewMatrix()),
                                    fromQMatrix(projectionMatrix),
                                    glm::i32vec2(screenSize.x(), screenSize.y()));
-    currentStroke.add(strokePart);
+    currentStroke.addAll(strokePart);
     brushHistory.addStroke(currentStroke);
 }
 
@@ -272,11 +261,11 @@ std::vector<VertexForBuffer> Controller::getVertices() {
 QImage *Controller::getTextureFromBrush() {
     isBrushUpdated = false;
 
-    TextureStorage* textureStorage = brush->getTextureStorage();
+    TextureStorage& textureStorage = brush->getTextureStorage();
 
-    for (uint32_t x = 0; x < textureStorage->getWidth(); x++) {
-        for (uint32_t y = 0; y < textureStorage->getHeight(); y++) {
-            glm::u8vec3 color = textureStorage->getColor(x, y);
+    for (size_t x = 0; x < textureStorage.getWidth(); x++) {
+        for (size_t y = 0; y < textureStorage.getHeight(); y++) {
+            glm::u8vec3 color = textureStorage.getColor(x, y);
             textureImage->setPixelColor(x, y, QColor(color.r, color.g, color.b));
         }
     }

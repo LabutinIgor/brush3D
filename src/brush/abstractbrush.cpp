@@ -1,11 +1,10 @@
 #include "abstractbrush.h"
 
-AbstractBrush::AbstractBrush(ObjectModel* objectModel, TextureStorage* textureStorage) :
+AbstractBrush::AbstractBrush(const ObjectModel& objectModel, const TextureStorage textureStorage) :
     objectModel(objectModel), textureStorage(textureStorage) {
 }
 
 AbstractBrush::~AbstractBrush() {
-    delete textureStorage;
 }
 
 void AbstractBrush::setRadius(double radius) {
@@ -16,17 +15,17 @@ void AbstractBrush::setColor(glm::u8vec3 color) {
     this->color = color;
 }
 
-TextureStorage *AbstractBrush::getTextureStorage() {
+TextureStorage& AbstractBrush::getTextureStorage() {
     return textureStorage;
 }
 
-void AbstractBrush::setIdsStorage(IdsStorage *idsStorage) {
+void AbstractBrush::setIdsStorage(IdsStorage idsStorage) {
     this->idsStorage = idsStorage;
 }
 
-ColorChanges AbstractBrush::paint(glm::i32vec2 previousPoint, glm::i32vec2 lastPoint,
+BrushStroke AbstractBrush::paint(glm::i32vec2 previousPoint, glm::i32vec2 lastPoint,
                                   glm::mat4x4 matrixModelView, glm::mat4x4 projection, glm::i32vec2 screenSize) {
-    ColorChanges diff;
+    BrushStroke diff;
 
     glm::vec2 d(previousPoint - lastPoint);
     int cntRounds = glm::length(d);

@@ -21,8 +21,7 @@
 #include "controller.h"
 
 class MainGLWidget : public QOpenGLWidget,
-        protected QOpenGLFunctions
-{
+        protected QOpenGLFunctions {
     Q_OBJECT
 
 public:

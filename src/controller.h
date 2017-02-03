@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include <vector>
+#include <iostream>
 #include <QImage>
 #include <QPoint>
 #include <QMatrix4x4>
@@ -42,7 +43,8 @@ public:
 
 private:
     AbstractBrush *brush = 0;
-    ObjectModel *objectModel = 0;
+    ObjectModel objectModel;
+    TextureStorage textureStorage;
     std::vector<VertexForBuffer> verticesForBuffer;
     QImage *textureImage = 0;
     QMatrix4x4 rotationMatrix;
