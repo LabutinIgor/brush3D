@@ -2,7 +2,6 @@
 #define BRUSHHISTORY_H
 
 #include <vector>
-#include <iostream>
 
 #include "brushstroke.h"
 #include "texturestorage.h"

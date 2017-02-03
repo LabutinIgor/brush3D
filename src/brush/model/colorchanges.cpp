@@ -3,7 +3,7 @@
 ColorChanges::ColorChanges() {
 }
 
-void ColorChanges::addChange(glm::i32vec2 pixel, Color oldColor, Color newColor) {
+void ColorChanges::addChange(glm::i32vec2 pixel, glm::u8vec3 oldColor, glm::u8vec3 newColor) {
     changes.push_back({pixel, {oldColor, newColor}});
 }
 
@@ -15,7 +15,7 @@ uint32_t ColorChanges::getSize() {
     return changes.size();
 }
 
-std::pair<glm::i32vec2, std::pair<Color, Color>> ColorChanges::getChange(uint32_t id) {
+std::pair<glm::i32vec2, std::pair<glm::u8vec3, glm::u8vec3>> ColorChanges::getChange(uint32_t id) {
     return changes[id];
 }
 

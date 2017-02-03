@@ -1,7 +1,7 @@
 #ifndef IDSSTORAGE_H
 #define IDSSTORAGE_H
 
-#include <inttypes.h>
+#include <cstdint>
 #include <glm.hpp>
 
 typedef uint32_t IdType;

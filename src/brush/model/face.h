@@ -1,7 +1,7 @@
 #ifndef FACE_H
 #define FACE_H
 
-#include "glm.hpp"
+#include <glm.hpp>
 
 class Face {
 public:

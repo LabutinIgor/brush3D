@@ -4,7 +4,6 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "color.h"
 #include "colorchanges.h"
 
 class BrushStroke {

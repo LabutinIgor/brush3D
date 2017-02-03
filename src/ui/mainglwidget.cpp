@@ -1,5 +1,4 @@
 #include "mainglwidget.h"
-#include <iomanip>
 
 MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
     controller = new Controller();
@@ -55,7 +54,6 @@ void MainGLWidget::paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
-        //glm::mat4 transformMatrix = controller->getProjectionMatrix() * controller->getModelViewMatrix();
         program->setUniformValue(matrixID, transformMatrix);
         if (texture != 0) {
             if (controller->getIsBrushUpdated()) {

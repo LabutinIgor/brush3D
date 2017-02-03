@@ -1,4 +1,3 @@
-
 #include "abstractbrush.h"
 
 AbstractBrush::AbstractBrush(ObjectModel* objectModel, TextureStorage* textureStorage) :
@@ -13,7 +12,7 @@ void AbstractBrush::setRadius(double radius) {
     this->radius = radius;
 }
 
-void AbstractBrush::setColor(Color color) {
+void AbstractBrush::setColor(glm::u8vec3 color) {
     this->color = color;
 }
 

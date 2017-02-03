@@ -1,8 +1,6 @@
 #ifndef PIXELSFASTBRUSH_H
 #define PIXELSFASTBRUSH_H
 
-
-#include <QOpenGLTexture>
 #include <vector>
 #include <unordered_set>
 

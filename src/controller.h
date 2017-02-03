@@ -2,6 +2,9 @@
 #define CONTROLLER_H
 
 #include <vector>
+#include <QImage>
+#include <QPoint>
+#include <QMatrix4x4>
 
 #include "abstractbrush.h"
 #include "pixelsfastbrush.h"

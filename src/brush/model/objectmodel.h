@@ -2,7 +2,7 @@
 #define OBJECTMODEL_H
 
 #include <iostream>
-#include <inttypes.h>
+#include <cstdint>
 #include <glm.hpp>
 
 #include "face.h"

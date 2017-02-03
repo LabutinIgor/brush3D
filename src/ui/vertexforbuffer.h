@@ -36,14 +36,6 @@ private:
     glm::vec3 m_id;
 };
 
-/*******************************************************************************
- * Inline Implementation
- ******************************************************************************/
-
-// Note: Q_MOVABLE_TYPE means it can be memcpy'd.
-Q_DECLARE_TYPEINFO(VertexForBuffer, Q_MOVABLE_TYPE);
-
-// Constructors
 inline VertexForBuffer::VertexForBuffer() {}
 
 inline VertexForBuffer::VertexForBuffer(const glm::vec3 &position) :

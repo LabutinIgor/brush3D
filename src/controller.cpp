@@ -112,11 +112,11 @@ void Controller::loadTextureImage(const char *fileName) {
 void Controller::initializeBrush() {
     int w = textureImage->width();
     int h = textureImage->height();
-    Color* colorData = new Color[w * h];
+    glm::u8vec3* colorData = new glm::u8vec3[w * h];
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             QColor color = textureImage->pixelColor(x, y);
-            colorData[h * x + y] = Color(color.red(), color.green(), color.blue());
+            colorData[h * x + y] = glm::u8vec3(color.red(), color.green(), color.blue());
         }
     }
     TextureStorage* textureStorage = new TextureStorage(w, h, colorData);
@@ -276,8 +276,8 @@ QImage *Controller::getTextureFromBrush() {
 
     for (uint32_t x = 0; x < textureStorage->getWidth(); x++) {
         for (uint32_t y = 0; y < textureStorage->getHeight(); y++) {
-            Color color = textureStorage->getColor(x, y);
-            textureImage->setPixelColor(x, y, QColor(color.getR(), color.getG(), color.getB()));
+            glm::u8vec3 color = textureStorage->getColor(x, y);
+            textureImage->setPixelColor(x, y, QColor(color.r, color.g, color.b));
         }
     }
 

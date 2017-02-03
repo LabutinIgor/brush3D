@@ -1,9 +1,8 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <QMatrix4x4>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <glm.hpp>
 
 class Geometry

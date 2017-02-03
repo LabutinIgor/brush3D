@@ -24,7 +24,6 @@ SOURCES += src/main.cpp \
     src/brush/brushstroke.cpp \
     src/brush/brushhistory.cpp \
     src/brush/pixelsfastbrush.cpp \
-    src/brush/model/color.cpp \
     src/brush/model/idsstorage.cpp \
     src/brush/model/texturestorage.cpp \
     src/brush/model/objectmodel.cpp \
@@ -39,7 +38,6 @@ HEADERS += src/ui/mainwindow.h \
     src/brush/brushstroke.h \
     src/brush/brushhistory.h \
     src/brush/pixelsfastbrush.h \
-    src/brush/model/color.h \
     src/brush/model/idsstorage.h \
     src/brush/model/texturestorage.h \
     src/brush/model/objectmodel.h \
