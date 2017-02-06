@@ -14,6 +14,8 @@
 class AbstractBrush {
 public:
     AbstractBrush(const ObjectModel& objectModel, const TextureStorage& textureStorage);
+    AbstractBrush(const AbstractBrush& other) = delete;
+    AbstractBrush& operator=(const AbstractBrush& other) = delete;
     virtual ~AbstractBrush();
     virtual BrushStroke paint(const glm::i32vec2& point, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
                               const IdsStorage& idsStorage) = 0;
@@ -23,7 +25,7 @@ public:
     void setRadius(double radius);
     double getRadius() const;
     void setColor(const glm::u8vec3& color);
-    const glm::u8vec3& getColor() const;
+    glm::u8vec3 getColor() const;
     TextureStorage& getTextureStorage();
 
 protected:

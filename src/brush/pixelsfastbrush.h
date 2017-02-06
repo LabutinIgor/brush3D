@@ -17,8 +17,9 @@ private:
     std::vector<std::vector<glm::u32vec2>> pixelsUvOfTriangle_;
     std::vector<glm::vec3> coordinatesFromUv_;
 
-    std::unordered_set<size_t> getIntersectedTrianglesIds(const glm::i32vec2& brushCenter, const IdsStorage& idsStorage);
-    void paintTriangle(size_t id, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
+    std::unordered_set<IdType> getIntersectedTrianglesIds(const glm::mat4x4& matrixModelView, const glm::i32vec2& brushCenter,
+                                                          const IdsStorage& idsStorage);
+    void paintTriangle(IdType id, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
                        const glm::i32vec2& brushCenter, const IdsStorage& idsStorage, BrushStroke &diff);
 
 };

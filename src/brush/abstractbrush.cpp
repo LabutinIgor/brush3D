@@ -19,7 +19,7 @@ double AbstractBrush::getRadius() const {
     return radius_;
 }
 
-const glm::u8vec3& AbstractBrush::getColor() const {
+glm::u8vec3 AbstractBrush::getColor() const {
     return color_;
 }
 
@@ -34,7 +34,7 @@ BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i
 
     glm::vec2 d(previousPoint - lastPoint);
     int cntRounds = glm::length(d);
-    for (int i = 0; i < cntRounds; i++) {
+    for (int i = 0; i < cntRounds; ++i) {
         glm::i32vec2 currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
         auto currentPointDiff = paint(currentPoint, matrixModelView, projection, idsStorage);
         diff.addAll(currentPointDiff);

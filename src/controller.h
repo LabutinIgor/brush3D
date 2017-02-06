@@ -17,6 +17,7 @@
 class Controller {
 public:
     Controller();
+    Controller(const Controller& other) = delete;
     void loadObj(const char *fileName);
     void setViewMatrixForObj();
     void loadTextureImage(const char *fileName);
@@ -47,7 +48,7 @@ private:
     TextureStorage textureStorage_;
     IdsStorage idsStorage_;
     std::vector<VertexForBuffer> verticesForBuffer_;
-    QImage *textureImage_ = 0;
+    QImage textureImage_;
     QMatrix4x4 rotationMatrix_;
     QMatrix4x4 scaleMatrix_;
     QMatrix4x4 viewMatrix_;

@@ -11,16 +11,16 @@ class IdsStorage {
 public:
     IdsStorage();
     IdsStorage(size_t width, size_t height);
-    uint32_t getWidth() const;
-    uint32_t getHeight() const;
+    size_t getWidth() const;
+    size_t getHeight() const;
     IdType getId(size_t row, size_t col) const;
     IdType getId(const glm::u32vec2& point) const;
     void setId(size_t row, size_t col, IdType id);
-    bool hasNeighbourWithId(const glm::i32vec2& point, size_t id) const;
+    bool hasNeighbourWithId(const glm::i32vec2& point, IdType id) const;
 
 private:
-    uint32_t width_;
-    uint32_t height_;
+    size_t width_;
+    size_t height_;
     std::vector<IdType> ids_;
 };
 

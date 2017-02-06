@@ -8,17 +8,17 @@ void BrushHistory::addStroke(const BrushStroke& stroke) {
         strokes_.pop_back();
     }
     strokes_.push_back(stroke);
-    currentStroke_++;
+    ++currentStroke_;
 }
 
 void BrushHistory::undo(TextureStorage& currentTexture) {
     if (currentStroke_ == 0) {
         return;
     }
-    currentStroke_--;
+    --currentStroke_;
 
     auto diff = strokes_[currentStroke_].getDiff();
-    for (int i = diff.size() - 1; i >= 0; i--) {
+    for (int i = diff.size() - 1; i >= 0; --i) {
         currentTexture.setColor(diff[i].pixel, diff[i].previousColor);
     }
 }
@@ -29,9 +29,9 @@ void BrushHistory::redo(TextureStorage& currentTexture) {
     }
 
     auto diff = strokes_[currentStroke_].getDiff();
-    for (int i = diff.size() - 1; i >= 0; i--) {
+    for (int i = diff.size() - 1; i >= 0; --i) {
         currentTexture.setColor(diff[i].pixel, diff[i].previousColor);
     }
 
-    currentStroke_++;
+    ++currentStroke_;
 }

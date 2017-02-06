@@ -26,14 +26,14 @@ void Controller::loadObj(const char *fileName) {
     }
     uint32_t triangleId = 0;
 
-    for (size_t s = 0; s < shapes.size(); s++) {
+    for (size_t s = 0; s < shapes.size(); ++s) {
         size_t index_offset = 0;
-        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); ++f) {
             int fv = shapes[s].mesh.num_face_vertices[f];
             tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
             VertexForBuffer firstVertex = VertexForBuffer(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
                                                                             idx.vertex_index, idx.texcoord_index, 0));
-            for (size_t v = 1; v < (size_t) fv - 1; v++) {
+            for (size_t v = 1; v < (size_t) fv - 1; ++v) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
                 firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
@@ -51,7 +51,7 @@ void Controller::loadObj(const char *fileName) {
     uint32_t verticesNumber = verticesForBuffer_.size();
     objectModel_ = ObjectModel(verticesNumber, verticesNumber / 3);
 
-    for (uint32_t i = 0; i < verticesForBuffer_.size(); i++) {
+    for (uint32_t i = 0; i < verticesForBuffer_.size(); ++i) {
         objectModel_.setVertex(i, verticesForBuffer_[i].position(), verticesForBuffer_[i].uv());
     }
 
@@ -59,7 +59,8 @@ void Controller::loadObj(const char *fileName) {
     scaleCoefficient_ = 0;
 }
 
-VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId) {
+VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords,
+                                              uint32_t vId, uint32_t tId, uint32_t triangleId) {
     return VertexForBuffer(glm::vec3(vertices[3 * vId + 0],
                                      vertices[3 * vId + 1],
                                      vertices[3 * vId + 2]),
@@ -94,23 +95,20 @@ void Controller::updateRotationMatrix() {
 }
 
 void Controller::loadTextureImage(const char *fileName) {
-    if (textureImage_ != 0) {
-        delete textureImage_;
-    }
     QImage image(fileName);
-    textureImage_ = new QImage(image.mirrored());
+    textureImage_ = QImage(image.mirrored());
 }
 
 void Controller::initializeBrush() {
     if (brush_ != 0) {
         delete brush_;
     }
-    size_t w = textureImage_->width();
-    size_t h = textureImage_->height();
+    size_t w = textureImage_.width();
+    size_t h = textureImage_.height();
     textureStorage_ = TextureStorage(w, h);
-    for (size_t x = 0; x < w; x++) {
-        for (size_t y = 0; y < h; y++) {
-            QColor color = textureImage_->pixelColor(x, y);
+    for (size_t x = 0; x < w; ++x) {
+        for (size_t y = 0; y < h; ++y) {
+            QColor color = textureImage_.pixelColor(x, y);
             textureStorage_.setColor(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
         }
     }
@@ -187,8 +185,8 @@ void Controller::setIdsStorage(QImage *idsBuffer) {
     size_t w = idsBuffer->width();
     size_t h = idsBuffer->height();
     idsStorage_ = IdsStorage(w, h);
-    for (size_t x = 0; x < w; x++) {
-        for (size_t y = 0; y < h; y++) {
+    for (size_t x = 0; x < w; ++x) {
+        for (size_t y = 0; y < h; ++y) {
             QColor color = idsBuffer->pixelColor(x, y);
             idsStorage_.setId(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
         }
@@ -260,12 +258,12 @@ QImage *Controller::getTextureFromBrush() {
 
     TextureStorage& textureStorage_ = brush_->getTextureStorage();
 
-    for (size_t x = 0; x < textureStorage_.getWidth(); x++) {
-        for (size_t y = 0; y < textureStorage_.getHeight(); y++) {
+    for (size_t x = 0; x < textureStorage_.getWidth(); ++x) {
+        for (size_t y = 0; y < textureStorage_.getHeight(); ++y) {
             glm::u8vec3 color = textureStorage_.getColor(x, y);
-            textureImage_->setPixelColor(x, y, QColor(color.r, color.g, color.b));
+            textureImage_.setPixelColor(x, y, QColor(color.r, color.g, color.b));
         }
     }
 
-    return textureImage_;
+    return &textureImage_;
 }

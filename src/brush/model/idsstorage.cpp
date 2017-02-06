@@ -3,15 +3,14 @@
 IdsStorage::IdsStorage() {
 }
 
-IdsStorage::IdsStorage(size_t width, size_t height) : width_(width), height_(height) {
-    ids_.resize(width * height);
+IdsStorage::IdsStorage(size_t width, size_t height) : width_(width), height_(height), ids_(width * height) {
 }
 
-uint32_t IdsStorage::getWidth() const {
+size_t IdsStorage::getWidth() const {
     return width_;
 }
 
-uint32_t IdsStorage::getHeight() const {
+size_t IdsStorage::getHeight() const {
     return height_;
 }
 
@@ -27,9 +26,9 @@ void IdsStorage::setId(size_t row, size_t col, IdType id) {
     ids_[row * height_ + col] = id;
 }
 
-bool IdsStorage::hasNeighbourWithId(const glm::i32vec2& point, size_t id) const {
-    for (int dx = -1; dx <= 1; dx++) {
-        for (int dy = -1; dy <= 1; dy++) {
+bool IdsStorage::hasNeighbourWithId(const glm::i32vec2& point, IdType id) const {
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dy = -1; dy <= 1; ++dy) {
             glm::i32vec2 newPoint = glm::i32vec2(point.x + dx, point.y + dy);
             if (newPoint.x >= 0 && newPoint.y >= 0 && newPoint.x < (int32_t) width_ && newPoint.y < (int32_t) height_ && getId(newPoint) == id) {
                 return true;
