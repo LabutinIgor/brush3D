@@ -10,13 +10,13 @@ class Face {
 public:
     Face(const ObjectModel& objectModel, size_t idFace);
     const glm::vec2& getUv(size_t id) const;
-    const glm::vec3& getCoordinates(size_t id) const;
-    const std::vector<glm::vec2>& getUvs() const;
-    const std::vector<glm::vec3>& getCoordinates() const;
+    const glm::vec3& getPositions(size_t id) const;
+    const std::vector<glm::vec2> getUvs() const;
+    const std::vector<glm::vec3> getPositions() const;
 
 private:
-    std::vector<glm::vec3> coordinates_;
-    std::vector<glm::vec2> uv_;
+    glm::vec3 position_[3];
+    glm::vec2 uv_[3];
 };
 
 #endif // FACE_H

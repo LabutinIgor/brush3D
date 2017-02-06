@@ -15,6 +15,9 @@ public:
     static glm::vec3 getPointFromUVCoordinates(const std::vector<glm::vec2>& pointsUV, const std::vector<glm::vec3>& points, const glm::vec2& pointUV);
     static glm::i32vec2 toScreenCoordinates(const glm::vec3& point, const glm::mat4x4& projection, const glm::i32vec2& screenSize);
     static glm::vec3 fromScreenCoordinates(const glm::vec2& point, const glm::mat4x4& matrixProjection);
+
+private:
+    static constexpr double EPS = 1e-5;
 };
 
 #endif // GEOMETRY_H

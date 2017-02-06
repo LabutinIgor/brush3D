@@ -13,22 +13,26 @@
 
 class AbstractBrush {
 public:
-    AbstractBrush(const ObjectModel& objectModel, TextureStorage textureStorage);
+    AbstractBrush(const ObjectModel& objectModel, const TextureStorage& textureStorage);
     virtual ~AbstractBrush();
-    virtual BrushStroke paint(const glm::i32vec2& point, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection) = 0;
+    virtual BrushStroke paint(const glm::i32vec2& point, const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
+                              const IdsStorage& idsStorage) = 0;
     virtual BrushStroke paint(const glm::i32vec2& previousPoint, const glm::i32vec2& currentPoint,
-                              const glm::mat4x4& matrixModelView, const glm::mat4x4& projection);
+                              const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
+                              const IdsStorage& idsStorage);
     void setRadius(double radius);
+    double getRadius() const;
     void setColor(const glm::u8vec3& color);
-    void setIdsStorage(const IdsStorage& idsStorage);
+    const glm::u8vec3& getColor() const;
     TextureStorage& getTextureStorage();
 
 protected:
-    double radius_ = 10;
-    glm::u8vec3 color_ = glm::u8vec3(255, 0, 0);
     const ObjectModel& objectModel_;
     TextureStorage textureStorage_;
-    IdsStorage idsStorage_;
+
+private:
+    double radius_ = 10;
+    glm::u8vec3 color_ = glm::u8vec3(255, 0, 0);
 };
 
 #endif // ABSTRACTBRUSH_H

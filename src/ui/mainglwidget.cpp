@@ -103,8 +103,7 @@ void MainGLWidget::teardownGL() {
 }
 
 void MainGLWidget::loadObjHandler() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-                                                    tr("Obj Files (*.obj)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Obj Files (*.obj)"));
     if (fileName != "") {
         controller->loadObj(fileName.toStdString().c_str());
         vertices = controller->getVertices();
@@ -114,8 +113,7 @@ void MainGLWidget::loadObjHandler() {
 }
 
 void MainGLWidget::loadTextureHandler() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-                                                    tr("Textures (*.bmp *.png *.jpg)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Textures (*.bmp *.png *.jpg)"));
     if (fileName != "") {
         controller->loadTextureImage(fileName.toStdString().c_str());
         controller->initializeBrush();

@@ -27,7 +27,7 @@ public:
     void endBrushStroke(const QPoint& point);
     void updateSize(int width, int height);
     void updateRotationMatrix();
-    void updateTransformMatrix(const QPoint& mousePosition);
+    void updateTransformMatrix(const QPoint& mousePosition_);
     void updateProjectionMatrixToResize(int width, int height);
     void mouseMoved(const QPoint& position);
     void mousePressed(const QPoint& position);
@@ -42,28 +42,29 @@ public:
     const std::vector<VertexForBuffer>& getVertices();
 
 private:
-    AbstractBrush *brush = 0;
-    ObjectModel objectModel;
-    TextureStorage textureStorage;
-    std::vector<VertexForBuffer> verticesForBuffer;
-    QImage *textureImage = 0;
-    QMatrix4x4 rotationMatrix;
-    QMatrix4x4 scaleMatrix;
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
-    QPoint previousMousePosition;
-    QPoint mousePosition;
-    bool isMousePressed = false;
-    bool isBrashActive = false;
-    bool isBrushUpdated = false;
-    double scaleCoefficient = 0;
-    QPoint screenSize;
-    BrushStroke currentStroke;
-    QPoint lastPointOfStroke;
-    BrushHistory brushHistory;
+    AbstractBrush *brush_ = 0;
+    ObjectModel objectModel_;
+    TextureStorage textureStorage_;
+    IdsStorage idsStorage_;
+    std::vector<VertexForBuffer> verticesForBuffer_;
+    QImage *textureImage_ = 0;
+    QMatrix4x4 rotationMatrix_;
+    QMatrix4x4 scaleMatrix_;
+    QMatrix4x4 viewMatrix_;
+    QMatrix4x4 projectionMatrix_;
+    QPoint previousMousePosition_;
+    QPoint mousePosition_;
+    bool isMousePressed_ = false;
+    bool isBrashActive_ = false;
+    bool isBrushUpdated_ = false;
+    double scaleCoefficient_ = 0;
+    BrushStroke currentStroke_;
+    QPoint lastPointOfStroke_;
+    BrushHistory brushHistory_;
 
     glm::mat4x4 fromQMatrix(const QMatrix4x4& qmat);
-    VertexForBuffer vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId);
+    VertexForBuffer vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords,
+                                      uint32_t vId, uint32_t tId, uint32_t triangleId);
 };
 
 #endif // CONTROLLER_H

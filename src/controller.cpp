@@ -4,13 +4,13 @@
 #include "tiny_obj_loader.h"
 
 Controller::Controller() {
-    rotationMatrix.setToIdentity();
-    scaleMatrix.setToIdentity();
-    viewMatrix.setToIdentity();
+    rotationMatrix_.setToIdentity();
+    scaleMatrix_.setToIdentity();
+    viewMatrix_.setToIdentity();
 }
 
 void Controller::loadObj(const char *fileName) {
-    verticesForBuffer.clear();
+    verticesForBuffer_.clear();
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -37,10 +37,10 @@ void Controller::loadObj(const char *fileName) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
                 firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
-                verticesForBuffer.push_back(firstVertex);
-                verticesForBuffer.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
+                verticesForBuffer_.push_back(firstVertex);
+                verticesForBuffer_.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
                                                               idxCurrent.vertex_index, idxCurrent.texcoord_index, triangleId));
-                verticesForBuffer.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
+                verticesForBuffer_.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
                                                               idxNext.vertex_index, idxNext.texcoord_index, triangleId++));
             }
             index_offset += fv;
@@ -48,15 +48,15 @@ void Controller::loadObj(const char *fileName) {
         }
     }
 
-    uint32_t verticesNumber = verticesForBuffer.size();
-    objectModel = ObjectModel(verticesNumber, verticesNumber / 3);
+    uint32_t verticesNumber = verticesForBuffer_.size();
+    objectModel_ = ObjectModel(verticesNumber, verticesNumber / 3);
 
-    for (uint32_t i = 0; i < verticesForBuffer.size(); i++) {
-        objectModel.setVertex(i, verticesForBuffer[i].position(), verticesForBuffer[i].uv());
+    for (uint32_t i = 0; i < verticesForBuffer_.size(); i++) {
+        objectModel_.setVertex(i, verticesForBuffer_[i].position(), verticesForBuffer_[i].uv());
     }
 
     setViewMatrixForObj();
-    scaleCoefficient = 0;
+    scaleCoefficient_ = 0;
 }
 
 VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords, uint32_t vId, uint32_t tId, uint32_t triangleId) {
@@ -70,11 +70,11 @@ VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices
 
 void Controller::setViewMatrixForObj() {
     double maxZ = 1;
-    for (auto v : verticesForBuffer) {
+    for (auto v : verticesForBuffer_) {
         glm::vec3 position = v.position();
         maxZ = fmax(maxZ, position.z);
     }
-    viewMatrix.lookAt(
+    viewMatrix_.lookAt(
                 QVector3D(0, 0, 10 * maxZ),
                 QVector3D(0, 0, 0),
                 QVector3D(0, 1, 0)
@@ -82,83 +82,83 @@ void Controller::setViewMatrixForObj() {
 }
 
 void Controller::updateRotationMatrix() {
-    double dx = previousMousePosition.x() - mousePosition.x();
-    double dy = previousMousePosition.y() - mousePosition.y();
+    double dx = previousMousePosition_.x() - mousePosition_.x();
+    double dy = previousMousePosition_.y() - mousePosition_.y();
 
     QMatrix4x4 rot;
     rot.setToIdentity();
     rot.rotate(dx * 0.1f, 0, -1, 0);
     rot.rotate(dy * 0.1f, -1, 0, 0);
-    rotationMatrix = rot * rotationMatrix;
-    previousMousePosition = mousePosition;
+    rotationMatrix_ = rot * rotationMatrix_;
+    previousMousePosition_ = mousePosition_;
 }
 
 void Controller::loadTextureImage(const char *fileName) {
-    if (textureImage != 0) {
-        delete textureImage;
+    if (textureImage_ != 0) {
+        delete textureImage_;
     }
     QImage image(fileName);
-    textureImage = new QImage(image.mirrored());
+    textureImage_ = new QImage(image.mirrored());
 }
 
 void Controller::initializeBrush() {
-    if (brush != 0) {
-        delete brush;
+    if (brush_ != 0) {
+        delete brush_;
     }
-    size_t w = textureImage->width();
-    size_t h = textureImage->height();
-    textureStorage = TextureStorage(w, h);
+    size_t w = textureImage_->width();
+    size_t h = textureImage_->height();
+    textureStorage_ = TextureStorage(w, h);
     for (size_t x = 0; x < w; x++) {
         for (size_t y = 0; y < h; y++) {
-            QColor color = textureImage->pixelColor(x, y);
-            textureStorage.setColor(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
+            QColor color = textureImage_->pixelColor(x, y);
+            textureStorage_.setColor(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
         }
     }
-    brush = new PixelsFastBrush(objectModel, textureStorage);
-    brush->setRadius(10.0);
+    brush_ = new PixelsFastBrush(objectModel_, textureStorage_);
+    brush_->setRadius(10.0);
 }
 
 void Controller::mousePressed(const QPoint& position) {
-    previousMousePosition = position;
-    mousePosition = position;
-    isMousePressed = true;
-    if (isBrashActive) {
+    previousMousePosition_ = position;
+    mousePosition_ = position;
+    isMousePressed_ = true;
+    if (isBrashActive_) {
         beginBrushStroke(position);
-        isBrushUpdated = true;
+        isBrushUpdated_ = true;
     }
 }
 
 void Controller::mouseMoved(const QPoint& position) {
-    mousePosition = position;
-    if (isBrashActive) {
+    mousePosition_ = position;
+    if (isBrashActive_) {
         continueBrushStroke(position);
-        isBrushUpdated = true;
+        isBrushUpdated_ = true;
     }
 }
 
 void Controller::mouseReleased(const QPoint& position) {
-    mousePosition = position;
-    if (isBrashActive) {
+    mousePosition_ = position;
+    if (isBrashActive_) {
         endBrushStroke(position);
-        isBrushUpdated = true;
+        isBrushUpdated_ = true;
     }
-    isMousePressed = false;
+    isMousePressed_ = false;
 }
 
 void Controller::keyPressed(int key) {
     if (key == Qt::Key_Control) {
-        isBrashActive = true;
-        if (isMousePressed) {
-            beginBrushStroke(mousePosition);
+        isBrashActive_ = true;
+        if (isMousePressed_) {
+            beginBrushStroke(mousePosition_);
         }
     } else {
         if (key == Qt::Key_Z) {
-            brushHistory.undo(brush->getTextureStorage());
-            isBrushUpdated = true;
+            brushHistory_.undo(brush_->getTextureStorage());
+            isBrushUpdated_ = true;
         } else {
             if (key == Qt::Key_Y) {
-                brushHistory.redo(brush->getTextureStorage());
-                isBrushUpdated = true;
+                brushHistory_.redo(brush_->getTextureStorage());
+                isBrushUpdated_ = true;
             }
         }
     }
@@ -166,106 +166,106 @@ void Controller::keyPressed(int key) {
 
 void Controller::keyReleased(int key) {
     if (key == Qt::Key_Control) {
-        if (isMousePressed) {
-            previousMousePosition = mousePosition;
-            endBrushStroke(mousePosition);
-            isBrushUpdated = true;
+        if (isMousePressed_) {
+            previousMousePosition_ = mousePosition_;
+            endBrushStroke(mousePosition_);
+            isBrushUpdated_ = true;
         }
-        isBrashActive = false;
+        isBrashActive_ = false;
     }
 }
 
 void Controller::wheelScrolled(int delta) {
-    scaleCoefficient += delta * 0.001;
+    scaleCoefficient_ += delta * 0.001;
 }
 
 bool Controller::getIsBrushUpdated() {
-    return isBrushUpdated;
+    return isBrushUpdated_;
 }
 
 void Controller::setIdsStorage(QImage *idsBuffer) {
     size_t w = idsBuffer->width();
     size_t h = idsBuffer->height();
-    IdsStorage idsStorage(w, h);
+    idsStorage_ = IdsStorage(w, h);
     for (size_t x = 0; x < w; x++) {
         for (size_t y = 0; y < h; y++) {
             QColor color = idsBuffer->pixelColor(x, y);
-            idsStorage.setId(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
+            idsStorage_.setId(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
         }
     }
-
-    brush->setIdsStorage(idsStorage);
 }
 
 void Controller::beginBrushStroke(const QPoint& point) {
-    auto firstStrokePart = brush->paint(glm::i32vec2(point.x(), point.y()),
+    auto firstStrokePart = brush_->paint(glm::i32vec2(point.x(), point.y()),
                                         fromQMatrix(getModelViewMatrix()),
-                                        fromQMatrix(projectionMatrix));
-    currentStroke = BrushStroke(firstStrokePart);
-    lastPointOfStroke = point;
+                                        fromQMatrix(projectionMatrix_),
+                                        idsStorage_);
+    currentStroke_ = BrushStroke(firstStrokePart);
+    lastPointOfStroke_ = point;
 }
 
 void Controller::continueBrushStroke(const QPoint& point) {
-    auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
+    auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
                                    glm::i32vec2(point.x(), point.y()),
                                    fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix));
-    currentStroke.addAll(strokePart);
-    lastPointOfStroke = point;
+                                   fromQMatrix(projectionMatrix_),
+                                   idsStorage_);
+    currentStroke_.addAll(strokePart);
+    lastPointOfStroke_ = point;
 }
 
 void Controller::endBrushStroke(const QPoint& point) {
-    auto strokePart = brush->paint(glm::i32vec2(lastPointOfStroke.x(), lastPointOfStroke.y()),
+    auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
                                    glm::i32vec2(point.x(), point.y()),
                                    fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix));
-    currentStroke.addAll(strokePart);
-    brushHistory.addStroke(currentStroke);
+                                   fromQMatrix(projectionMatrix_),
+                                   idsStorage_);
+    currentStroke_.addAll(strokePart);
+    brushHistory_.addStroke(currentStroke_);
 }
 
 glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4& qmat) {
     float const* data = qmat.constData();
-    return glm::mat4x4(data[0],data[1], data[2], data[3],
-                       data[4],data[5], data[6], data[7],
-                       data[8],data[9], data[10], data[11],
-                       data[12],data[13], data[14], data[15]);
+    return glm::mat4x4(data[0],  data[1],  data[2],  data[3],
+                       data[4],  data[5],  data[6],  data[7],
+                       data[8],  data[9],  data[10], data[11],
+                       data[12], data[13], data[14], data[15]);
 }
 
 void Controller::updateSize(int width, int height) {
-    screenSize = QPoint(width, height);
-    projectionMatrix.setToIdentity();
-    projectionMatrix.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+    projectionMatrix_.setToIdentity();
+    projectionMatrix_.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
 }
 
 QMatrix4x4 Controller::getModelViewMatrix() {
-    scaleMatrix.setToIdentity();
-    scaleMatrix.scale(exp(scaleCoefficient));
+    scaleMatrix_.setToIdentity();
+    scaleMatrix_.scale(exp(scaleCoefficient_));
 
-    if (isMousePressed && !isBrashActive) {
+    if (isMousePressed_ && !isBrashActive_) {
         updateRotationMatrix();
     }
-    return viewMatrix * rotationMatrix * scaleMatrix;
+    return viewMatrix_ * rotationMatrix_ * scaleMatrix_;
 }
 
 const QMatrix4x4& Controller::getProjectionMatrix() {
-    return projectionMatrix;
+    return projectionMatrix_;
 }
 
 const std::vector<VertexForBuffer>& Controller::getVertices() {
-    return verticesForBuffer;
+    return verticesForBuffer_;
 }
 
 QImage *Controller::getTextureFromBrush() {
-    isBrushUpdated = false;
+    isBrushUpdated_ = false;
 
-    TextureStorage& textureStorage = brush->getTextureStorage();
+    TextureStorage& textureStorage_ = brush_->getTextureStorage();
 
-    for (size_t x = 0; x < textureStorage.getWidth(); x++) {
-        for (size_t y = 0; y < textureStorage.getHeight(); y++) {
-            glm::u8vec3 color = textureStorage.getColor(x, y);
-            textureImage->setPixelColor(x, y, QColor(color.r, color.g, color.b));
+    for (size_t x = 0; x < textureStorage_.getWidth(); x++) {
+        for (size_t y = 0; y < textureStorage_.getHeight(); y++) {
+            glm::u8vec3 color = textureStorage_.getColor(x, y);
+            textureImage_->setPixelColor(x, y, QColor(color.r, color.g, color.b));
         }
     }
 
-    return textureImage;
+    return textureImage_;
 }

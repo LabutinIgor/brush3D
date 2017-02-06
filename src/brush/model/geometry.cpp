@@ -14,8 +14,8 @@ double Geometry::getMaxY(const std::vector<glm::vec2>& triangle, double x) {
 }
 
 double Geometry::getMinIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, double x) {
-    if (fabs(point1.x - point2.x) < 1e-5) {
-        if (fabs(point1.x - x) > 1e-5) {
+    if (fabs(point1.x - point2.x) < EPS) {
+        if (fabs(point1.x - x) > EPS) {
             return 1;
         } else {
             return fmin(point1.y, point2.y);
@@ -31,8 +31,8 @@ double Geometry::getMinIntersectionPoint(const glm::vec2& point1, const glm::vec
 }
 
 double Geometry::getMaxIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, double x) {
-    if (fabs(point1.x - point2.x) < 1e-5) {
-        if (fabs(point1.x - x) > 1e-5) {
+    if (fabs(point1.x - point2.x) < EPS) {
+        if (fabs(point1.x - x) > EPS) {
             return 0;
         } else {
             return fmax(point1.y, point2.y);
