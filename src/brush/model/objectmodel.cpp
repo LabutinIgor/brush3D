@@ -1,6 +1,6 @@
 #include "objectmodel.h"
 
-ObjectModel::ObjectModel() {
+ObjectModel::ObjectModel() : verticesNumber_(0), facesNumber_(0) {
 }
 
 ObjectModel::ObjectModel(uint32_t verticesNumber, uint32_t facesNumber) :

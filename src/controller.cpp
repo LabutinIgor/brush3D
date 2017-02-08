@@ -109,7 +109,7 @@ void Controller::initializeBrush() {
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
             QColor color = textureImage_.pixelColor(x, y);
-            textureStorage_.setColor(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
+            textureStorage_.setValue(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
         }
     }
     brush_ = new PixelsFastBrush(objectModel_, textureStorage_);
@@ -151,11 +151,11 @@ void Controller::keyPressed(int key) {
         }
     } else {
         if (key == Qt::Key_Z) {
-            brushHistory_.undo(brush_->getTextureStorage());
+            brushHistory_.undo(textureStorage_);
             isBrushUpdated_ = true;
         } else {
             if (key == Qt::Key_Y) {
-                brushHistory_.redo(brush_->getTextureStorage());
+                brushHistory_.redo(textureStorage_);
                 isBrushUpdated_ = true;
             }
         }
@@ -188,7 +188,7 @@ void Controller::setIdsStorage(QImage *idsBuffer) {
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
             QColor color = idsBuffer->pixelColor(x, y);
-            idsStorage_.setId(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
+            idsStorage_.setValue(x, y, color.red() + color.green() * 256 + color.blue() * 256 * 256);
         }
     }
 }
@@ -256,11 +256,11 @@ const std::vector<VertexForBuffer>& Controller::getVertices() {
 QImage *Controller::getTextureFromBrush() {
     isBrushUpdated_ = false;
 
-    TextureStorage& textureStorage_ = brush_->getTextureStorage();
+    //TextureStorage& textureStorage_ = brush_->getTextureStorage();
 
     for (size_t x = 0; x < textureStorage_.getWidth(); ++x) {
         for (size_t y = 0; y < textureStorage_.getHeight(); ++y) {
-            glm::u8vec3 color = textureStorage_.getColor(x, y);
+            glm::u8vec3 color = textureStorage_.getValue(x, y);
             textureImage_.setPixelColor(x, y, QColor(color.r, color.g, color.b));
         }
     }

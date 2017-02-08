@@ -1,6 +1,6 @@
 #include "abstractbrush.h"
 
-AbstractBrush::AbstractBrush(const ObjectModel& objectModel, const TextureStorage& textureStorage) :
+AbstractBrush::AbstractBrush(const ObjectModel& objectModel, TextureStorage& textureStorage) :
     objectModel_(objectModel), textureStorage_(textureStorage) {
 }
 
@@ -23,16 +23,12 @@ glm::u8vec3 AbstractBrush::getColor() const {
     return color_;
 }
 
-TextureStorage& AbstractBrush::getTextureStorage() {
-    return textureStorage_;
-}
-
 bool AbstractBrush::isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const {
     return glm::length(glm::vec2(brushCenter - screenPoint)) < getRadius();
 }
 
 BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i32vec2& lastPoint,
-                                 const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
+                                 const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
                                  const IdsStorage& idsStorage) {
     BrushStroke diff;
 
@@ -40,7 +36,7 @@ BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i
     int cntRounds = glm::length(d);
     for (int i = 0; i < cntRounds; ++i) {
         glm::i32vec2 currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
-        auto currentPointDiff = paint(currentPoint, matrixModelView, projection, idsStorage);
+        auto currentPointDiff = paint(currentPoint, matrixModelView, matrixProjection, idsStorage);
         diff.add(currentPointDiff);
     }
 

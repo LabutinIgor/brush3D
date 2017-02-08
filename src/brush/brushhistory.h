@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "brushstroke.h"
-#include "texturestorage.h"
+#include "matrix.h"
 
 class BrushHistory {
 public:

@@ -17,12 +17,12 @@ void BrushStroke::add(const BrushStroke& stroke) {
 
 void BrushStroke::apply(TextureStorage& currentTexture) const {
     for (size_t i = 0; i < diff_.size(); ++i) {
-        currentTexture.setColor(diff_[i].pixel, diff_[i].newColor);
+        currentTexture.setValue(diff_[i].pixel, diff_[i].newColor);
     }
 }
 
 void BrushStroke::undo(TextureStorage& currentTexture) const {
     for (int32_t i = diff_.size() - 1; i >= 0; --i) {
-        currentTexture.setColor(diff_[i].pixel, diff_[i].previousColor);
+        currentTexture.setValue(diff_[i].pixel, diff_[i].previousColor);
     }
 }

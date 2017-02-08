@@ -5,12 +5,12 @@
 #include <glm.hpp>
 
 #include "colorchange.h"
-#include "texturestorage.h"
+#include "matrix.h"
 
 class BrushStroke {
 public:
     BrushStroke();
-    BrushStroke(const ColorChange& colorChange);
+    explicit BrushStroke(const ColorChange& colorChange);
     void add(const ColorChange& diff);
     void add(const BrushStroke& stroke);
     void apply(TextureStorage& currentTexture) const;

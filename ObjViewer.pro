@@ -24,11 +24,10 @@ SOURCES += src/main.cpp \
     src/brush/brushstroke.cpp \
     src/brush/brushhistory.cpp \
     src/brush/pixelsfastbrush.cpp \
-    src/brush/model/idsstorage.cpp \
-    src/brush/model/texturestorage.cpp \
     src/brush/model/objectmodel.cpp \
     src/brush/model/face.cpp \
-    src/brush/model/colorchange.cpp
+    src/brush/model/colorchange.cpp \
+    src/brush/model/brushutils.cpp
 
 HEADERS += src/ui/mainwindow.h \
     src/ui/mainglwidget.h \
@@ -38,12 +37,12 @@ HEADERS += src/ui/mainwindow.h \
     src/brush/brushstroke.h \
     src/brush/brushhistory.h \
     src/brush/pixelsfastbrush.h \
-    src/brush/model/idsstorage.h \
-    src/brush/model/texturestorage.h \
     src/brush/model/objectmodel.h \
     src/ui/vertexforbuffer.h \
     src/brush/model/face.h \
-    src/brush/model/colorchange.h
+    src/brush/model/colorchange.h \
+    src/brush/model/brushutils.h \
+    src/brush/model/matrix.h
 
 FORMS   += src/ui/mainwindow.ui
 
