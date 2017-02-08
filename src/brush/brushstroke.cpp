@@ -11,10 +11,18 @@ void BrushStroke::add(const ColorChange& diff) {
     diff_.push_back(diff);
 }
 
-void BrushStroke::addAll(const BrushStroke& stroke) {
+void BrushStroke::add(const BrushStroke& stroke) {
     diff_.insert(std::end(diff_), std::begin(stroke.diff_), std::end(stroke.diff_));
 }
 
-const std::vector<ColorChange>& BrushStroke::getDiff() const {
-    return diff_;
+void BrushStroke::apply(TextureStorage& currentTexture) const {
+    for (size_t i = 0; i < diff_.size(); ++i) {
+        currentTexture.setColor(diff_[i].pixel, diff_[i].newColor);
+    }
+}
+
+void BrushStroke::undo(TextureStorage& currentTexture) const {
+    for (int32_t i = diff_.size() - 1; i >= 0; --i) {
+        currentTexture.setColor(diff_[i].pixel, diff_[i].previousColor);
+    }
 }

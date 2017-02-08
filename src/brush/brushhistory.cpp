@@ -16,22 +16,13 @@ void BrushHistory::undo(TextureStorage& currentTexture) {
         return;
     }
     --currentStroke_;
-
-    auto diff = strokes_[currentStroke_].getDiff();
-    for (int i = diff.size() - 1; i >= 0; --i) {
-        currentTexture.setColor(diff[i].pixel, diff[i].previousColor);
-    }
+    strokes_[currentStroke_].undo(currentTexture);
 }
 
 void BrushHistory::redo(TextureStorage& currentTexture) {
     if (currentStroke_ == strokes_.size()) {
         return;
     }
-
-    auto diff = strokes_[currentStroke_].getDiff();
-    for (int i = diff.size() - 1; i >= 0; --i) {
-        currentTexture.setColor(diff[i].pixel, diff[i].previousColor);
-    }
-
+    strokes_[currentStroke_].apply(currentTexture);
     ++currentStroke_;
 }

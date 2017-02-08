@@ -27,6 +27,10 @@ TextureStorage& AbstractBrush::getTextureStorage() {
     return textureStorage_;
 }
 
+bool AbstractBrush::isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const {
+    return glm::length(glm::vec2(brushCenter - screenPoint)) < getRadius();
+}
+
 BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i32vec2& lastPoint,
                                  const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
                                  const IdsStorage& idsStorage) {
@@ -37,7 +41,7 @@ BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i
     for (int i = 0; i < cntRounds; ++i) {
         glm::i32vec2 currentPoint = previousPoint + (lastPoint - previousPoint) * i / cntRounds;
         auto currentPointDiff = paint(currentPoint, matrixModelView, projection, idsStorage);
-        diff.addAll(currentPointDiff);
+        diff.add(currentPointDiff);
     }
 
     return diff;

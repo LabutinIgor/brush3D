@@ -208,7 +208,7 @@ void Controller::continueBrushStroke(const QPoint& point) {
                                    fromQMatrix(getModelViewMatrix()),
                                    fromQMatrix(projectionMatrix_),
                                    idsStorage_);
-    currentStroke_.addAll(strokePart);
+    currentStroke_.add(strokePart);
     lastPointOfStroke_ = point;
 }
 
@@ -218,7 +218,7 @@ void Controller::endBrushStroke(const QPoint& point) {
                                    fromQMatrix(getModelViewMatrix()),
                                    fromQMatrix(projectionMatrix_),
                                    idsStorage_);
-    currentStroke_.addAll(strokePart);
+    currentStroke_.add(strokePart);
     brushHistory_.addStroke(currentStroke_);
 }
 

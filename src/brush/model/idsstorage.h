@@ -13,6 +13,7 @@ public:
     IdsStorage(size_t width, size_t height);
     size_t getWidth() const;
     size_t getHeight() const;
+    glm::i32vec2 getSize() const;
     IdType getId(size_t row, size_t col) const;
     IdType getId(const glm::u32vec2& point) const;
     void setId(size_t row, size_t col, IdType id);

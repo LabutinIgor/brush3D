@@ -68,9 +68,8 @@ glm::vec3 Geometry::getPointFromUVCoordinates(const std::vector<glm::vec2>& poin
 
 glm::i32vec2 Geometry::toScreenCoordinates(const glm::vec3& point, const glm::mat4x4& projection, const glm::i32vec2& screenSize) {
     glm::vec4 homogeneousCoordinates(projection * glm::vec4(point, 1.0));
-    glm::vec3 projectedPoint(homogeneousCoordinates.x / homogeneousCoordinates.w,
-                             homogeneousCoordinates.y / homogeneousCoordinates.w,
-                             homogeneousCoordinates.z / homogeneousCoordinates.w);
+    glm::vec3 projectedPoint(glm::vec3(homogeneousCoordinates.x, homogeneousCoordinates.y, homogeneousCoordinates.z)
+                             / homogeneousCoordinates.w);
     return glm::i32vec2(screenSize.x * (projectedPoint.x + 1) / 2,
                   screenSize.y * (1 - projectedPoint.y) / 2);
 }

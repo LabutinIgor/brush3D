@@ -14,6 +14,10 @@ size_t IdsStorage::getHeight() const {
     return height_;
 }
 
+glm::i32vec2 IdsStorage::getSize() const {
+    return glm::i32vec2(getWidth(), getHeight());
+}
+
 IdType IdsStorage::getId(size_t row, size_t col) const {
     return ids_[row * height_ + col];
 }

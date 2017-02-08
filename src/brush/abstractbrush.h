@@ -22,6 +22,7 @@ public:
     virtual BrushStroke paint(const glm::i32vec2& previousPoint, const glm::i32vec2& currentPoint,
                               const glm::mat4x4& matrixModelView, const glm::mat4x4& projection,
                               const IdsStorage& idsStorage);
+    bool isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const;
     void setRadius(double radius);
     double getRadius() const;
     void setColor(const glm::u8vec3& color);
