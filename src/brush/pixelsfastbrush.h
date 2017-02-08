@@ -17,7 +17,8 @@ public:
 private:
     std::vector<std::vector<glm::u32vec2>> pixelsUvOfTriangle_;
     Matrix<glm::vec3> vertexFromUv_;
-    const double_t MIN_ANGLE_COS = cos(M_PI / 2 + 10 * 2 * M_PI / 360.0);
+    const double_t MIN_ANGLE_DEGREES = 7;
+    const double_t MIN_ANGLE_COS = cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0);
 
     std::unordered_set<IdType> calculateIntersectedTrianglesIds(const glm::mat4x4& matrixModelView,
                                                                 const glm::i32vec2& brushCenter,
