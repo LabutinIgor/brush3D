@@ -56,8 +56,6 @@ INCLUDEPATH += \
 
 OTHER_FILES += \
     external/tinyobjloader/tiny_obj_loader.h \
-    resources/cube.obj \
-    resources/simple_texture.bmp \
     resources/shaders/vshader.glsl \
     resources/shaders/fshader.glsl \
     resources/shaders/vshaderForIds.glsl \

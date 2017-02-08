@@ -17,10 +17,10 @@ void MainGLWidget::initializeGL() {
     matrixID = program->uniformLocation("matrix");
     programForIdsMatrixID = programForIds->uniformLocation("matrix");
 
-    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/cube.obj");
+    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/objs/cube.obj");
     vertices = controller->getVertices();
     initializeObj();
-    controller->loadTextureImage("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/simple_texture.bmp");
+    controller->loadTextureImage("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/textures/simple_texture.bmp");
     controller->initializeBrush();
     textureImage = controller->getTextureFromBrush();
     setTexture();
