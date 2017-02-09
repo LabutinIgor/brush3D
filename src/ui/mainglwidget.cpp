@@ -10,6 +10,8 @@ void MainGLWidget::initializeGL() {
     connect(this, SIGNAL(frameSwapped()), this, SLOT(update()));
 
     glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
@@ -36,7 +38,7 @@ void MainGLWidget::resizeGL(int width, int height) {
 void MainGLWidget::paintGL() {
     if (arrayObject != 0) {
         frameBuffer->bind();
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         programForIds->bind();
         arrayObject->bind();
         QMatrix4x4 transformMatrix = controller->getProjectionMatrix() * controller->getModelViewMatrix();
@@ -51,7 +53,7 @@ void MainGLWidget::paintGL() {
 
         frameBuffer->release();
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         program->bind();
         arrayObject->bind();
         program->setUniformValue(matrixID, transformMatrix);

@@ -232,7 +232,7 @@ glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4& qmat) {
 
 void Controller::updateSize(int width, int height) {
     projectionMatrix_.setToIdentity();
-    projectionMatrix_.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+    projectionMatrix_.perspective(45.0f, width / float(height), 0.01f, 1000.0f);
 }
 
 QMatrix4x4 Controller::getModelViewMatrix() {
