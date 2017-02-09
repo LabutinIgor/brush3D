@@ -1,3 +1,6 @@
+*.DS_Store
+resources/objs/cube300.obj
+
 # C++ objects and libs
 
 *.slo
