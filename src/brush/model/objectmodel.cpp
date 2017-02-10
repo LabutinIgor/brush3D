@@ -3,33 +3,33 @@
 ObjectModel::ObjectModel() : verticesNumber_(0), facesNumber_(0) {
 }
 
-ObjectModel::ObjectModel(uint32_t verticesNumber, uint32_t facesNumber) :
-                verticesNumber_(verticesNumber), facesNumber_(facesNumber),
-                positions_(verticesNumber), uv_(verticesNumber) {
+ObjectModel::ObjectModel(size_t verticesNumber, size_t facesNumber) :
+        verticesNumber_(verticesNumber), facesNumber_(facesNumber),
+        positions_(verticesNumber), uv_(verticesNumber) {
 }
 
-uint32_t ObjectModel::getVerticesNumber() const {
+size_t ObjectModel::getVerticesNumber() const {
     return verticesNumber_;
 }
 
-uint32_t ObjectModel::getFacesNumber() const {
+size_t ObjectModel::getFacesNumber() const {
     return facesNumber_;
 }
 
-glm::vec3 ObjectModel::getPosition(uint32_t vertexId) const {
+glm::vec3 ObjectModel::getPosition(size_t vertexId) const {
     return positions_[vertexId];
 }
 
-glm::vec2 ObjectModel::getUv(uint32_t vertexId) const {
+glm::vec2 ObjectModel::getUv(size_t vertexId) const {
     return uv_[vertexId];
 }
 
-void ObjectModel::setVertex(size_t id, const glm::vec3& vertexPositions, const glm::vec2& vertexUv) {
+void ObjectModel::setVertex(size_t id, const glm::vec3 &vertexPositions, const glm::vec2 &vertexUv) {
     positions_[id] = vertexPositions;
     uv_[id] = vertexUv;
 }
 
-bool ObjectModel::areAdjacentFaces(uint32_t idFace1, uint32_t idFace2) const {
+bool ObjectModel::areAdjacentFaces(size_t idFace1, size_t idFace2) const {
     if (idFace1 >= facesNumber_ || idFace2 >= facesNumber_) {
         return true;
     }

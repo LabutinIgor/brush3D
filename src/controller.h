@@ -7,40 +7,64 @@
 #include <QPoint>
 #include <QMatrix4x4>
 
-#include "abstractbrush.h"
-#include "pixelsfastbrush.h"
-#include "vertexforbuffer.h"
-#include "objectmodel.h"
-#include "brushstroke.h"
-#include "brushhistory.h"
+#include "ui/vertexforbuffer.h"
+#include "brush/abstractbrush.h"
+#include "brush/pixelsfastbrush.h"
+#include "brush/model/objectmodel.h"
+#include "brush/brushstroke.h"
+#include "brush/brushhistory.h"
 
 class Controller {
 public:
     Controller();
-    Controller(const Controller& other) = delete;
+
+    Controller(const Controller &other) = delete;
+
     void loadObj(const char *fileName);
+
     void setViewMatrixForObj();
+
     void loadTextureImage(const char *fileName);
+
     void initializeBrush();
+
     void setIdsStorage(QImage *idsBuffer);
-    void beginBrushStroke(const QPoint& point);
-    void continueBrushStroke(const QPoint& point);
-    void endBrushStroke(const QPoint& point);
+
+    void beginBrushStroke(const QPoint &point);
+
+    void continueBrushStroke(const QPoint &point);
+
+    void endBrushStroke(const QPoint &point);
+
     void updateSize(int width, int height);
+
     void updateRotationMatrix();
-    void updateTransformMatrix(const QPoint& mousePosition_);
+
+    void updateTransformMatrix(const QPoint &mousePosition_);
+
     void updateProjectionMatrixToResize(int width, int height);
-    void mouseMoved(const QPoint& position);
-    void mousePressed(const QPoint& position);
-    void mouseReleased(const QPoint& position);
+
+    void mouseMoved(const QPoint &position);
+
+    void mousePressed(const QPoint &position);
+
+    void mouseReleased(const QPoint &position);
+
     void keyPressed(int key);
+
     void keyReleased(int key);
+
     void wheelScrolled(int delta);
+
     bool getIsBrushUpdated();
+
     QMatrix4x4 getModelViewMatrix();
-    const QMatrix4x4& getProjectionMatrix();
+
+    const QMatrix4x4 &getProjectionMatrix();
+
     QImage *getTextureFromBrush();
-    const std::vector<VertexForBuffer>& getVertices();
+
+    const std::vector<VertexForBuffer> &getVertices();
 
 private:
     AbstractBrush *brush_ = 0;
@@ -63,7 +87,8 @@ private:
     QPoint lastPointOfStroke_;
     BrushHistory brushHistory_;
 
-    glm::mat4x4 fromQMatrix(const QMatrix4x4& qmat);
+    glm::mat4x4 fromQMatrix(const QMatrix4x4 &qmat);
+
     VertexForBuffer vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords,
                                       uint32_t vId, uint32_t tId, uint32_t triangleId);
 };

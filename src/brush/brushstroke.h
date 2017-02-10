@@ -4,17 +4,22 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "colorchange.h"
-#include "matrix.h"
+#include "model/colorchange.h"
+#include "model/matrix.h"
 
 class BrushStroke {
 public:
     BrushStroke();
-    explicit BrushStroke(const ColorChange& colorChange);
-    void add(const ColorChange& diff);
-    void add(const BrushStroke& stroke);
-    void apply(TextureStorage& currentTexture) const;
-    void undo(TextureStorage& currentTexture) const;
+
+    explicit BrushStroke(const ColorChange &colorChange);
+
+    void add(const ColorChange &diff);
+
+    void add(const BrushStroke &stroke);
+
+    void apply(TextureStorage &currentTexture) const;
+
+    void undo(TextureStorage &currentTexture) const;
 
 private:
     std::vector<ColorChange> diff_;

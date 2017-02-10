@@ -18,31 +18,42 @@
 #include <vector>
 
 #include "vertexforbuffer.h"
-#include "controller.h"
+#include "../controller.h"
 
 class MainGLWidget : public QOpenGLWidget,
-        protected QOpenGLFunctions {
-    Q_OBJECT
+                     protected QOpenGLFunctions {
+Q_OBJECT
 
 public:
     MainGLWidget(QWidget *parent);
 
 public slots:
+
     void loadObjHandler();
+
     void loadTextureHandler();
 
 protected:
     void initializeGL() override;
+
     void resizeGL(int width, int height) override;
+
     void paintGL() override;
-    void mouseMoveEvent (QMouseEvent *event) override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
+
     void mousePressEvent(QMouseEvent *event) override;
+
     void mouseReleaseEvent(QMouseEvent *event) override;
+
     void wheelEvent(QWheelEvent *event) override;
+
     void keyPressEvent(QKeyEvent *event) override;
+
     void keyReleaseEvent(QKeyEvent *event) override;
 
 protected slots:
+
     void teardownGL();
 
 private:
@@ -61,8 +72,11 @@ private:
     QMatrix4x4 projectionMatrix;
 
     void loadShaders(const char *vertexShaderName, const char *fragmentShaderName);
+
     void loadShadersForIds(const char *vertexShaderName, const char *fragmentShaderName);
+
     void initializeObj();
+
     void setTexture();
 };
 

@@ -1,6 +1,6 @@
 #include "face.h"
 
-Face::Face(const ObjectModel& objectModel, size_t idFace) {
+Face::Face(const ObjectModel &objectModel, size_t idFace) {
     for (size_t i = 0; i < getSize(); ++i) {
         this->position_[i] = objectModel.getPosition(idFace * getSize() + i);
         this->uv_[i] = objectModel.getUv(idFace * getSize() + i);

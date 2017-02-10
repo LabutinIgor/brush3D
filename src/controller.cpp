@@ -1,6 +1,7 @@
 #include "controller.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
+
 #include "tiny_obj_loader.h"
 
 Controller::Controller() {
@@ -36,12 +37,15 @@ void Controller::loadObj(const char *fileName) {
             for (size_t v = 1; v < (size_t) fv - 1; ++v) {
                 tinyobj::index_t idxCurrent = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::index_t idxNext = shapes[s].mesh.indices[index_offset + v + 1];
-                firstVertex.setId(glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
+                firstVertex.setId(
+                        glm::vec3(triangleId % 256, (triangleId / 256) % 256, (triangleId / 256 / 256) % 256));
                 verticesForBuffer_.push_back(firstVertex);
                 verticesForBuffer_.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
-                                                              idxCurrent.vertex_index, idxCurrent.texcoord_index, triangleId));
+                                                               idxCurrent.vertex_index, idxCurrent.texcoord_index,
+                                                               triangleId));
                 verticesForBuffer_.push_back(vertexFromTinyobj(attrib.vertices, attrib.texcoords,
-                                                              idxNext.vertex_index, idxNext.texcoord_index, triangleId++));
+                                                               idxNext.vertex_index, idxNext.texcoord_index,
+                                                               triangleId++));
             }
             index_offset += fv;
             shapes[s].mesh.material_ids[f];
@@ -76,9 +80,9 @@ void Controller::setViewMatrixForObj() {
         maxZ = fmax(maxZ, position.z);
     }
     viewMatrix_.lookAt(
-                QVector3D(0, 0, 10 * maxZ),
-                QVector3D(0, 0, 0),
-                QVector3D(0, 1, 0)
+            QVector3D(0, 0, 10 * maxZ),
+            QVector3D(0, 0, 0),
+            QVector3D(0, 1, 0)
     );
 }
 
@@ -116,7 +120,7 @@ void Controller::initializeBrush() {
     brush_->setRadius(10.0);
 }
 
-void Controller::mousePressed(const QPoint& position) {
+void Controller::mousePressed(const QPoint &position) {
     previousMousePosition_ = position;
     mousePosition_ = position;
     isMousePressed_ = true;
@@ -126,7 +130,7 @@ void Controller::mousePressed(const QPoint& position) {
     }
 }
 
-void Controller::mouseMoved(const QPoint& position) {
+void Controller::mouseMoved(const QPoint &position) {
     mousePosition_ = position;
     if (isBrashActive_) {
         continueBrushStroke(position);
@@ -134,7 +138,7 @@ void Controller::mouseMoved(const QPoint& position) {
     }
 }
 
-void Controller::mouseReleased(const QPoint& position) {
+void Controller::mouseReleased(const QPoint &position) {
     mousePosition_ = position;
     if (isBrashActive_) {
         endBrushStroke(position);
@@ -193,40 +197,40 @@ void Controller::setIdsStorage(QImage *idsBuffer) {
     }
 }
 
-void Controller::beginBrushStroke(const QPoint& point) {
+void Controller::beginBrushStroke(const QPoint &point) {
     auto firstStrokePart = brush_->paint(glm::i32vec2(point.x(), point.y()),
-                                        fromQMatrix(getModelViewMatrix()),
-                                        fromQMatrix(projectionMatrix_),
-                                        idsStorage_);
+                                         fromQMatrix(getModelViewMatrix()),
+                                         fromQMatrix(projectionMatrix_),
+                                         idsStorage_);
     currentStroke_ = BrushStroke(firstStrokePart);
     lastPointOfStroke_ = point;
 }
 
-void Controller::continueBrushStroke(const QPoint& point) {
+void Controller::continueBrushStroke(const QPoint &point) {
     auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
-                                   glm::i32vec2(point.x(), point.y()),
-                                   fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix_),
-                                   idsStorage_);
+                                    glm::i32vec2(point.x(), point.y()),
+                                    fromQMatrix(getModelViewMatrix()),
+                                    fromQMatrix(projectionMatrix_),
+                                    idsStorage_);
     currentStroke_.add(strokePart);
     lastPointOfStroke_ = point;
 }
 
-void Controller::endBrushStroke(const QPoint& point) {
+void Controller::endBrushStroke(const QPoint &point) {
     auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
-                                   glm::i32vec2(point.x(), point.y()),
-                                   fromQMatrix(getModelViewMatrix()),
-                                   fromQMatrix(projectionMatrix_),
-                                   idsStorage_);
+                                    glm::i32vec2(point.x(), point.y()),
+                                    fromQMatrix(getModelViewMatrix()),
+                                    fromQMatrix(projectionMatrix_),
+                                    idsStorage_);
     currentStroke_.add(strokePart);
     brushHistory_.addStroke(currentStroke_);
 }
 
-glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4& qmat) {
-    float const* data = qmat.constData();
-    return glm::mat4x4(data[0],  data[1],  data[2],  data[3],
-                       data[4],  data[5],  data[6],  data[7],
-                       data[8],  data[9],  data[10], data[11],
+glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4 &qmat) {
+    float const *data = qmat.constData();
+    return glm::mat4x4(data[0], data[1], data[2], data[3],
+                       data[4], data[5], data[6], data[7],
+                       data[8], data[9], data[10], data[11],
                        data[12], data[13], data[14], data[15]);
 }
 
@@ -245,11 +249,11 @@ QMatrix4x4 Controller::getModelViewMatrix() {
     return viewMatrix_ * rotationMatrix_ * scaleMatrix_;
 }
 
-const QMatrix4x4& Controller::getProjectionMatrix() {
+const QMatrix4x4 &Controller::getProjectionMatrix() {
     return projectionMatrix_;
 }
 
-const std::vector<VertexForBuffer>& Controller::getVertices() {
+const std::vector<VertexForBuffer> &Controller::getVertices() {
     return verticesForBuffer_;
 }
 

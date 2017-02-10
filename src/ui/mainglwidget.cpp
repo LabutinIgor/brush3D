@@ -14,15 +14,16 @@ void MainGLWidget::initializeGL() {
     glDepthFunc(GL_LESS);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    loadShaders(":/resources/shaders/vshader.glsl", ":/resources/shaders/fshader.glsl");
-    loadShadersForIds(":/resources/shaders/vshaderForIds.glsl", ":/resources/shaders/fshaderForIds.glsl");
+    loadShaders("../resources/shaders/vshader.glsl", "../resources/shaders/fshader.glsl");
+    loadShadersForIds("../resources/shaders/vshaderForIds.glsl", "../resources/shaders/fshaderForIds.glsl");
     matrixID = program->uniformLocation("matrix");
     programForIdsMatrixID = programForIds->uniformLocation("matrix");
 
     controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/objs/cube.obj");
     vertices = controller->getVertices();
     initializeObj();
-    controller->loadTextureImage("/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/textures/simple_texture.bmp");
+    controller->loadTextureImage(
+            "/Users/igorl/Documents/au/project/qt_repo/objViewer/resources/textures/simple_texture.bmp");
     controller->initializeBrush();
     textureImage = controller->getTextureFromBrush();
     setTexture();
@@ -74,7 +75,7 @@ void MainGLWidget::paintGL() {
     }
 }
 
-void MainGLWidget::mouseMoveEvent (QMouseEvent *event) {
+void MainGLWidget::mouseMoveEvent(QMouseEvent *event) {
     controller->mouseMoved(event->pos());
 }
 
@@ -94,7 +95,7 @@ void MainGLWidget::keyReleaseEvent(QKeyEvent *event) {
     controller->keyReleased(event->key());
 }
 
-void MainGLWidget::wheelEvent(QWheelEvent* event) {
+void MainGLWidget::wheelEvent(QWheelEvent *event) {
     controller->wheelScrolled(event->delta());
 }
 
@@ -159,13 +160,17 @@ void MainGLWidget::initializeObj() {
     arrayObject->bind();
     program->enableAttributeArray(0);
     program->enableAttributeArray(1);
-    program->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(), VertexForBuffer::PositionTupleSize, VertexForBuffer::stride());
-    program->setAttributeBuffer(1, GL_FLOAT, VertexForBuffer::uvOffset(), VertexForBuffer::uvTupleSize, VertexForBuffer::stride());
+    program->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(), VertexForBuffer::PositionTupleSize,
+                                VertexForBuffer::stride());
+    program->setAttributeBuffer(1, GL_FLOAT, VertexForBuffer::uvOffset(), VertexForBuffer::uvTupleSize,
+                                VertexForBuffer::stride());
 
     programForIds->enableAttributeArray(0);
     programForIds->enableAttributeArray(2);
-    programForIds->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(), VertexForBuffer::PositionTupleSize, VertexForBuffer::stride());
-    programForIds->setAttributeBuffer(2, GL_FLOAT, VertexForBuffer::idOffset(), VertexForBuffer::idTupleSize, VertexForBuffer::stride());
+    programForIds->setAttributeBuffer(0, GL_FLOAT, VertexForBuffer::positionOffset(),
+                                      VertexForBuffer::PositionTupleSize, VertexForBuffer::stride());
+    programForIds->setAttributeBuffer(2, GL_FLOAT, VertexForBuffer::idOffset(), VertexForBuffer::idTupleSize,
+                                      VertexForBuffer::stride());
 }
 
 void MainGLWidget::setTexture() {

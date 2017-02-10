@@ -4,32 +4,43 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "geometry.h"
-#include "matrix.h"
-#include "objectmodel.h"
-#include "face.h"
+#include "model/geometry.h"
+#include "model/matrix.h"
+#include "model/objectmodel.h"
+#include "model/face.h"
 #include "brushstroke.h"
 
 class AbstractBrush {
 public:
-    AbstractBrush(const ObjectModel& objectModel, TextureStorage& textureStorage);
-    AbstractBrush(const AbstractBrush& other) = delete;
-    AbstractBrush& operator=(const AbstractBrush& other) = delete;
+    AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
+
+    AbstractBrush(const AbstractBrush &other) = delete;
+
+    AbstractBrush &operator=(const AbstractBrush &other) = delete;
+
     virtual ~AbstractBrush();
-    virtual BrushStroke paint(const glm::i32vec2& point, const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
-                              const IdsStorage& idsStorage) = 0;
-    virtual BrushStroke paint(const glm::i32vec2& previousPoint, const glm::i32vec2& currentPoint,
-                              const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
-                              const IdsStorage& idsStorage);
-    bool isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const;
+
+    virtual BrushStroke
+    paint(const glm::i32vec2 &point, const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
+          const IdsStorage &idsStorage) = 0;
+
+    virtual BrushStroke paint(const glm::i32vec2 &previousPoint, const glm::i32vec2 &currentPoint,
+                              const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
+                              const IdsStorage &idsStorage);
+
+    bool isInsideBrush(const glm::i32vec2 &screenPoint, const glm::i32vec2 &brushCenter) const;
+
     void setRadius(double radius);
+
     double getRadius() const;
-    void setColor(const glm::u8vec3& color);
+
+    void setColor(const glm::u8vec3 &color);
+
     glm::u8vec3 getColor() const;
 
 protected:
-    const ObjectModel& objectModel_;
-    TextureStorage& textureStorage_;
+    const ObjectModel &objectModel_;
+    TextureStorage &textureStorage_;
 
 private:
     double radius_ = 10;
