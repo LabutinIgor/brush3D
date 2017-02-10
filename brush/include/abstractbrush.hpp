@@ -13,9 +13,6 @@ namespace Brush {
     public:
         AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
 
-//    AbstractBrush(const AbstractBrush &other) = delete;
-//    AbstractBrush &operator=(const AbstractBrush &other) = delete;
-
         virtual ~AbstractBrush();
 
         virtual BrushStroke
@@ -43,6 +40,9 @@ namespace Brush {
     private:
         double radius_;
         glm::u8vec3 color_;
+
+        AbstractBrush(const AbstractBrush &other);
+        AbstractBrush &operator=(const AbstractBrush &other);
     };
 }
 
