@@ -1,4 +1,4 @@
-#include "face.h"
+#include "face.hpp"
 
 Face::Face(const ObjectModel &objectModel, size_t idFace) {
     for (size_t i = 0; i < getSize(); ++i) {

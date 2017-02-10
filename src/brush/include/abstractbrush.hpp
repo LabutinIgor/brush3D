@@ -4,9 +4,9 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "matrix.h"
-#include "objectmodel.h"
-#include "brushstroke.h"
+#include "matrix.hpp"
+#include "objectmodel.hpp"
+#include "brushstroke.hpp"
 
 class AbstractBrush {
 public:

@@ -11,6 +11,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+file(GLOB ROOT_SOURCE ./src/*.cpp)
+file(GLOB ROOT_HEADER ./src/*.h)
+
+file(GLOB_RECURSE UI_SOURCE ./src/ui/*.cpp)
+file(GLOB_RECURSE UI_HEADER ./src/ui/*.h)
+
 find_package(Qt5Widgets REQUIRED)
 
 include_directories(
@@ -26,18 +32,8 @@ QT5_WRAP_UI(UIS_HDRS
         )
 
 add_executable(objviewer
-        src/main.cpp
-        src/controller.h
-        src/controller.cpp
-        src/brushhistory.h
-        src/brushhistory.cpp
-
-        src/ui/mainwindow.h
-        src/ui/mainwindow.cpp
-        src/ui/mainglwidget.h
-        src/ui/mainglwidget.cpp
-        src/ui/mainwindow.ui
-        src/ui/vertexforbuffer.h
+        ${ROOT_SOURCE} ${ROOT_HEADER}
+        ${UI_SOURCE} ${UI_HEADER}
         )
 
 qt5_use_modules(objviewer Widgets)

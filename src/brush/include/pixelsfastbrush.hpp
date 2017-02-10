@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_set>
 
-#include "abstractbrush.h"
+#include "abstractbrush.hpp"
 
 class PixelsFastBrush : public AbstractBrush {
 public:

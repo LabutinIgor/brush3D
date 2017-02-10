@@ -5,7 +5,7 @@
 #include <cmath>
 #include <glm.hpp>
 
-#include "face.h"
+#include "face.hpp"
 
 namespace Geometry {
     glm::vec3 getPointFromUVCoordinates(const std::vector<glm::vec2> &pointsUV, const std::vector<glm::vec3> &points,

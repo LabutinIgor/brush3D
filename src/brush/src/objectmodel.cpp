@@ -1,4 +1,4 @@
-#include "include/objectmodel.h"
+#include "include/objectmodel.hpp"
 
 ObjectModel::ObjectModel() : verticesNumber_(0), facesNumber_(0) {
 }

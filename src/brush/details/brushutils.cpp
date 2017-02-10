@@ -1,4 +1,4 @@
-#include "brushutils.h"
+#include "brushutils.hpp"
 
 double_t BrushUtils::getMinUvX(const Face &face) {
     double_t res = face.getUv(0).x;

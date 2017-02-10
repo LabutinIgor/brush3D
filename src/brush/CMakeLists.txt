@@ -1,35 +1,22 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-set(CMAKE_PREFIX_PATH "/Users/igorl/Qt/5.7/clang_64")
-
-project(Brush)
-
 set(GLM_PATH=../../external/glm)
 
 set(CMAKE_CXX_COMPILER=/usr/bin/clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+
+file(GLOB ROOT_SOURCE ./src/*.cpp)
+file(GLOB ROOT_HEADER ./include/*.h)
+
+file(GLOB_RECURSE CORE_SOURCE ./details/*.cpp)
+file(GLOB_RECURSE CORE_HEADER ./details/*.h)
 
 include_directories(
         GLM_PATH
         .
 )
 
-add_library(Brush
-        include/abstractbrush.h
-        include/brushstroke.h
-        include/pixelsfastbrush.h
-        include/matrix.h
-        include/objectmodel.h
-        include/colorchange.h
-        src/abstractbrush.cpp
-        src/brushstroke.cpp
-        src/pixelsfastbrush.cpp
-        src/objectmodel.cpp
-        src/colorchange.cpp
-        details/brushutils.h
-        details/brushutils.cpp
-        details/face.h
-        details/face.cpp
-        details/geometry.h
-        details/geometry.cpp
+add_library(Brush STATIC
+        ${ROOT_SOURCE} ${ROOT_HEADER}
+        ${CORE_SOURCE} ${CORE_HEADER}
         )

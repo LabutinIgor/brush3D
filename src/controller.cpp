@@ -1,4 +1,4 @@
-#include "controller.h"
+#include "controller.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
 

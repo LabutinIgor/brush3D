@@ -8,11 +8,11 @@
 #include <QMatrix4x4>
 
 #include "ui/vertexforbuffer.h"
-#include "src/brush/include/abstractbrush.h"
-#include "src/brush/include/pixelsfastbrush.h"
-#include "src/brush/include/objectmodel.h"
-#include "src/brush/include/brushstroke.h"
-#include "brushhistory.h"
+#include "src/brush/include/abstractbrush.hpp"
+#include "src/brush/include/pixelsfastbrush.hpp"
+#include "src/brush/include/objectmodel.hpp"
+#include "src/brush/include/brushstroke.hpp"
+#include "brushhistory.hpp"
 
 class Controller {
 public:

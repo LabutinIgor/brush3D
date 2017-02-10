@@ -1,4 +1,4 @@
-#include "brushhistory.h"
+#include "brushhistory.hpp"
 
 BrushHistory::BrushHistory() {
 }

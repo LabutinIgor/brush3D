@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "vertexforbuffer.h"
-#include "../controller.h"
+#include "src/controller.hpp"
 
 class MainGLWidget : public QOpenGLWidget,
                      protected QOpenGLFunctions {
