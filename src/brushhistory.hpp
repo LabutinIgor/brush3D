@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "src/brush/include/brushstroke.hpp"
-#include "src/brush/include/matrix.hpp"
+#include "brushstroke.hpp"
+#include "matrix.hpp"
 
 class BrushHistory {
 public:

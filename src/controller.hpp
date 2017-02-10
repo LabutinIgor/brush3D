@@ -7,11 +7,11 @@
 #include <QPoint>
 #include <QMatrix4x4>
 
-#include "ui/vertexforbuffer.h"
-#include "src/brush/include/abstractbrush.hpp"
-#include "src/brush/include/pixelsfastbrush.hpp"
-#include "src/brush/include/objectmodel.hpp"
-#include "src/brush/include/brushstroke.hpp"
+#include "src/ui/vertexforbuffer.h"
+#include "abstractbrush.hpp"
+#include "pixelsfastbrush.hpp"
+#include "objectmodel.hpp"
+#include "brushstroke.hpp"
 #include "brushhistory.hpp"
 
 class Controller {

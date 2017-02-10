@@ -1,7 +1,7 @@
 #include "include/abstractbrush.hpp"
 
-#include "details/geometry.hpp"
-#include "details/face.hpp"
+#include "src/details/geometry.hpp"
+#include "src/details/face.hpp"
 
 AbstractBrush::AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage) :
         objectModel_(objectModel), textureStorage_(textureStorage) {

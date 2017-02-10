@@ -1,6 +1,6 @@
 #include "include/pixelsfastbrush.hpp"
-#include "details/geometry.hpp"
-#include "details/brushutils.hpp"
+#include "src/details/geometry.hpp"
+#include "src/details/brushutils.hpp"
 
 PixelsFastBrush::PixelsFastBrush(const ObjectModel &objectModel, TextureStorage &textureStorage)
         : AbstractBrush(objectModel, textureStorage), pixelsUvOfTriangle_(objectModel.getFacesNumber()),
