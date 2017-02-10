@@ -4,30 +4,29 @@ set(CMAKE_PREFIX_PATH "/Users/igorl/Qt/5.7/clang_64")
 
 project(ObjViewer)
 
-set(CMAKE_CXX_COMPILER=/usr/bin/clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-file(GLOB SOURCE ./src/*.cpp)
-file(GLOB HEADER ./src/*.hpp)
+file(GLOB SOURCE brush_ui/src/*.cpp)
+file(GLOB HEADER brush_ui/src/*.hpp)
 
-file(GLOB_RECURSE UI_SOURCE ./src/ui/*.cpp)
-file(GLOB_RECURSE UI_HEADER ./src/ui/*.h)
+file(GLOB_RECURSE UI_SOURCE brush_ui/src/ui/*.cpp)
+file(GLOB_RECURSE UI_HEADER brush_ui/src/ui/*.h)
 
 find_package(Qt5Widgets REQUIRED)
 
-include_directories(
-        src/ui
-        brush/include
-        external/glm
-        external/tinyobjloader)
-
 add_subdirectory(brush)
 
-QT5_WRAP_UI(UIS_HDRS src/ui/mainwindow.ui)
+include_directories(
+        brush_ui/src/ui
+        brush/include
+        brush_ui/external/glm
+        brush_ui/external/tinyobjloader)
+
+QT5_WRAP_UI(UIS_HDRS brush_ui/src/ui/mainwindow.ui)
 
 add_executable(objviewer
         ${SOURCE} ${HEADER}
