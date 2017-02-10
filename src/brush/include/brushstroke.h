@@ -4,8 +4,8 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "model/colorchange.h"
-#include "model/matrix.h"
+#include "colorchange.h"
+#include "matrix.h"
 
 class BrushStroke {
 public:

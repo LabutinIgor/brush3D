@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "objectmodel.h"
+#include "../include/objectmodel.h"
 
 class Face {
 public:

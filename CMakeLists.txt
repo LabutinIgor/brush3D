@@ -15,8 +15,8 @@ find_package(Qt5Widgets REQUIRED)
 
 include_directories(
         src/ui
-        external/glm/
-        external/tinyobjloader/
+        external/glm
+        external/tinyobjloader
 )
 
 add_subdirectory(src/brush)
@@ -29,6 +29,8 @@ add_executable(objviewer
         src/main.cpp
         src/controller.h
         src/controller.cpp
+        src/brushhistory.h
+        src/brushhistory.cpp
 
         src/ui/mainwindow.h
         src/ui/mainwindow.cpp

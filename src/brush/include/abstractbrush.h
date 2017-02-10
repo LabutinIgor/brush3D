@@ -4,10 +4,8 @@
 #include <vector>
 #include <glm.hpp>
 
-#include "model/geometry.h"
-#include "model/matrix.h"
-#include "model/objectmodel.h"
-#include "model/face.h"
+#include "matrix.h"
+#include "objectmodel.h"
 #include "brushstroke.h"
 
 class AbstractBrush {

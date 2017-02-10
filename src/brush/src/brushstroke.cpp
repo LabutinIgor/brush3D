@@ -1,4 +1,4 @@
-#include "brushstroke.h"
+#include "include/brushstroke.h"
 
 BrushStroke::BrushStroke() {
 }

@@ -11,26 +11,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 
 include_directories(
         GLM_PATH
+        .
 )
 
 add_library(Brush
-        abstractbrush.h
-        abstractbrush.cpp
-        brushhistory.h
-        brushhistory.cpp
-        brushstroke.h
-        brushstroke.cpp
-        pixelsfastbrush.h
-        pixelsfastbrush.cpp
-        model/brushutils.h
-        model/brushutils.cpp
-        model/colorchange.h
-        model/colorchange.cpp
-        model/face.h
-        model/face.cpp
-        model/geometry.h
-        model/geometry.cpp
-        model/matrix.h
-        model/objectmodel.h
-        model/objectmodel.cpp
+        include/abstractbrush.h
+        include/brushstroke.h
+        include/pixelsfastbrush.h
+        include/matrix.h
+        include/objectmodel.h
+        include/colorchange.h
+        src/abstractbrush.cpp
+        src/brushstroke.cpp
+        src/pixelsfastbrush.cpp
+        src/objectmodel.cpp
+        src/colorchange.cpp
+        details/brushutils.h
+        details/brushutils.cpp
+        details/face.h
+        details/face.cpp
+        details/geometry.h
+        details/geometry.cpp
         )

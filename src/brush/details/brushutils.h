@@ -4,7 +4,7 @@
 #include <glm.hpp>
 
 #include "face.h"
-#include "matrix.h"
+#include "../include/matrix.h"
 
 namespace BrushUtils {
     double_t getMinUvX(const Face &face);
