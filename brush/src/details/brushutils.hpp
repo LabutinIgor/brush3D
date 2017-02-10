@@ -25,7 +25,7 @@ namespace BrushUtils {
 
     bool hasNeighbourWithId(const IdsStorage &idsStorage, const glm::i32vec2 &point, IdType id);
 
-    constexpr double_t EPS = 1e-5;
+    const double_t EPS = 1e-5;
 }
 
 #endif // BRUSHUTILS_H

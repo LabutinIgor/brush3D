@@ -6,6 +6,9 @@
 
 #include "abstractbrush.hpp"
 
+const double MIN_ANGLE_DEGREES = 15;
+const double MIN_ANGLE_COS = cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0);
+
 class PixelsFastBrush : public AbstractBrush {
 public:
     PixelsFastBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
@@ -14,10 +17,8 @@ public:
                               const glm::mat4x4 &matrixProjection, const IdsStorage &idsStorage);
 
 private:
-    std::vector<std::vector<glm::u32vec2>> pixelsUvOfTriangle_;
+    std::vector<std::vector<glm::u32vec2> > pixelsUvOfTriangle_;
     Matrix<glm::vec3> vertexFromUv_;
-    const double_t MIN_ANGLE_DEGREES = 15;
-    const double_t MIN_ANGLE_COS = cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0);
 
     std::unordered_set<IdType> calculateIntersectedTrianglesIds(const glm::mat4x4 &matrixModelView,
                                                                 const glm::i32vec2 &brushCenter,

@@ -12,9 +12,9 @@ class AbstractBrush {
 public:
     AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
 
-    AbstractBrush(const AbstractBrush &other) = delete;
-
-    AbstractBrush &operator=(const AbstractBrush &other) = delete;
+//    AbstractBrush(const AbstractBrush &other) = delete;
+//
+//    AbstractBrush &operator=(const AbstractBrush &other) = delete;
 
     virtual ~AbstractBrush();
 
@@ -41,8 +41,8 @@ protected:
     TextureStorage &textureStorage_;
 
 private:
-    double radius_ = 10;
-    glm::u8vec3 color_ = glm::u8vec3(255, 0, 0);
+    double radius_;
+    glm::u8vec3 color_;
 };
 
 #endif // ABSTRACTBRUSH_H

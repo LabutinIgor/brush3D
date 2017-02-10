@@ -4,7 +4,7 @@
 #include "src/details/face.hpp"
 
 AbstractBrush::AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage) :
-        objectModel_(objectModel), textureStorage_(textureStorage) {
+        objectModel_(objectModel), textureStorage_(textureStorage), radius_(10), color_(glm::u8vec3(255, 0, 0)) {
 }
 
 AbstractBrush::~AbstractBrush() {

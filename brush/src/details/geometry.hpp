@@ -18,7 +18,7 @@ namespace Geometry {
 
     float_t calculateFaceAngleCos(const Face &face, const glm::mat4x4 &matrixModelView);
 
-    constexpr double EPS = 1e-5;
+    const double EPS = 1e-5;
 }
 
 #endif // GEOMETRY_H

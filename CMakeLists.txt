@@ -4,7 +4,7 @@ set(CMAKE_PREFIX_PATH "/Users/igorl/Qt/5.7/clang_64")
 
 project(ObjViewer)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 set(CMAKE_AUTOMOC ON)

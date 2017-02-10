@@ -32,18 +32,20 @@ PixelsFastBrush::PixelsFastBrush(const ObjectModel &objectModel, TextureStorage 
 BrushStroke PixelsFastBrush::paint(const glm::i32vec2 &point, const glm::mat4x4 &matrixModelView,
                                    const glm::mat4x4 &matrixProjection, const IdsStorage &idsStorage) {
     BrushStroke diff;
-    auto ids = calculateIntersectedTrianglesIds(matrixModelView, point, idsStorage);
-    for (IdType id : ids) {
-        paintTriangle(id, matrixModelView, matrixProjection, point, idsStorage, diff);
+    std::unordered_set<IdType> ids = calculateIntersectedTrianglesIds(matrixModelView, point, idsStorage);
+    for (std::unordered_set<IdType>::iterator it = ids.begin(); it != ids.end(); it++) {
+        paintTriangle(*it, matrixModelView, matrixProjection, point, idsStorage, diff);
     }
     return diff;
 }
 
 void PixelsFastBrush::paintTriangle(IdType id, const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
                                     const glm::i32vec2 &brushCenter, const IdsStorage &idsStorage, BrushStroke &diff) {
-    for (glm::u32vec2 pixel : pixelsUvOfTriangle_[id]) {
-        glm::vec3 point(matrixModelView * glm::vec4(vertexFromUv_.getValue(pixel), 1.0));
+    for (std::vector<glm::u32vec2>::iterator it = pixelsUvOfTriangle_[id].begin();
+         it != pixelsUvOfTriangle_[id].end(); it++) {
+        glm::u32vec2 pixel = *it;
 
+        glm::vec3 point(matrixModelView * glm::vec4(vertexFromUv_.getValue(pixel), 1.0));
         glm::i32vec2 screenPoint(Geometry::toScreenCoordinates(point, matrixProjection, idsStorage.getSize()));
 
         if (BrushUtils::isInside(screenPoint, idsStorage.getSize())
