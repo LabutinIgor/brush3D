@@ -67,10 +67,10 @@ public:
     const std::vector<VertexForBuffer> &getVertices();
 
 private:
-    AbstractBrush *brush_ = 0;
-    ObjectModel objectModel_;
-    TextureStorage textureStorage_;
-    IdsStorage idsStorage_;
+    Brush::AbstractBrush *brush_ = 0;
+    Brush::ObjectModel objectModel_;
+    Brush::TextureStorage textureStorage_;
+    Brush::IdsStorage idsStorage_;
     std::vector<VertexForBuffer> verticesForBuffer_;
     QImage textureImage_;
     QMatrix4x4 rotationMatrix_;
@@ -83,7 +83,7 @@ private:
     bool isBrashActive_ = false;
     bool isBrushUpdated_ = false;
     double scaleCoefficient_ = 0;
-    BrushStroke currentStroke_;
+    Brush::BrushStroke currentStroke_;
     QPoint lastPointOfStroke_;
     BrushHistory brushHistory_;
 

@@ -8,41 +8,42 @@
 #include "objectmodel.hpp"
 #include "brushstroke.hpp"
 
-class AbstractBrush {
-public:
-    AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
+namespace Brush {
+    class AbstractBrush {
+    public:
+        AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage);
 
 //    AbstractBrush(const AbstractBrush &other) = delete;
-//
 //    AbstractBrush &operator=(const AbstractBrush &other) = delete;
 
-    virtual ~AbstractBrush();
+        virtual ~AbstractBrush();
 
-    virtual BrushStroke
-    paint(const glm::i32vec2 &point, const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
-          const IdsStorage &idsStorage) = 0;
+        virtual BrushStroke
+        paint(const glm::i32vec2 &point, const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
+              const IdsStorage &idsStorage) = 0;
 
-    virtual BrushStroke paint(const glm::i32vec2 &previousPoint, const glm::i32vec2 &currentPoint,
-                              const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
-                              const IdsStorage &idsStorage);
+        virtual BrushStroke paint(const glm::i32vec2 &previousPoint, const glm::i32vec2 &currentPoint,
+                                  const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
+                                  const IdsStorage &idsStorage);
 
-    bool isInsideBrush(const glm::i32vec2 &screenPoint, const glm::i32vec2 &brushCenter) const;
+        bool isInsideBrush(const glm::i32vec2 &screenPoint, const glm::i32vec2 &brushCenter) const;
 
-    void setRadius(double radius);
+        void setRadius(double radius);
 
-    double getRadius() const;
+        double getRadius() const;
 
-    void setColor(const glm::u8vec3 &color);
+        void setColor(const glm::u8vec3 &color);
 
-    glm::u8vec3 getColor() const;
+        glm::u8vec3 getColor() const;
 
-protected:
-    const ObjectModel &objectModel_;
-    TextureStorage &textureStorage_;
+    protected:
+        const ObjectModel &objectModel_;
+        TextureStorage &textureStorage_;
 
-private:
-    double radius_;
-    glm::u8vec3 color_;
-};
+    private:
+        double radius_;
+        glm::u8vec3 color_;
+    };
+}
 
 #endif // ABSTRACTBRUSH_H

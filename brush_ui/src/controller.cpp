@@ -53,7 +53,7 @@ void Controller::loadObj(const char *fileName) {
     }
 
     uint32_t verticesNumber = verticesForBuffer_.size();
-    objectModel_ = ObjectModel(verticesNumber, verticesNumber / 3);
+    objectModel_ = Brush::ObjectModel(verticesNumber, verticesNumber / 3);
 
     for (uint32_t i = 0; i < verticesForBuffer_.size(); ++i) {
         objectModel_.setVertex(i, verticesForBuffer_[i].position(), verticesForBuffer_[i].uv());
@@ -109,14 +109,14 @@ void Controller::initializeBrush() {
     }
     size_t w = textureImage_.width();
     size_t h = textureImage_.height();
-    textureStorage_ = TextureStorage(w, h);
+    textureStorage_ = Brush::TextureStorage(w, h);
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
             QColor color = textureImage_.pixelColor(x, y);
             textureStorage_.setValue(x, y, glm::u8vec3(color.red(), color.green(), color.blue()));
         }
     }
-    brush_ = new PixelsFastBrush(objectModel_, textureStorage_);
+    brush_ = new Brush::PixelsFastBrush(objectModel_, textureStorage_);
     brush_->setRadius(10.0);
 }
 
@@ -188,7 +188,7 @@ bool Controller::getIsBrushUpdated() {
 void Controller::setIdsStorage(QImage *idsBuffer) {
     size_t w = idsBuffer->width();
     size_t h = idsBuffer->height();
-    idsStorage_ = IdsStorage(w, h);
+    idsStorage_ = Brush::IdsStorage(w, h);
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
             QColor color = idsBuffer->pixelColor(x, y);
@@ -202,7 +202,7 @@ void Controller::beginBrushStroke(const QPoint &point) {
                                          fromQMatrix(getModelViewMatrix()),
                                          fromQMatrix(projectionMatrix_),
                                          idsStorage_);
-    currentStroke_ = BrushStroke(firstStrokePart);
+    currentStroke_ = Brush::BrushStroke(firstStrokePart);
     lastPointOfStroke_ = point;
 }
 

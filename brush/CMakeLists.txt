@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-set(GLM_PATH=../../external/glm)
+set(GLM_PATH ../brush_ui/external/glm)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
@@ -10,8 +10,6 @@ file(GLOB_RECURSE INCLUDE_HEADER include/*.hpp)
 
 add_subdirectory(../brush_ui/external/glm CMAKE_CURRENT_BINARY_DIR)
 
-include_directories(
-        ../brush_ui/external/glm)
+include_directories(${GLM_PATH})
 
-add_library(Brush STATIC
-        ${SOURCE} ${HEADER} ${INCLUDE_HEADER})
+add_library(Brush STATIC ${SOURCE} ${HEADER} ${INCLUDE_HEADER})

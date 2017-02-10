@@ -7,18 +7,22 @@
 
 #include "face.hpp"
 
-namespace Geometry {
-    glm::vec3 getPointFromUVCoordinates(const std::vector<glm::vec2> &pointsUV, const std::vector<glm::vec3> &points,
-                                        const glm::vec2 &pointUV);
+namespace Brush {
+    namespace Geometry {
+        glm::vec3
+        getPointFromUVCoordinates(const std::vector<glm::vec2> &pointsUV, const std::vector<glm::vec3> &points,
+                                  const glm::vec2 &pointUV);
 
-    glm::i32vec2
-    toScreenCoordinates(const glm::vec3 &point, const glm::mat4x4 &matrixProjection, const glm::i32vec2 &screenSize);
+        glm::i32vec2
+        toScreenCoordinates(const glm::vec3 &point, const glm::mat4x4 &matrixProjection,
+                            const glm::i32vec2 &screenSize);
 
-    glm::vec3 fromScreenCoordinates(const glm::vec2 &point, const glm::mat4x4 &matrixProjection);
+        glm::vec3 fromScreenCoordinates(const glm::vec2 &point, const glm::mat4x4 &matrixProjection);
 
-    float_t calculateFaceAngleCos(const Face &face, const glm::mat4x4 &matrixModelView);
+        float_t calculateFaceAngleCos(const Face &face, const glm::mat4x4 &matrixModelView);
 
-    const double EPS = 1e-5;
+        const double EPS = 1e-5;
+    }
 }
 
 #endif // GEOMETRY_H
