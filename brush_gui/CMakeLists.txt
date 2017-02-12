@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-project(ObjViewer)
+project(BrushGUI)
 
 set(CMAKE_CXX_STANDARD 98)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -29,10 +29,10 @@ include_directories(
 
 QT5_WRAP_UI(UIS_HDRS src/ui/mainwindow.ui)
 
-add_executable(objviewer
+add_executable(brushgui
         ${SOURCE} ${HEADER}
         ${UI_SOURCE} ${UI_HEADER} ui_mainwindow.h)
 
-qt5_use_modules(objviewer Widgets)
+qt5_use_modules(brushgui Widgets)
 
-target_link_libraries(objviewer Brush)
+target_link_libraries(brushgui Brush)

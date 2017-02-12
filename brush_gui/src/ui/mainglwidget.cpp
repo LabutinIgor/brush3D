@@ -21,11 +21,11 @@ void MainGLWidget::initializeGL() {
     matrixID = program->uniformLocation("matrix");
     programForIdsMatrixID = programForIds->uniformLocation("matrix");
 
-    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_ui/resources/objs/cube.obj");
+    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_gui/resources/objs/cube.obj");
     vertices = controller->getVertices();
     initializeObj();
     controller->loadTextureImage(
-            "/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_ui/resources/textures/simple_texture.bmp");
+            "/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_gui/resources/textures/simple_texture.bmp");
     controller->initializeBrush();
     textureImage = controller->getTextureFromBrush();
     setTexture();
