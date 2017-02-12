@@ -11,16 +11,16 @@ namespace Brush {
 
         for (IdType faceId = 0; faceId < objectModel.getFacesNumber(); ++faceId) {
             Face face(objectModel, faceId);
-            int minX = (int) (fmax(0, BrushUtils::getMinUvX(face) * w));
-            int maxX = (int) (fmin(BrushUtils::getMaxUvX(face) * w, w - 1));
+            uint32_t minX = static_cast<uint32_t>(fmax(0, BrushUtils::getMinUvX(face) * w));
+            uint32_t maxX = static_cast<uint32_t>(fmin(BrushUtils::getMaxUvX(face) * w, w - 1));
 
-            for (int x = minX; x <= maxX; ++x) {
-                float xUv = (float) (x / (1.0 * w));
-                int minY = (int) fmax(0, BrushUtils::getMinY(face, xUv) * h);
-                int maxY = (int) fmin(h - 1, BrushUtils::getMaxY(face, xUv) * h);
+            for (uint32_t x = minX; x <= maxX; ++x) {
+                float_t xUv = static_cast<float_t>(x / (1.0 * w));
+                uint32_t minY = static_cast<uint32_t>(fmax(0, BrushUtils::getMinY(face, xUv) * h));
+                uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, BrushUtils::getMaxY(face, xUv) * h));
 
-                for (int y = minY; y <= maxY; ++y) {
-                    float yUv = (float) (y / (1.0 * h));
+                for (uint32_t y = minY; y <= maxY; ++y) {
+                    float_t yUv = static_cast<float_t >(y / (1.0 * h));
                     glm::vec3 point = Geometry::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
                                                                           glm::vec2(xUv, yUv));
                     vertexFromUv_.setValue(x, y, point);

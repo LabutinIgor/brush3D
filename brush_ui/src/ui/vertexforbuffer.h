@@ -1,7 +1,7 @@
 #ifndef VERTEXFORBUFFER_H
 #define VERTEXFORBUFFER_H
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 class VertexForBuffer {
 public:

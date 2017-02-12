@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cmath>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "face.hpp"
 

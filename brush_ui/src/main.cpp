@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "brush_ui/src/ui/mainwindow.h"
+#include "ui/mainwindow.h"
 
 
 int main(int argc, char *argv[]) {

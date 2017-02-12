@@ -1,10 +1,10 @@
 #ifndef BRUSHUTILS_H
 #define BRUSHUTILS_H
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "face.hpp"
-#include "include/matrix.hpp"
+#include "matrix.hpp"
 
 namespace Brush {
     namespace BrushUtils {

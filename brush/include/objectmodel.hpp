@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cstdint>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Brush {
     class ObjectModel {

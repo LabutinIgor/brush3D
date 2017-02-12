@@ -2,7 +2,7 @@
 #define ABSTRACTBRUSH_H
 
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "matrix.hpp"
 #include "objectmodel.hpp"

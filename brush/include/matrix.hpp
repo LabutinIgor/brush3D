@@ -2,7 +2,7 @@
 #define MATRIX_H
 
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Brush {
     template<class T>

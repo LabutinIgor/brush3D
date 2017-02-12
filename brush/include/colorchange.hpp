@@ -1,7 +1,7 @@
 #ifndef COLORCHANGE_H
 #define COLORCHANGE_H
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Brush {
     struct ColorChange {

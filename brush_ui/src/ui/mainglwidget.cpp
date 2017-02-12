@@ -14,10 +14,10 @@ void MainGLWidget::initializeGL() {
     glDepthFunc(GL_LESS);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    loadShaders("../brush_ui/resources/shaders/vshader.glsl",
-                "../brush_ui/resources/shaders/fshader.glsl");
-    loadShadersForIds("../brush_ui/resources/shaders/vshaderForIds.glsl",
-                      "../brush_ui/resources/shaders/fshaderForIds.glsl");
+    loadShaders("../resources/shaders/vshader.glsl",
+                "../resources/shaders/fshader.glsl");
+    loadShadersForIds("../resources/shaders/vshaderForIds.glsl",
+                      "../resources/shaders/fshaderForIds.glsl");
     matrixID = program->uniformLocation("matrix");
     programForIdsMatrixID = programForIds->uniformLocation("matrix");
 

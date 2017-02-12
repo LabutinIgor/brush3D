@@ -5,8 +5,8 @@ namespace Brush {
     namespace Geometry {
         glm::vec3
         getPointFromUVCoordinates(const std::vector<glm::vec2> &pointsUV,
-                                            const std::vector<glm::vec3> &points,
-                                            const glm::vec2 &pointUV) {
+                                  const std::vector<glm::vec3> &points,
+                                  const glm::vec2 &pointUV) {
             glm::vec2 uvVector1 = pointsUV[1] - pointsUV[0];
             glm::vec2 uvVector2 = pointsUV[2] - pointsUV[0];
             glm::vec3 vector1 = points[1] - points[0];
@@ -21,7 +21,7 @@ namespace Brush {
         }
 
         glm::i32vec2 toScreenCoordinates(const glm::vec3 &point, const glm::mat4x4 &matrixProjection,
-                                                   const glm::i32vec2 &screenSize) {
+                                         const glm::i32vec2 &screenSize) {
             glm::vec4 homogeneousCoordinates(matrixProjection * glm::vec4(point, 1.0));
             glm::vec3 projectedPoint(
                     glm::vec3(homogeneousCoordinates.x, homogeneousCoordinates.y, homogeneousCoordinates.z)

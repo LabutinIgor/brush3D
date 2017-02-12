@@ -7,7 +7,7 @@
 #include <QPoint>
 #include <QMatrix4x4>
 
-#include "brush_ui/src/ui/vertexforbuffer.h"
+#include "ui/vertexforbuffer.h"
 #include "abstractbrush.hpp"
 #include "pixelsfastbrush.hpp"
 #include "objectmodel.hpp"

@@ -2,7 +2,7 @@
 #define FACE_H
 
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "include/objectmodel.hpp"
 
