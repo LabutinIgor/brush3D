@@ -1,5 +1,7 @@
 *.DS_Store
-resources/objs/cube300.obj
+*/cube300.obj
+*bin/
+*/.idea/
 
 # C++ objects and libs
 
