@@ -1,6 +1,5 @@
 #include "include/pixelsfastbrush.hpp"
-#include "src/details/geometry.hpp"
-#include "src/details/brushutils.hpp"
+#include "src/details/utils.hpp"
 
 namespace Brush {
     PixelsFastBrush::PixelsFastBrush(const ObjectModel &objectModel, TextureStorage &textureStorage)
@@ -11,17 +10,17 @@ namespace Brush {
 
         for (IdType faceId = 0; faceId < objectModel.getFacesNumber(); ++faceId) {
             Face face(objectModel, faceId);
-            uint32_t minX = static_cast<uint32_t>(fmax(0, BrushUtils::getMinUvX(face) * w));
-            uint32_t maxX = static_cast<uint32_t>(fmin(BrushUtils::getMaxUvX(face) * w, w - 1));
+            uint32_t minX = static_cast<uint32_t>(fmax(0, Utils::getMinUvX(face) * w));
+            uint32_t maxX = static_cast<uint32_t>(fmin(Utils::getMaxUvX(face) * w, w - 1));
 
             for (uint32_t x = minX; x <= maxX; ++x) {
                 float_t xUv = static_cast<float_t>(x / (1.0 * w));
-                uint32_t minY = static_cast<uint32_t>(fmax(0, BrushUtils::getMinY(face, xUv) * h));
-                uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, BrushUtils::getMaxY(face, xUv) * h));
+                uint32_t minY = static_cast<uint32_t>(fmax(0, Utils::getMinY(face, xUv) * h));
+                uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, Utils::getMaxY(face, xUv) * h));
 
                 for (uint32_t y = minY; y <= maxY; ++y) {
                     float_t yUv = static_cast<float_t >(y / (1.0 * h));
-                    glm::vec3 point = Geometry::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
+                    glm::vec3 point = Utils::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
                                                                           glm::vec2(xUv, yUv));
                     vertexFromUv_.setValue(x, y, point);
                     pixelsUvOfTriangle_[faceId].push_back(glm::u32vec2(x, y));
@@ -48,9 +47,9 @@ namespace Brush {
             glm::u32vec2 pixel = *it;
 
             glm::vec3 point(matrixModelView * glm::vec4(vertexFromUv_.getValue(pixel), 1.0));
-            glm::i32vec2 screenPoint(Geometry::toScreenCoordinates(point, matrixProjection, idsStorage.getSize()));
+            glm::i32vec2 screenPoint(Utils::toScreenCoordinates(point, matrixProjection, idsStorage.getSize()));
 
-            if (BrushUtils::isInside(screenPoint, idsStorage.getSize())
+            if (Utils::isInside(screenPoint, idsStorage.getSize())
                 && isInsideBrush(screenPoint, brushCenter)
                 && isVisible(screenPoint, id, idsStorage)) {
                 diff.add(ColorChange(pixel, textureStorage_.getValue(pixel), getColor()));
@@ -62,7 +61,7 @@ namespace Brush {
     bool
     PixelsFastBrush::isVisible(const glm::vec2 &screenPoint, IdType faceIdFromStorage,
                                const IdsStorage &idsStorage) const {
-        return BrushUtils::hasNeighbourWithId(idsStorage, screenPoint, faceIdFromStorage)
+        return Utils::hasNeighbourWithId(idsStorage, screenPoint, faceIdFromStorage)
                || objectModel_.areAdjacentFaces(faceIdFromStorage, idsStorage.getValue(screenPoint));
     }
 
@@ -85,10 +84,10 @@ namespace Brush {
 
     bool PixelsFastBrush::hasVisibleTriangleAtPoint(const glm::vec2 &point, const glm::mat4x4 &matrixModelView,
                                                     const IdsStorage &idsStorage) const {
-        if (BrushUtils::isInside(point, idsStorage.getSize())) {
+        if (Utils::isInside(point, idsStorage.getSize())) {
             size_t id = idsStorage.getValue(point);
             return (id < objectModel_.getFacesNumber()
-                    && Geometry::calculateFaceAngleCos(Face(objectModel_, id), matrixModelView) < MIN_ANGLE_COS);
+                    && Utils::calculateFaceAngleCos(Face(objectModel_, id), matrixModelView) < MIN_ANGLE_COS);
         }
         return false;
     }

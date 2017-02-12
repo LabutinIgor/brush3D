@@ -1,6 +1,6 @@
 #include "include/abstractbrush.hpp"
 
-#include "src/details/geometry.hpp"
+#include "src/details/utils.hpp"
 #include "src/details/face.hpp"
 
 namespace Brush {
