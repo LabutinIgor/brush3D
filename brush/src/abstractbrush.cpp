@@ -4,7 +4,7 @@
 #include "src/details/face.hpp"
 
 namespace Brush {
-    AbstractBrush::AbstractBrush(const ObjectModel &objectModel, TextureStorage &textureStorage) :
+    AbstractBrush::AbstractBrush(const ObjectModel& objectModel, TextureStorage& textureStorage) :
             objectModel_(objectModel), textureStorage_(textureStorage), radius_(10), color_(glm::u8vec3(255, 0, 0)) {
     }
 
@@ -15,7 +15,7 @@ namespace Brush {
         this->radius_ = radius;
     }
 
-    void AbstractBrush::setColor(const glm::u8vec3 &color) {
+    void AbstractBrush::setColor(const glm::u8vec3& color) {
         this->color_ = color;
     }
 
@@ -27,13 +27,13 @@ namespace Brush {
         return color_;
     }
 
-    bool AbstractBrush::isInsideBrush(const glm::i32vec2 &screenPoint, const glm::i32vec2 &brushCenter) const {
+    bool AbstractBrush::isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const {
         return glm::length(glm::vec2(brushCenter - screenPoint)) < getRadius();
     }
 
-    BrushStroke AbstractBrush::paint(const glm::i32vec2 &previousPoint, const glm::i32vec2 &lastPoint,
-                                     const glm::mat4x4 &matrixModelView, const glm::mat4x4 &matrixProjection,
-                                     const IdsStorage &idsStorage) {
+    BrushStroke AbstractBrush::paint(const glm::i32vec2& previousPoint, const glm::i32vec2& lastPoint,
+                                     const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
+                                     const IdsStorage& idsStorage) {
         BrushStroke diff;
 
         glm::vec2 d(previousPoint - lastPoint);

@@ -9,12 +9,9 @@
 class BrushHistory {
 public:
     BrushHistory();
-
-    void addStroke(const Brush::BrushStroke &stroke);
-
-    void undo(Brush::TextureStorage &currentTexture);
-
-    void redo(Brush::TextureStorage &currentTexture);
+    void addStroke(const Brush::BrushStroke& stroke);
+    void undo(Brush::TextureStorage& currentTexture);
+    void redo(Brush::TextureStorage& currentTexture);
 
 private:
     std::vector<Brush::BrushStroke> strokes_;

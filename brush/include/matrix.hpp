@@ -9,22 +9,14 @@ namespace Brush {
     class Matrix {
     public:
         Matrix();
-
         Matrix(size_t width, size_t height);
-
         size_t getWidth() const;
-
         size_t getHeight() const;
-
         glm::i32vec2 getSize() const;
-
         T getValue(size_t row, size_t col) const;
-
-        T getValue(const glm::u32vec2 &point) const;
-
-        void setValue(size_t row, size_t col, const T &value);
-
-        void setValue(const glm::u32vec2 &point, const T &value);
+        T getValue(const glm::u32vec2& point) const;
+        void setValue(size_t row, size_t col, const T& value);
+        void setValue(const glm::u32vec2& point, const T& value);
 
     private:
         size_t width_;
@@ -66,17 +58,17 @@ namespace Brush {
     }
 
     template<class T>
-    T Matrix<T>::getValue(const glm::u32vec2 &point) const {
+    T Matrix<T>::getValue(const glm::u32vec2& point) const {
         return values_[point.x * height_ + point.y];
     }
 
     template<class T>
-    void Matrix<T>::setValue(size_t row, size_t col, const T &value) {
+    void Matrix<T>::setValue(size_t row, size_t col, const T& value) {
         values_[row * height_ + col] = value;
     }
 
     template<class T>
-    void Matrix<T>::setValue(const glm::u32vec2 &point, const T &value) {
+    void Matrix<T>::setValue(const glm::u32vec2& point, const T& value) {
         values_[point.x * height_ + point.y] = value;
     }
 }

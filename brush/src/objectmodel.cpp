@@ -25,7 +25,7 @@ namespace Brush {
         return uv_[vertexId];
     }
 
-    void ObjectModel::setVertex(size_t id, const glm::vec3 &vertexPositions, const glm::vec2 &vertexUv) {
+    void ObjectModel::setVertex(size_t id, const glm::vec3& vertexPositions, const glm::vec2& vertexUv) {
         positions_[id] = vertexPositions;
         uv_[id] = vertexUv;
     }

@@ -1,6 +1,6 @@
 #include "mainglwidget.h"
 
-MainGLWidget::MainGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
+MainGLWidget::MainGLWidget(QWidget* parent) : QOpenGLWidget(parent) {
     controller = new Controller();
 }
 
@@ -51,7 +51,7 @@ void MainGLWidget::paintGL() {
         arrayObject->release();
         programForIds->release();
 
-        QImage *idsStorage = new QImage(frameBuffer->toImage());
+        QImage* idsStorage = new QImage(frameBuffer->toImage());
         controller->setIdsStorage(idsStorage);
 
         frameBuffer->release();
@@ -77,27 +77,27 @@ void MainGLWidget::paintGL() {
     }
 }
 
-void MainGLWidget::mouseMoveEvent(QMouseEvent *event) {
+void MainGLWidget::mouseMoveEvent(QMouseEvent* event) {
     controller->mouseMoved(event->pos());
 }
 
-void MainGLWidget::mousePressEvent(QMouseEvent *event) {
+void MainGLWidget::mousePressEvent(QMouseEvent* event) {
     controller->mousePressed(event->pos());
 }
 
-void MainGLWidget::mouseReleaseEvent(QMouseEvent *event) {
+void MainGLWidget::mouseReleaseEvent(QMouseEvent* event) {
     controller->mouseReleased(event->pos());
 }
 
-void MainGLWidget::keyPressEvent(QKeyEvent *event) {
+void MainGLWidget::keyPressEvent(QKeyEvent* event) {
     controller->keyPressed(event->key());
 }
 
-void MainGLWidget::keyReleaseEvent(QKeyEvent *event) {
+void MainGLWidget::keyReleaseEvent(QKeyEvent* event) {
     controller->keyReleased(event->key());
 }
 
-void MainGLWidget::wheelEvent(QWheelEvent *event) {
+void MainGLWidget::wheelEvent(QWheelEvent* event) {
     controller->wheelScrolled(event->delta());
 }
 
@@ -127,7 +127,7 @@ void MainGLWidget::loadTextureHandler() {
     }
 }
 
-void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmentShaderName) {
+void MainGLWidget::loadShaders(const char* vertexShaderName, const char* fragmentShaderName) {
     program = new QOpenGLShaderProgram();
     program->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
     program->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);
@@ -136,7 +136,7 @@ void MainGLWidget::loadShaders(const char *vertexShaderName, const char *fragmen
     program->link();
 }
 
-void MainGLWidget::loadShadersForIds(const char *vertexShaderName, const char *fragmentShaderName) {
+void MainGLWidget::loadShadersForIds(const char* vertexShaderName, const char* fragmentShaderName) {
     programForIds = new QOpenGLShaderProgram();
     programForIds->addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderName);
     programForIds->addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentShaderName);

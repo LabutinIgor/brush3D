@@ -10,7 +10,7 @@ Controller::Controller() {
     viewMatrix_.setToIdentity();
 }
 
-void Controller::loadObj(const char *fileName) {
+void Controller::loadObj(const char* fileName) {
     verticesForBuffer_.clear();
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -63,7 +63,7 @@ void Controller::loadObj(const char *fileName) {
     scaleCoefficient_ = 0;
 }
 
-VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float> &vertices, const std::vector<float> &texcoords,
+VertexForBuffer Controller::vertexFromTinyobj(const std::vector<float>& vertices, const std::vector<float>& texcoords,
                                               uint32_t vId, uint32_t tId, uint32_t triangleId) {
     return VertexForBuffer(glm::vec3(vertices[3 * vId + 0],
                                      vertices[3 * vId + 1],
@@ -98,7 +98,7 @@ void Controller::updateRotationMatrix() {
     previousMousePosition_ = mousePosition_;
 }
 
-void Controller::loadTextureImage(const char *fileName) {
+void Controller::loadTextureImage(const char* fileName) {
     QImage image(fileName);
     textureImage_ = QImage(image.mirrored());
 }
@@ -120,7 +120,7 @@ void Controller::initializeBrush() {
     brush_->setRadius(10.0);
 }
 
-void Controller::mousePressed(const QPoint &position) {
+void Controller::mousePressed(const QPoint& position) {
     previousMousePosition_ = position;
     mousePosition_ = position;
     isMousePressed_ = true;
@@ -130,7 +130,7 @@ void Controller::mousePressed(const QPoint &position) {
     }
 }
 
-void Controller::mouseMoved(const QPoint &position) {
+void Controller::mouseMoved(const QPoint& position) {
     mousePosition_ = position;
     if (isBrashActive_) {
         continueBrushStroke(position);
@@ -138,7 +138,7 @@ void Controller::mouseMoved(const QPoint &position) {
     }
 }
 
-void Controller::mouseReleased(const QPoint &position) {
+void Controller::mouseReleased(const QPoint& position) {
     mousePosition_ = position;
     if (isBrashActive_) {
         endBrushStroke(position);
@@ -185,7 +185,7 @@ bool Controller::getIsBrushUpdated() {
     return isBrushUpdated_;
 }
 
-void Controller::setIdsStorage(QImage *idsBuffer) {
+void Controller::setIdsStorage(QImage* idsBuffer) {
     size_t w = idsBuffer->width();
     size_t h = idsBuffer->height();
     idsStorage_ = Brush::IdsStorage(w, h);
@@ -197,7 +197,7 @@ void Controller::setIdsStorage(QImage *idsBuffer) {
     }
 }
 
-void Controller::beginBrushStroke(const QPoint &point) {
+void Controller::beginBrushStroke(const QPoint& point) {
     auto firstStrokePart = brush_->paint(glm::i32vec2(point.x(), point.y()),
                                          fromQMatrix(getModelViewMatrix()),
                                          fromQMatrix(projectionMatrix_),
@@ -206,7 +206,7 @@ void Controller::beginBrushStroke(const QPoint &point) {
     lastPointOfStroke_ = point;
 }
 
-void Controller::continueBrushStroke(const QPoint &point) {
+void Controller::continueBrushStroke(const QPoint& point) {
     auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
                                     glm::i32vec2(point.x(), point.y()),
                                     fromQMatrix(getModelViewMatrix()),
@@ -216,7 +216,7 @@ void Controller::continueBrushStroke(const QPoint &point) {
     lastPointOfStroke_ = point;
 }
 
-void Controller::endBrushStroke(const QPoint &point) {
+void Controller::endBrushStroke(const QPoint& point) {
     auto strokePart = brush_->paint(glm::i32vec2(lastPointOfStroke_.x(), lastPointOfStroke_.y()),
                                     glm::i32vec2(point.x(), point.y()),
                                     fromQMatrix(getModelViewMatrix()),
@@ -226,8 +226,8 @@ void Controller::endBrushStroke(const QPoint &point) {
     brushHistory_.addStroke(currentStroke_);
 }
 
-glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4 &qmat) {
-    float const *data = qmat.constData();
+glm::mat4x4 Controller::fromQMatrix(const QMatrix4x4& qmat) {
+    float const* data = qmat.constData();
     return glm::mat4x4(data[0], data[1], data[2], data[3],
                        data[4], data[5], data[6], data[7],
                        data[8], data[9], data[10], data[11],
@@ -249,15 +249,15 @@ QMatrix4x4 Controller::getModelViewMatrix() {
     return viewMatrix_ * rotationMatrix_ * scaleMatrix_;
 }
 
-const QMatrix4x4 &Controller::getProjectionMatrix() {
+const QMatrix4x4& Controller::getProjectionMatrix() {
     return projectionMatrix_;
 }
 
-const std::vector<VertexForBuffer> &Controller::getVertices() {
+const std::vector<VertexForBuffer>& Controller::getVertices() {
     return verticesForBuffer_;
 }
 
-QImage *Controller::getTextureFromBrush() {
+QImage* Controller::getTextureFromBrush() {
     isBrushUpdated_ = false;
 
     //TextureStorage& textureStorage_ = brush_->getTextureStorage();
