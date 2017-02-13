@@ -100,6 +100,10 @@ void Controller::updateRotationMatrix() {
 
 void Controller::loadTextureImage(const char* fileName) {
     QImage image(fileName);
+    if (image.isNull()) {
+        std::cerr << "Incorrect texture: " << fileName << std::endl;
+        exit(1);
+    }
     textureImage_ = QImage(image.mirrored());
 }
 
@@ -259,8 +263,6 @@ const std::vector<VertexForBuffer>& Controller::getVertices() {
 
 QImage* Controller::getTextureFromBrush() {
     isBrushUpdated_ = false;
-
-    //TextureStorage& textureStorage_ = brush_->getTextureStorage();
 
     for (size_t x = 0; x < textureStorage_.getWidth(); ++x) {
         for (size_t y = 0; y < textureStorage_.getHeight(); ++y) {

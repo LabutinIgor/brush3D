@@ -18,14 +18,14 @@ void MainGLWidget::initializeGL() {
                 "../resources/shaders/fshader.glsl");
     loadShadersForIds("../resources/shaders/vshaderForIds.glsl",
                       "../resources/shaders/fshaderForIds.glsl");
+
     matrixID = program->uniformLocation("matrix");
     programForIdsMatrixID = programForIds->uniformLocation("matrix");
 
-    controller->loadObj("/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_gui/resources/objs/cube.obj");
+    controller->loadObj(DEFAULT_OBJ_PATH);
     vertices = controller->getVertices();
     initializeObj();
-    controller->loadTextureImage(
-            "/Users/igorl/Documents/au/project/qt_repo/objViewer/brush_gui/resources/textures/simple_texture.bmp");
+    controller->loadTextureImage(DEFAULT_TEXTURE_PATH);
     controller->initializeBrush();
     textureImage = controller->getTextureFromBrush();
     setTexture();

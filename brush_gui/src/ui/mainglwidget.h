@@ -46,6 +46,11 @@ protected slots:
     void teardownGL();
 
 private:
+    const char* const DEFAULT_OBJ_PATH =
+            "/Users/igorl/Documents/au/project/brush/brush3D/brush_gui/resources/objs/cube.obj";
+    const char* const DEFAULT_TEXTURE_PATH =
+            "/Users/igorl/Documents/au/project/brush/brush3D/brush_gui/resources/textures/simple_texture.bmp";
+
     Controller* controller;
     QOpenGLBuffer* vertexBuffer = 0;
     QOpenGLVertexArrayObject* arrayObject = 0;
@@ -58,7 +63,6 @@ private:
 
     int matrixID;
     int programForIdsMatrixID;
-    QMatrix4x4 projectionMatrix;
 
     void loadShaders(const char* vertexShaderName, const char* fragmentShaderName);
     void loadShadersForIds(const char* vertexShaderName, const char* fragmentShaderName);
