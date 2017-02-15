@@ -14,12 +14,12 @@ namespace Brush {
             uint32_t maxX = static_cast<uint32_t>(fmin(Utils::getMaxUvX(face) * w, w - 1));
 
             for (uint32_t x = minX; x <= maxX; ++x) {
-                float_t xUv = static_cast<float_t>(x / (1.0 * w));
+                float xUv = static_cast<float>(x / (1.0 * w));
                 uint32_t minY = static_cast<uint32_t>(fmax(0, Utils::getMinY(face, xUv) * h));
                 uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, Utils::getMaxY(face, xUv) * h));
 
                 for (uint32_t y = minY; y <= maxY; ++y) {
-                    float_t yUv = static_cast<float_t >(y / (1.0 * h));
+                    float yUv = static_cast<float>(y / (1.0 * h));
                     glm::vec3 point = Utils::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
                                                                        glm::vec2(xUv, yUv));
                     vertexFromUv_.setValue(x, y, point);

@@ -7,8 +7,8 @@
 #include "abstractbrush.hpp"
 
 namespace Brush {
-    const double MIN_ANGLE_DEGREES = 15;
-    const double MIN_ANGLE_COS = cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0);
+    const float MIN_ANGLE_DEGREES = 15;
+    const float MIN_ANGLE_COS = static_cast<float>(cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0));
 
     class PixelsFastBrush : public AbstractBrush {
     public:

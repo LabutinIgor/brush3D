@@ -2,39 +2,39 @@
 
 namespace Brush {
     namespace Utils {
-        double_t getMinUvX(const Face& face) {
-            double_t res = face.getUv(0).x;
+        float getMinUvX(const Face& face) {
+            float res = face.getUv(0).x;
             for (size_t i = 1; i < face.getSize(); ++i) {
                 res = fmin(res, face.getUv(i).x);
             }
             return res;
         }
 
-        double_t getMaxUvX(const Face& face) {
-            double_t res = face.getUv(0).x;
+        float getMaxUvX(const Face& face) {
+            float res = face.getUv(0).x;
             for (size_t i = 1; i < face.getSize(); ++i) {
                 res = fmax(res, face.getUv(i).x);
             }
             return res;
         }
 
-        double_t getMinY(const Face& face, double_t x) {
-            double_t res = getMinIntersectionPoint(face.getUv(0), face.getUv(face.getSize() - 1), x);
+        float getMinY(const Face& face, float x) {
+            float res = getMinIntersectionPoint(face.getUv(0), face.getUv(face.getSize() - 1), x);
             for (size_t i = 0; i < face.getSize() - 1; i++) {
                 res = fmin(res, getMinIntersectionPoint(face.getUv(i), face.getUv(i + 1), x));
             }
             return res;
         }
 
-        double_t getMaxY(const Face& face, double_t x) {
-            double_t res = getMaxIntersectionPoint(face.getUv(0), face.getUv(face.getSize() - 1), x);
+        float getMaxY(const Face& face, float x) {
+            float res = getMaxIntersectionPoint(face.getUv(0), face.getUv(face.getSize() - 1), x);
             for (size_t i = 0; i < face.getSize() - 1; i++) {
                 res = fmax(res, getMaxIntersectionPoint(face.getUv(i), face.getUv(i + 1), x));
             }
             return res;
         }
 
-        double_t getMinIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, double_t x) {
+        float getMinIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, float x) {
             if (fabs(point1.x - point2.x) < EPS) {
                 if (fabs(point1.x - x) > EPS) {
                     return 1;
@@ -42,7 +42,7 @@ namespace Brush {
                     return fmin(point1.y, point2.y);
                 }
             } else {
-                double y = getIntersectionPoint(point1, point2, x);
+                float y = getIntersectionPoint(point1, point2, x);
                 if (y < fmin(point1.y, point2.y) || y > fmax(point1.y, point2.y)) {
                     return 1;
                 } else {
@@ -51,7 +51,7 @@ namespace Brush {
             }
         }
 
-        double_t getMaxIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, double_t x) {
+        float getMaxIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, float x) {
             if (fabs(point1.x - point2.x) < EPS) {
                 if (fabs(point1.x - x) > EPS) {
                     return 0;
@@ -59,7 +59,7 @@ namespace Brush {
                     return fmax(point1.y, point2.y);
                 }
             } else {
-                double y = getIntersectionPoint(point1, point2, x);
+                float y = getIntersectionPoint(point1, point2, x);
                 if (y < fmin(point1.y, point2.y) || y > fmax(point1.y, point2.y)) {
                     return 0;
                 } else {
@@ -68,8 +68,8 @@ namespace Brush {
             }
         }
 
-        double_t getIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, double_t x) {
-            double intersectionY = point1.y + (x - point1.x) * (point2.y - point1.y) / (point2.x - point1.x);
+        float getIntersectionPoint(const glm::vec2& point1, const glm::vec2& point2, float x) {
+            float intersectionY = point1.y + (x - point1.x) * (point2.y - point1.y) / (point2.x - point1.x);
             return fmax(0.0, fmin(1.0, intersectionY));
         }
 
@@ -117,7 +117,7 @@ namespace Brush {
                                 screenSize.y * (1 - projectedPoint.y) / 2);
         }
 
-        float_t calculateFaceAngleCos(const Face& face, const glm::mat4x4& matrixModelView) {
+        float calculateFaceAngleCos(const Face& face, const glm::mat4x4& matrixModelView) {
             std::vector<glm::vec3> points(3);
             for (size_t i = 0; i < 3; ++i) {
                 points[i] = glm::vec3(matrixModelView * glm::vec4(face.getPosition(i), 1.0));

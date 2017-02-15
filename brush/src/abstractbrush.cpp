@@ -11,7 +11,7 @@ namespace Brush {
     AbstractBrush::~AbstractBrush() {
     }
 
-    void AbstractBrush::setRadius(double radius) {
+    void AbstractBrush::setRadius(float radius) {
         this->radius_ = radius;
     }
 
@@ -19,7 +19,7 @@ namespace Brush {
         this->color_ = color;
     }
 
-    double AbstractBrush::getRadius() const {
+    float AbstractBrush::getRadius() const {
         return radius_;
     }
 

@@ -20,8 +20,8 @@ namespace Brush {
                                   const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
                                   const IdsStorage& idsStorage);
         bool isInsideBrush(const glm::i32vec2& screenPoint, const glm::i32vec2& brushCenter) const;
-        void setRadius(double radius);
-        double getRadius() const;
+        void setRadius(float radius);
+        float getRadius() const;
         void setColor(const glm::u8vec3& color);
         glm::u8vec3 getColor() const;
 
@@ -30,7 +30,7 @@ namespace Brush {
         TextureStorage& textureStorage_;
 
     private:
-        double radius_;
+        float radius_;
         glm::u8vec3 color_;
 
         AbstractBrush(const AbstractBrush& other);
