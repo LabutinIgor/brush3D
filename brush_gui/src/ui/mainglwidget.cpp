@@ -35,6 +35,7 @@ void MainGLWidget::initializeGL() {
 
 void MainGLWidget::resizeGL(int width, int height) {
     frameBuffer = new QOpenGLFramebufferObject(width, height);
+    frameBuffer->setAttachment(QOpenGLFramebufferObject::Depth);
     controller->updateSize(width, height);
 }
 
