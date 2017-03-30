@@ -182,7 +182,11 @@ void Controller::keyReleased(int key) {
 }
 
 void Controller::wheelScrolled(int delta) {
-    scaleCoefficient_ += delta * 0.001;
+    if (isBrashActive_) {
+        brush_->setRadius(fmax(1, fmin(100, brush_->getRadius() + delta * 0.05)));
+    } else {
+        scaleCoefficient_ += delta * 0.001;
+    }
 }
 
 bool Controller::getIsBrushUpdated() {
