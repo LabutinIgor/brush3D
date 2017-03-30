@@ -39,46 +39,53 @@ namespace Brush {
         return diff;
     }
 
-    void
-    PixelsFastBrush::paintTriangle(IdType id, const glm::mat4x4& matrixModelView, const glm::mat4x4& matrixProjection,
-                                   const glm::i32vec2& brushCenter, const IdsStorage& idsStorage, BrushStroke& diff) {
+    void PixelsFastBrush::paintTriangle(IdType id, const glm::mat4x4& matrixModelView,
+                                        const glm::mat4x4& matrixProjection,
+                                        const glm::i32vec2& brushCenter, const IdsStorage& idsStorage,
+                                        BrushStroke& diff) {
         for (std::vector<glm::u32vec2>::iterator it = pixelsUvOfTriangle_[id].begin();
              it != pixelsUvOfTriangle_[id].end(); it++) {
             glm::u32vec2 pixel = *it;
 
             glm::vec3 point(matrixModelView * glm::vec4(vertexFromUv_.getValue(pixel), 1.0));
-            glm::i32vec2 screenPoint(Utils::toScreenCoordinates(point, matrixProjection, idsStorage.getSize()));
-
-            if (Utils::isInside(screenPoint, idsStorage.getSize())
-                && isInsideBrush(screenPoint, brushCenter)
-                && isVisible(screenPoint, id, idsStorage)) {
+            glm::vec2 screenPoint(Utils::toScreenCoordinates(point, matrixProjection, idsStorage.getScreenSize()));
+            glm::i32vec2 storagePoint(idsStorage.fromScreenCoord(screenPoint));
+            if (Utils::isInside(screenPoint, idsStorage.getScreenSize())
+                && Utils::isInsideRound(screenPoint, brushCenter, getRadius())
+                && isVisible(storagePoint, id, idsStorage)) {
                 diff.add(ColorChange(pixel, textureStorage_.getValue(pixel), getColor()));
                 textureStorage_.setValue(pixel, getColor());
             }
         }
     }
 
-    bool
-    PixelsFastBrush::isVisible(const glm::vec2& screenPoint, IdType faceIdFromStorage,
-                               const IdsStorage& idsStorage) const {
-        return Utils::hasNeighbourWithId(idsStorage, screenPoint, faceIdFromStorage)
-               || objectModel_.areAdjacentFaces(faceIdFromStorage, idsStorage.getValue(screenPoint));
+    bool PixelsFastBrush::isVisible(const glm::vec2& storagePoint, IdType faceIdFromStorage,
+                                    const IdsStorage& idsStorage) const {
+        return Utils::hasNeighbourWithId(idsStorage, storagePoint, faceIdFromStorage)
+               || objectModel_.areAdjacentFaces(faceIdFromStorage, idsStorage.getValue(storagePoint));
     }
 
     std::unordered_set<IdType> PixelsFastBrush::calculateIntersectedTrianglesIds(const glm::mat4x4& matrixModelView,
                                                                                  const glm::i32vec2& brushCenter,
                                                                                  const IdsStorage& idsStorage) const {
         std::unordered_set<IdType> ids;
-        for (int dx = (int) -getRadius(); dx <= getRadius(); ++dx) {
-            for (int dy = (int) -getRadius(); dy <= getRadius(); ++dy) {
-                if (dx * dx + dy * dy <= getRadius() * getRadius()) {
-                    glm::i32vec2 point(brushCenter.x + dx, brushCenter.y + dy);
-                    if (hasVisibleTriangleAtPoint(point, matrixModelView, idsStorage)) {
-                        ids.insert(idsStorage.getValue(point));
-                    }
+        glm::vec2 centerPoint(brushCenter);
+        glm::vec2 vectorR(getRadius(), getRadius());
+        glm::i32vec2 leftPoint = idsStorage.fromScreenCoord(centerPoint - vectorR);
+        glm::i32vec2 rightPoint = idsStorage.fromScreenCoord(centerPoint + vectorR);
+
+        for (uint32_t x = static_cast<uint32_t>(fmax(0, leftPoint.x));
+             x < static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.x))); x++) {
+            for (uint32_t y = static_cast<uint32_t>(fmax(0, leftPoint.y));
+                 y < static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.y))); y++) {
+                glm::i32vec2 point(x, y);
+                if (Utils::isInsideRound(idsStorage.toScreenCoord(point), brushCenter, getRadius())
+                    && hasVisibleTriangleAtPoint(point, matrixModelView, idsStorage)) {
+                    ids.insert(idsStorage.getValue(point));
                 }
             }
         }
+
         return ids;
     }
 

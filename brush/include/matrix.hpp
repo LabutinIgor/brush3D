@@ -24,8 +24,6 @@ namespace Brush {
         std::vector<T> values_;
     };
 
-    typedef uint32_t IdType;
-    typedef Matrix<IdType> IdsStorage;
     typedef Matrix<glm::u8vec3> TextureStorage;
 
 

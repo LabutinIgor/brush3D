@@ -5,9 +5,10 @@
 #include <unordered_set>
 
 #include "abstractbrush.hpp"
+#include "idsstorage.hpp"
 
 namespace Brush {
-    const float MIN_ANGLE_DEGREES = 15;
+    const float MIN_ANGLE_DEGREES = 7;
     const float MIN_ANGLE_COS = static_cast<float>(cos(M_PI / 2 + MIN_ANGLE_DEGREES * 2 * M_PI / 360.0));
 
     class PixelsFastBrush : public AbstractBrush {

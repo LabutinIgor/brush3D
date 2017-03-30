@@ -10,4 +10,4 @@ file(GLOB_RECURSE INCLUDE_HEADER include/*.hpp)
 find_package(glm REQUIRED)
 include_directories(include ${GLM_INCLUDE_DIRS})
 
-add_library(Brush STATIC ${SOURCE} ${HEADER} ${INCLUDE_HEADER})
+add_library(Brush STATIC ${SOURCE} ${HEADER} ${INCLUDE_HEADER} src/idsstorage.cpp include/idsstorage.hpp)

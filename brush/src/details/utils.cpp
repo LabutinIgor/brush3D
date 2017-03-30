@@ -77,6 +77,11 @@ namespace Brush {
             return point.x >= 0 && point.y >= 0 && point.x < rectangle.x && point.y < rectangle.y;
         }
 
+        bool isInsideRound(const glm::i32vec2& point, const glm::i32vec2& center, const float radius) {
+            glm::i32vec2 v(point - center);
+            return v.x * v.x + v.y * v.y <= radius * radius;
+        }
+
         bool hasNeighbourWithId(const IdsStorage& idsStorage, const glm::i32vec2& point, IdType id) {
             for (int dx = -1; dx <= 1; ++dx) {
                 for (int dy = -1; dy <= 1; ++dy) {
@@ -89,11 +94,9 @@ namespace Brush {
             return false;
         }
 
-
-        glm::vec3
-        getPointFromUVCoordinates(const std::vector<glm::vec2>& pointsUV,
-                                  const std::vector<glm::vec3>& points,
-                                  const glm::vec2& pointUV) {
+        glm::vec3 getPointFromUVCoordinates(const std::vector<glm::vec2>& pointsUV,
+                                            const std::vector<glm::vec3>& points,
+                                            const glm::vec2& pointUV) {
             glm::vec2 uvVector1 = pointsUV[1] - pointsUV[0];
             glm::vec2 uvVector2 = pointsUV[2] - pointsUV[0];
             glm::vec3 vector1 = points[1] - points[0];
@@ -107,14 +110,14 @@ namespace Brush {
             return points[0] + c1 * vector1 + c2 * vector2;
         }
 
-        glm::i32vec2 toScreenCoordinates(const glm::vec3& point, const glm::mat4x4& matrixProjection,
-                                         const glm::i32vec2& screenSize) {
+        glm::vec2 toScreenCoordinates(const glm::vec3& point, const glm::mat4x4& matrixProjection,
+                                      const glm::i32vec2& screenSize) {
             glm::vec4 homogeneousCoordinates(matrixProjection * glm::vec4(point, 1.0));
             glm::vec3 projectedPoint(
                     glm::vec3(homogeneousCoordinates.x, homogeneousCoordinates.y, homogeneousCoordinates.z)
                     / homogeneousCoordinates.w);
-            return glm::i32vec2(screenSize.x * (projectedPoint.x + 1) / 2,
-                                screenSize.y * (1 - projectedPoint.y) / 2);
+            return glm::vec2(screenSize.x * (projectedPoint.x + 1) / 2,
+                             screenSize.y * (1 - projectedPoint.y) / 2);
         }
 
         float calculateFaceAngleCos(const Face& face, const glm::mat4x4& matrixModelView) {

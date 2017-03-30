@@ -192,7 +192,7 @@ bool Controller::getIsBrushUpdated() {
 void Controller::setIdsStorage(QImage* idsBuffer) {
     size_t w = idsBuffer->width();
     size_t h = idsBuffer->height();
-    idsStorage_ = Brush::IdsStorage(w, h);
+    idsStorage_ = Brush::IdsStorage(glm::u32vec2(w, h), glm::u32vec2(w, h), glm::u32vec2(0, 0), glm::u32vec2(w, h));
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
             QColor color = idsBuffer->pixelColor(x, y);
