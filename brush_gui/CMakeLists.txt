@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 2.8.8)
+
+project(BrushGUI)
+
+set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+file(GLOB SOURCE src/*.cpp)
+file(GLOB HEADER src/*.hpp)
+
+file(GLOB_RECURSE UI_SOURCE src/ui/*.cpp)
+file(GLOB_RECURSE UI_HEADER src/ui/*.h)
+
+find_package(Qt5Widgets REQUIRED)
+
+add_subdirectory(../brush brush)
+include_directories(../brush/include)
+
+find_package(glm REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})
+
+include_directories(
+        src/ui
+        external/tinyobjloader)
+
+QT5_WRAP_UI(UIS_HDRS src/ui/mainwindow.ui)
+
+add_executable(brushgui
+        ${SOURCE} ${HEADER}
+        ${UI_SOURCE} ${UI_HEADER} ui_mainwindow.h)
+
+qt5_use_modules(brushgui Widgets)
+
+target_link_libraries(brushgui Brush)
