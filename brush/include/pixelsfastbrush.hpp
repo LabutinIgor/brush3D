@@ -29,6 +29,8 @@ namespace Brush {
         bool hasVisibleTriangleAtPoint(const glm::vec2& point, const glm::mat4x4& matrixModelView,
                                        const IdsStorage& idsStorage) const;
         bool isVisible(const glm::vec2& screenPoint, IdType faceIdFromStorage, const IdsStorage& idsStorage) const;
+
+        void precalcForFace(IdType faceId);
     };
 }
 #endif // PIXELSFASTBRUSH_H

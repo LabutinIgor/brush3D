@@ -5,26 +5,29 @@ namespace Brush {
     PixelsFastBrush::PixelsFastBrush(const ObjectModel& objectModel, TextureStorage& textureStorage)
             : AbstractBrush(objectModel, textureStorage), pixelsUvOfTriangle_(objectModel.getFacesNumber()),
               vertexFromUv_(textureStorage.getWidth(), textureStorage.getHeight()) {
-        size_t w = textureStorage.getWidth();
-        size_t h = textureStorage.getHeight();
-
         for (IdType faceId = 0; faceId < objectModel.getFacesNumber(); ++faceId) {
-            Face face(objectModel, faceId);
-            uint32_t minX = static_cast<uint32_t>(fmax(0, Utils::getMinUvX(face) * w));
-            uint32_t maxX = static_cast<uint32_t>(fmin(Utils::getMaxUvX(face) * w, w - 1));
+            precalcForFace(faceId);
+        }
+    }
 
-            for (uint32_t x = minX; x <= maxX; ++x) {
-                float xUv = static_cast<float>(x / (1.0 * w));
-                uint32_t minY = static_cast<uint32_t>(fmax(0, Utils::getMinY(face, xUv) * h));
-                uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, Utils::getMaxY(face, xUv) * h));
+    void PixelsFastBrush::precalcForFace(IdType faceId) {
+        size_t w = textureStorage_.getWidth();
+        size_t h = textureStorage_.getHeight();
+        Face face(objectModel_, faceId);
+        uint32_t minX = static_cast<uint32_t>(fmax(0, Utils::getMinUvX(face) * w));
+        uint32_t maxX = static_cast<uint32_t>(fmin(Utils::getMaxUvX(face) * w, w - 1));
 
-                for (uint32_t y = minY; y <= maxY; ++y) {
-                    float yUv = static_cast<float>(y / (1.0 * h));
-                    glm::vec3 point = Utils::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
-                                                                       glm::vec2(xUv, yUv));
-                    vertexFromUv_.setValue(x, y, point);
-                    pixelsUvOfTriangle_[faceId].push_back(glm::u32vec2(x, y));
-                }
+        for (uint32_t x = minX; x <= maxX; ++x) {
+            float xUv = static_cast<float>(x / (1.0 * w));
+            uint32_t minY = static_cast<uint32_t>(fmax(0, Utils::getMinY(face, xUv) * h));
+            uint32_t maxY = static_cast<uint32_t>(fmin(h - 1, Utils::getMaxY(face, xUv) * h));
+
+            for (uint32_t y = minY; y <= maxY; ++y) {
+                float yUv = static_cast<float>(y / (1.0 * h));
+                glm::vec3 point = Utils::getPointFromUVCoordinates(face.getUvs(), face.getPositions(),
+                                                                   glm::vec2(xUv, yUv));
+                vertexFromUv_.setValue(x, y, point);
+                pixelsUvOfTriangle_[faceId].push_back(glm::u32vec2(x, y));
             }
         }
     }
@@ -73,11 +76,12 @@ namespace Brush {
         glm::vec2 vectorR(getRadius(), getRadius());
         glm::i32vec2 leftPoint = idsStorage.fromScreenCoord(centerPoint - vectorR);
         glm::i32vec2 rightPoint = idsStorage.fromScreenCoord(centerPoint + vectorR);
-
-        for (uint32_t x = static_cast<uint32_t>(fmax(0, leftPoint.x));
-             x < static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.x))); x++) {
-            for (uint32_t y = static_cast<uint32_t>(fmax(0, leftPoint.y));
-                 y < static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.y))); y++) {
+        uint32_t minX = static_cast<uint32_t>(fmax(0, leftPoint.x));
+        uint32_t maxX = static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.x)));
+        uint32_t minY = static_cast<uint32_t>(fmax(0, leftPoint.y));
+        uint32_t maxY = static_cast<uint32_t>(fmax(0, fmin(idsStorage.getWidth(), rightPoint.y)));
+        for (uint32_t x = minX; x < maxX; x++) {
+            for (uint32_t y = minY; y < maxY; y++) {
                 glm::i32vec2 point(x, y);
                 if (Utils::isInsideRound(idsStorage.toScreenCoord(point), brushCenter, getRadius())
                     && hasVisibleTriangleAtPoint(point, matrixModelView, idsStorage)) {
@@ -85,7 +89,6 @@ namespace Brush {
                 }
             }
         }
-
         return ids;
     }
 
